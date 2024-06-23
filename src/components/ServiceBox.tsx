@@ -19,7 +19,7 @@ const ServiceBox = ({openModal, handleCloseService, currentService}:service) => 
                 <button onClick={handleCloseService} className='absolute right-0 top-0 cursor-pointer text-2xl text-red-400' >&times;</button>
                 <span className="text-[#CB4900] text-2xl text-center font-bold">{currentService?.title}</span>
                 <img src={currentService?.image} className='w-full h-60' alt="" />
-                <span className='text-justify text-slate-800 text-[1rem] w-5/6 font-semibold' >{currentService?.text}</span>
+                <span className='text-justify text-slate-800 text-[0.9rem] md:text-[1rem] w-5/6 font-semibold' >{currentService?.text}</span>
             </div>
         </div>
       </Modal>
