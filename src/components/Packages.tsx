@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { PackagesData, ServiceData } from "../data/LocalData"
 import { PackagesProps, ServicesProps } from "../types/Types"
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
@@ -16,13 +15,18 @@ const Packages = () => {
     const [date, setDate] = useState<string>('');
 
     const formRef = useRef<HTMLFormElement | null>(null);
-
+    const handleSubmit =(e: React.FormEvent<HTMLFormElement>)=>{
+        e.preventDefault();
+        if(city !=='' && sevice !=='' && packages!=='' && date !==''){
+            // dosomething
+        }
+    }
   
   return (
     <section id='packages' className="py-8 bg-[#D9D9D9] w-full flex items-center justify-center " >
         <div className="w-5/6 flex flex-col gap-8 sm:px-4">
             <h2 className="text-black text-2xl sm:text-3xl font-bold text-center md:text-left" >Explore Our <span className="text-[#CB4900]" >Packages</span></h2>
-            <div className="flex w-full flex-col xl:flex-row items-start justify-between">
+            <div className="flex w-full flex-col xl:flex-row items-start xl:justify-between">
                 <div className="xl:flex xl:flex-1">
                     <div className="w-full  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {
@@ -35,10 +39,10 @@ const Packages = () => {
                         }
                     </div>
                 </div>
-                <div className="xl:flex xl:flex-1 w-full mt-8 lg:mt-0 items-center justify-end">
-                    <div className="flex w-full lg:w-5/6 flex-col gap-4 items-center ">
+                <div className="xl:flex xl:flex-1 w-full mt-8 lg:mt-0 items-center justify-center xl:justify-end">
+                    <div className="flex w-full lg:w-5/6 flex-col gap-4 items-center">
                         <h2 className="text-black text-2xl sm:text-3xl text-center font-bold mt-4 xl:mt-0" ><span className="text-[#CB4900]" >Book</span> An Appointment</h2>
-                        <form action="" className="bg-white shadow-lg rounded-2xl p-4 w-full gap-4 flex flex-col md:w-2/3 lg:w-full">
+                        <form ref={formRef} onSubmit={handleSubmit}  className="bg-white shadow-lg rounded-2xl p-4 w-full gap-4 flex flex-col md:w-2/3 lg:w-full">
                             <div className="flex-col gap-0 lg:gap-4 flex lg:flex-row w-full items-center justify-between">
                                 <input type="text" className="w-full xl:w-1/2 text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none" placeholder="First Name" />
                                 <input type="text" className="w-full mt-4 lg:mt-0 xl:w-1/2 text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none" placeholder="Last Name" />
@@ -83,7 +87,7 @@ const Packages = () => {
                             <select
                                 onChange={(e) => setPackages(e.target.value)}
                                 defaultValue=""
-                                className="w-full xl:w-1/2 text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none"
+                                className="w-full xl:w-1/2 text-xl sm:tex-[1rem] mt-4 md:mt-0 py-2 px-4 rounded-xl border border-[#CB4900] outline-none"
                                 name="service"
                                 id=""
                                 title="service"
@@ -97,6 +101,9 @@ const Packages = () => {
                                
                             </div>
                             <input onChange={(e)=>setDate(e.target.value)} min={new Date().toISOString().slice(0, 16)} type='datetime-local' placeholder='Set appointment date' className='w-full text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none' />
+                            <button type='submit' className="bg-[#cb4900] rounded-xl px-4 py-2 text-white font-semibold cursor-pointer hover:bg-orange-400" >Submit</button>
+                            <span className="font-bold text-2xl text-center">OR</span>
+                            <span className="font-bold text-xl text-[#cb4900] cursor-pointer hover:underline text-center" >Schedule online meeting</span>
                         </form>
                     </div>
                 </div>
