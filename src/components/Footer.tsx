@@ -33,11 +33,21 @@ const Footer = () => {
                     <div className="bg-[#CB4900] hover:bg-orange-500 cursor-pointer h-10 w-8 flex items-center justify-center" ><FaAngleRight /></div>
                 </div>
                 <div className="flex flex-row gap-6 items-center justify-start">
-                    <FaWhatsapp className="hover:text-slate-400 cursor-pointer text-3xl" />
-                    <CiFacebook className="hover:text-slate-400 cursor-pointer text-3xl" />
-                    <FaInstagram className="hover:text-slate-400 cursor-pointer text-3xl" />
-                    <FaXTwitter className="hover:text-slate-400 cursor-pointer text-3xl" />
-                    <PiTiktokLogo className="hover:text-slate-400 cursor-pointer text-3xl" />
+                    <a target='blank' href="https://wa.me/+233205035730">
+                        <FaWhatsapp className="hover:text-slate-400 cursor-pointer text-3xl" />
+                    </a>
+                    <a target='blank' href="https://www.facebook.com/DiamondTourGhana?mibextid=kFxxJD">
+                        <CiFacebook className="hover:text-slate-400 cursor-pointer text-3xl" />
+                    </a>
+                    <a target='blank' href="https://www.instagram.com/diamondtours_gh?igsh=ZnF2eWdkNzh0bGZl">
+                        <FaInstagram className="hover:text-slate-400 cursor-pointer text-3xl" />
+                    </a>
+                    <a target='blank' href="https://x.com/diamondtours_gh?s=21&t=quzTkibHjrl5y7ipuSnsYA">
+                        <FaXTwitter className="hover:text-slate-400 cursor-pointer text-3xl" />
+                    </a>
+                    <a target='blank' href="https://www.tiktok.com/@diamondtours_gh?_t=8nF1a9vbCfX&_r=1">
+                        <PiTiktokLogo className="hover:text-slate-400 cursor-pointer text-3xl" />
+                    </a>
                 </div>
             </div>
         </div>
