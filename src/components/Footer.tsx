@@ -15,6 +15,7 @@ const Footer = () => {
                 <a href="#hero" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Home</a>
                 <a href="#services" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Services</a>
                 <a href="#packages" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Packages</a>
+                <a href="#bookings" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Bookings</a>
                 <a href="#about" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >About Us</a>
                 <a href="#contact" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Contact Us</a>
             </div>
