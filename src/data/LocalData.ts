@@ -4,7 +4,7 @@ export const ServiceData = [
         id:1,
         title:'Visa Application and Advisory',
         text: 'At DTG, we offer comprehensive visa application guidance and assistance to ensure our clients achieve successful visa approvals.',
-        image: '/imgs/credit-card-2439141_1280.jpg'
+        image: '/imgs/visa-3109800_1920.jpg'
     },
     {
         id:2,
@@ -45,7 +45,7 @@ export const ServiceData = [
     {
         id:8,
         title:'Tours and Trips',
-        text: 'We organize engaging and enjoyable local and international tours for individuals, groups, organizations, churches, schools, friends, and families, all at competitive rates. Trip to countries like South Africa, Kenya, Dubai, Qatar, Singapore, Zanzibar, Maldives, Thailand, Paris and many others.',
+        text: 'We organize engaging and enjoyable local and international tours for individuals, groups, organizations, churches, schools, friends, and families, all at competitive rates. Trip to countries like South Africa, Kenya, Dubai, Qatar, Singapore, Zanzibar, Maldives, Thailand, Paris and many others. Trips to Canada are payed on installments, work-and-pay plan and collateral exchange.',
         image: '/imgs/893de8eb3e6dd1f20cc5515af68719dc.png'
     },
     {
@@ -106,8 +106,12 @@ export const HeaderData = [
         link: '#services'
     },
     {
-        title:'Bookings',
+        title:'Packages',
         link: '#packages'
+    },
+    {
+        title:'Bookings',
+        link: '#bookings'
     },
     {
         title:'About Us',
@@ -186,5 +190,38 @@ export const ChatData = [
         text:"warm arrive somebody earth machine hunt tears shorter watch plain page gain automobile camp being accident represent bare been onto damage similar level sure",
         time:"10/19/2088",
         sent:true
+    },
+]
+
+export const BookingsData = [
+    {
+        id:1,
+        service:'Airport Transfer',
+        package:'USA',
+        date:'1/1/2022'
+    },
+    {
+        id:2,
+        service:'Bank Statement',
+        package:'Africa',
+        date:'3/7/2023'
+    },
+    {
+        id:3,
+        service:'Trips and Tours',
+        package:'Canada',
+        date:'23/8/2022'
+    },
+    {
+        id:4,
+        service:'Hotel Booking and Reservation',
+        package:'Asia',
+        date:'11/10/2020'
+    },
+    {
+        id:5,
+        service:'Visa Application and Advisory',
+        package:'Middle East',
+        date:'13/3/2024'
     },
 ]

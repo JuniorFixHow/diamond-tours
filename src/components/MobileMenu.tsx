@@ -10,9 +10,10 @@ return (
   <section onClick={()=>setShowMenu('hidden')} className={menulass} id="mobile-menu" >
       <button onClick={()=>setShowMenu('hidden')} className="text-6xl self-end px-6">&times;</button>
       <nav className="flex flex-col min-h-screen w-full items-center py-4" aria-label="mobile" >
-          <a onClick={()=>setShowMenu('hidden')} href="#hero" className="w-full text-center text-2xl py-6 hover:opacity-90 text-white" >Home</a>
+          <a onClick={()=>setShowMenu('hidden')} href="#hero" className="w-full text-center text-2xl py-4 hover:opacity-90 text-white" >Home</a>
           <a onClick={()=>setShowMenu('hidden')} href="#services" className="w-full text-center text-2xl py-6 hover:opacity-90 text-white" >Services</a>
           <a onClick={()=>setShowMenu('hidden')} href="#packages" className="w-full text-center text-2xl py-6 hover:opacity-90 text-white" >Packages</a>
+          <a onClick={()=>setShowMenu('hidden')} href="#bookings" className="w-full text-center text-2xl py-6 hover:opacity-90 text-white" >Bookings</a>
           <a onClick={()=>setShowMenu('hidden')} href="#about" className="w-full text-center text-2xl py-6 hover:opacity-90 text-white" >About Us</a>
           <a onClick={()=>setShowMenu('hidden')} href="#contact" className="w-full text-center text-2xl py-6 hover:opacity-90 text-white" >Contact Us</a>
           <a onClick={()=>setShowMenu('hidden')} href="#footer" className="w-full text-center text-2xl py-6 hover:opacity-90 text-white" >Legal</a>

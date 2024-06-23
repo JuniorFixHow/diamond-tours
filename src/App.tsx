@@ -8,6 +8,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Chat from './components/Chat';
 import { useState } from 'react';
+import Bookings from './components/Bookings';
 // import './App.css'
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
     <div className='w-full items-center justify-center flex flex-col' >
       <Services />
       <Packages />
+      <Bookings />
       <About />
       <Contact />
     </div>

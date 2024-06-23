@@ -19,7 +19,7 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
     const receivedStyle = "bg-white w-full p-2 text-black rounded-xl";
     const sentAlign = "flex w-[90%] flex-col self-end";
     const receivedAlign = "flex w-[90%] flex-col";
-    const chatStyle = "w-80 md:w-[30rem] py-8 px-4 flex-col bg-slate-700 h-[30rem] bottom-24 right-8 rounded-2xl fixed z-10 justify-between flex";
+    const chatStyle = "w-80 md:w-[30rem] py-8 px-4 flex-col bg-slate-700 h-[30rem] bottom-24 right-2 md:right-8 rounded-2xl fixed z-10 justify-between flex";
   return (
     <div className={showChat? chatStyle : 'hidden'}>
         <button onClick={()=>setShowChat(false)} className="absolute text-4xl right-2 top-0 cursor-pointer text-red-500 rounded-full hover:text-red-300" >&times;</button>

@@ -9,3 +9,9 @@ export type PackagesProps = {
     title:string,
     text:string,
 }|null
+export type BookingsProps = {
+    id:number,
+    service:string,
+    package:string,
+    date:string,
+}|null

@@ -14,8 +14,8 @@ const ServiceBox = ({openModal, handleCloseService, currentService}:service) => 
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <div onClick={handleCloseService} className="grid w-full h-screen place-items-center">
-            <div className="w-5/6 py-4 px-2 bg-white flex flex-col gap-4 items-center rounded-xl justify-center md:w-1/3 relative">
+        <div onClick={handleCloseService} className="grid overflow-y-scroll overflow-x-hidden w-full h-screen place-items-center">
+            <div className="w-5/6 py-4 px-2 overflow-y-scroll overflow-x-hidden lg:overflow-hidden max-h-[40rem] bg-white flex flex-col gap-4 items-center rounded-xl justify-center md:w-1/3 relative">
                 <button onClick={handleCloseService} className='absolute right-0 top-0 cursor-pointer text-2xl text-red-400' >&times;</button>
                 <span className="text-[#CB4900] text-2xl text-center font-bold">{currentService?.title}</span>
                 <img src={currentService?.image} className='w-full h-60' alt="" />

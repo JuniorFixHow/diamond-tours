@@ -12,17 +12,17 @@ const Footer = () => {
 
             <div className="flex flex-col py-4 items-start min-w-32">
                 <h2 className="text-2xl text-[#CB4900] font-bold">Links</h2>
-                <a href="#hero" className="text-black underline hover:text-blue-500 text-[1rem] font-semibold cursor-pointer" >Home</a>
-                <a href="#services" className="text-black underline hover:text-blue-500 text-[1rem] font-semibold cursor-pointer" >Services</a>
-                <a href="#packages" className="text-black underline hover:text-blue-500 text-[1rem] font-semibold cursor-pointer" >Packages</a>
-                <a href="#about" className="text-black underline hover:text-blue-500 text-[1rem] font-semibold cursor-pointer" >About Us</a>
-                <a href="#contact" className="text-black underline hover:text-blue-500 text-[1rem] font-semibold cursor-pointer" >Contact Us</a>
+                <a href="#hero" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Home</a>
+                <a href="#services" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Services</a>
+                <a href="#packages" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Packages</a>
+                <a href="#about" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >About Us</a>
+                <a href="#contact" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Contact Us</a>
             </div>
-            <div className="flex flex-col py-4 items-start">
+            <div className="flex flex-col py-4 items-start min-w-32">
                 <h2 className="text-2xl text-[#CB4900] font-bold">Legals</h2>
-                <a className="text-black underline hover:text-blue-500 text-[1rem] font-semibold cursor-pointer" >License</a>
-                <a className="text-black underline hover:text-blue-500 text-[1rem] font-semibold cursor-pointer" >Terms and Conditions</a>
-                <a className="text-black underline hover:text-blue-500 text-[1rem] font-semibold cursor-pointer" >Refund Policy</a>
+                <a className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >License</a>
+                <a className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Terms and Conditions</a>
+                <a className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Refund Policy</a>
             </div>
             </div>
             <div className="flex flex-col gap-4">

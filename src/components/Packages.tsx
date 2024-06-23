@@ -15,6 +15,7 @@ const Packages = () => {
     const [date, setDate] = useState<string>('');
 
     const formRef = useRef<HTMLFormElement | null>(null);
+    const user = true;
     const handleSubmit =(e: React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
         if(city !=='' && sevice !=='' && packages!=='' && date !==''){
@@ -43,6 +44,9 @@ const Packages = () => {
                     <div className="flex w-full lg:w-5/6 flex-col gap-4 items-center">
                         <h2 className="text-black text-2xl sm:text-3xl text-center font-bold mt-4 xl:mt-0" ><span className="text-[#CB4900]" >Book</span> An Appointment</h2>
                         <form ref={formRef} onSubmit={handleSubmit}  className="bg-white shadow-lg rounded-2xl p-4 w-full gap-4 flex flex-col md:w-2/3 lg:w-full">
+                        {
+                            user?
+                        <>
                             <div className="flex-col gap-0 lg:gap-4 flex lg:flex-row w-full items-center justify-between">
                                 <input type="text" className="w-full xl:w-1/2 text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none" placeholder="First Name" />
                                 <input type="text" className="w-full mt-4 lg:mt-0 xl:w-1/2 text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none" placeholder="Last Name" />
@@ -102,6 +106,10 @@ const Packages = () => {
                             </div>
                             <input onChange={(e)=>setDate(e.target.value)} min={new Date().toISOString().slice(0, 16)} type='datetime-local' placeholder='Set appointment date' className='w-full text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none' />
                             <button type='submit' className="bg-[#cb4900] rounded-xl px-4 py-2 text-white font-semibold cursor-pointer hover:bg-orange-400" >Submit</button>
+                        </>
+                        :
+                        <span className="font-bold text-xl md:text-2xl text-center" >Login to Book an Appointment</span>
+                        }
                             <span className="font-bold text-2xl text-center">OR</span>
                             <span className="font-bold text-xl text-[#cb4900] cursor-pointer hover:underline text-center" >Schedule online meeting</span>
                         </form>
