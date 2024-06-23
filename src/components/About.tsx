@@ -18,7 +18,7 @@ const About = () => {
             </div>
         </div>
         <div className="flex bg-white items-center justify-center w-full py-4">
-            <div className="w-5/6 grid place-items-start gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            <div className="w-5/6 grid place-content-center md:place-items-start gap-8 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 <div className="flex flex-col gap-4 items-center justify-center w-80">
                     <h2 className="text-black text-xl sm:text-2xl font-bold text-center md:text-left" ><span className="text-[#CB4900]" >MISSION</span></h2>
                     <h2 className="text-black text-xl text-center" >At <span className="text-[#CB4900]" >DIAMOND TOURS GHANA</span>, our mission is to ignite the spirit of adventure, enabling our clients to explore the world with ease, authenticity, and unparalleled joy.

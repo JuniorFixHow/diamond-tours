@@ -3,8 +3,8 @@ const Contact = () => {
     <section id='contact' className="w-full bg-[#d9d9d9] flex flex-col items-center justify-center py-8" >
      <div className="w-5/6 flex flex-col items-center justify-center gap-8" >
       <h2 className="text-black text-2xl sm:text-3xl font-bold text-center md:text-left w-full" ><span className="text-[#CB4900]" >Contact Us</span></h2>
-        <div className="flex flex-col w-full lg:flex-row items-start justify-between md:flex-1">
-          <div className="flex-col flex gap-2">
+        <div className="flex flex-col w-full lg:flex-row items-center lg:items-start lg:justify-between">
+          <div className="flex-col w-full flex gap-2 md:flex-1">
             <span className="text-xl font-semibold text-[#CB4900]">Mobile App</span>
             <h2 className="sm:w-2/3 text-xl">Book Packages and <span className="font-bold" >Services </span> 
             easily on our app</h2>

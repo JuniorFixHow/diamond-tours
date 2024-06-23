@@ -21,7 +21,7 @@ const Services = () => {
             {
                 ServiceData &&
                 ServiceData.map((item:ServicesProps)=>(
-                    <div onClick={()=>handleOpenService(item)} key={item?.id} className="rounded-2xl hover:cursor-pointer flex flex-col item-center justify-center w-5/6 md:w-72 shadow-xl pb-4">
+                    <div onClick={()=>handleOpenService(item)} key={item?.id} className="rounded-2xl hover:cursor-pointer flex flex-col item-center justify-center w-80 md:w-5/6 shadow-xl pb-4">
                         <img src={item?.image} className=" rounded-2xl w-full h-48 object-cover" alt="" />
                         <span className="text-black font-medium text-[1rem] mt-4 text-center">{item?.title}</span>
                     </div>
