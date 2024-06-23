@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ChangeEvent, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { PackagesData, ServiceData } from "../data/LocalData"
 import { PackagesProps, ServicesProps } from "../types/Types"
-import { CountryDropdown, RegionDropdown, CountryRegionData } from 'react-country-region-selector';
+import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
 
