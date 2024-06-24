@@ -3,10 +3,51 @@ import { FaWhatsapp, FaInstagram } from "react-icons/fa";
 import { CiFacebook } from "react-icons/ci";
 import { PiTiktokLogo } from "react-icons/pi";
 import { MdKeyboardArrowUp } from "react-icons/md";
+import { Alert } from "@mui/material";
+import { useRef, useState } from "react";
+import { FeedBackPops } from "../types/Types";
+import axios from "axios";
+import { API } from "../data/Constats";
 
 const Footer = () => {
+    const [feedback, setFeedback] = useState<FeedBackPops>({error:false, message:''});
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [email, setEmail] = useState<string>('');
+
+
+    const formRef = useRef<HTMLFormElement | null>(null);
+  const handleNewsLetter = async(e: React.FormEvent<HTMLFormElement>)=>{
+    e.preventDefault();
+    setIsLoading(true);
+    const data = {email}
+    try {
+        if(email.trim() !==''){
+            const res = await axios.post(`${API}news/create`, data);
+            if(res.status === 201){ 
+                setFeedback({error:false, message:res.data})
+            }else if(res.status === 200){
+                setFeedback({error:false, message:"You've subscribed for our newsletters"});
+            }
+            formRef.current?.reset();
+            setEmail('');
+        }
+    } catch (error) {
+        console.log(error);
+        setFeedback({error:true, message:'Error occured. Please try again'});
+    }finally{
+        setIsLoading(false);
+    }
+  }
+
+  const normalStyle = "bg-[#CB4900] hover:bg-orange-500 cursor-pointer h-10 w-8 flex items-center justify-center"
+  const disStyle = "bg-slate-400  cursor-default h-10 w-8 flex items-center justify-center"
+
   return (
     <footer id="footer" className="w-full flex items-center justify-center bg-white pt-4 flex-col relative" >
+      {
+        feedback.message &&
+        <Alert onClose={()=>setFeedback({error:false, message:''})} className="fixed top-16 self-center w-5/6 lg:w-1/2" severity={feedback.error? 'error':'success'} variant='standard' >{feedback.message}</Alert>
+      }
         <div className="w-5/6 flex flex-col justify-center items-center md:flex-row md:items-start md:justify-around">
             <div className="flex flex-row items-start gap-8">
 
@@ -28,10 +69,10 @@ const Footer = () => {
             </div>
             <div className="flex flex-col gap-4">
                 <h2 className="font-semibold text-[1rem] text-black md:text-[1.5rem]" >Subscribe to our <span className="text-[#CB4900]" >Newsletter</span></h2>
-                <div className="flex flex-row items-center justify-center">
-                    <input type="text" className="bg-[#d9d9d9] outline-none px-4 py-2 w-72" placeholder="Email" />
-                    <div className="bg-[#CB4900] hover:bg-orange-500 cursor-pointer h-10 w-8 flex items-center justify-center" ><FaAngleRight /></div>
-                </div>
+                <form ref={formRef} onSubmit={handleNewsLetter} className="flex flex-row items-center justify-center">
+                    <input onChange={(e)=>setEmail(e.target.value)} required type="text" className="bg-[#d9d9d9] outline-none px-4 py-2 w-72" placeholder="Email" />
+                    <button disabled={isLoading} type='submit' className={isLoading? disStyle:normalStyle} ><FaAngleRight />{}</button>
+                </form>
                 <div className="flex flex-row gap-6 items-center justify-start">
                     <a target='blank' href="https://wa.me/+233205035730">
                         <FaWhatsapp className="hover:text-slate-400 cursor-pointer text-3xl" />

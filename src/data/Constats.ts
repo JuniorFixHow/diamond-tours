@@ -1,0 +1,1 @@
+export const API = 'https://diamond-tours.onrender.com/api/'

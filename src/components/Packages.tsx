@@ -1,28 +1,75 @@
 import React, { useRef, useState } from "react";
 import { PackagesData, ServiceData } from "../data/LocalData"
-import { PackagesProps, ServicesProps } from "../types/Types"
+import { FeedBackPops, PackagesProps, ServicesProps } from "../types/Types"
 import { CountryDropdown, RegionDropdown } from 'react-country-region-selector';
 import PhoneInput from 'react-phone-input-2'
 import 'react-phone-input-2/lib/style.css'
+import axios from "axios";
+import Alert from '@mui/material/Alert';
+import { API } from "../data/Constats";
+
 
 const Packages = () => {
     const [phone, setPhone] = useState<string>('');
     const [country, setCountry] = useState<string>('');
     const [region, setRegion] = useState<string>('');
     const [city, setCity] = useState<string>('');
-    const [sevice, setService] = useState<string>('');
+    const [service, setService] = useState<string>('');
     const [packages, setPackages] = useState<string>('');
     const [date, setDate] = useState<string>('');
+    const [fname, setFname] = useState<string>('');
+    const [lname, setLname] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [feedback, setFeedback] = useState<FeedBackPops>({error:false, message:''});
 
     const formRef = useRef<HTMLFormElement | null>(null);
     const user = true;
-    const handleSubmit =(e: React.FormEvent<HTMLFormElement>)=>{
+    const handleSubmit =async(e: React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
-        if(city !=='' && sevice !=='' && packages!=='' && date !==''){
-            // dosomething
+        setFeedback({error:false, message:''});
+        setIsLoading(true);
+        if (
+          city.trim() !== "" &&
+          service !== "" &&
+          packages !== "" &&
+          date.trim() !== "" &&
+          phone.trim() !== "" &&
+          region.trim() !== "" &&
+          country.trim() !== "" &&
+          lname.trim() !== "" &&
+          fname.trim() !== "" &&
+          email.trim() !== ""
+        ) {
+           try {
+                const data = {
+                  email,
+                  fullname: { last: lname, first: fname },
+                  phone,
+                  service,
+                  package: packages,
+                  date,
+                  userId: "1234",
+                  location: { country, region, city },
+                };
+                const res = await axios.post(`${API}bookings/create`, data);
+                if(res.status === 200){
+                    setFeedback({error:false, message:'Appointment booked successfully'});
+                    formRef.current?.reset();
+                }
+           } catch (error) {
+            setFeedback({error:true, message:'Error occured. Please retry'})
+           }finally{
+            setIsLoading(false);
+           }
+        }else{
+            setFeedback({error:true, message:'Please complete the form'});
+            setIsLoading(false);
         }
     }
   
+    const loadStyle = "bg-slate-400 rounded-xl px-4 py-2 text-white font-semibold cursor-default ";
+    const normalStyle = "bg-[#cb4900] rounded-xl px-4 py-2 text-white font-semibold cursor-pointer hover:bg-orange-400";
   return (
     <section id='packages' className="py-8 bg-[#D9D9D9] w-full flex items-center justify-center " >
         <div className="w-5/6 flex flex-col gap-8 sm:px-4">
@@ -48,10 +95,10 @@ const Packages = () => {
                             user?
                         <>
                             <div className="flex-col gap-0 lg:gap-4 flex lg:flex-row w-full items-center justify-between">
-                                <input type="text" className="w-full xl:w-1/2 text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none" placeholder="First Name" />
-                                <input type="text" className="w-full mt-4 lg:mt-0 xl:w-1/2 text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none" placeholder="Last Name" />
+                                <input required onChange={(e)=>setFname(e.target.value)} type="text" className="w-full xl:w-1/2 text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none" placeholder="First Name" />
+                                <input required onChange={(e)=>setLname(e.target.value)} type="text" className="w-full mt-4 lg:mt-0 xl:w-1/2 text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none" placeholder="Last Name" />
                             </div>
-                            <input type="email" className="w-full text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none" placeholder="Enter Email" />
+                            <input required onChange={(e)=>setEmail(e.target.value)} type="email" className="w-full text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none" placeholder="Enter Email" />
                             <PhoneInput
                                 country={"us"}
                                 value={phone}
@@ -72,7 +119,7 @@ const Packages = () => {
                                 value={region}
                                 onChange={(e) => setRegion(e)}
                             />
-                            <input onChange={(e)=>setCity(e.target.value)} type="text" className="w-full text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none" placeholder="Enter your city" />
+                            <input required onChange={(e)=>setCity(e.target.value)} type="text" className="w-full text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none" placeholder="Enter your city" />
                             <div className="flex-col gap-0 lg:gap-4 flex lg:flex-row w-full items-center justify-between">
                             <select
                                 onChange={(e) => setService(e.target.value)}
@@ -104,14 +151,20 @@ const Packages = () => {
                             </select>
                                
                             </div>
-                            <input onChange={(e)=>setDate(e.target.value)} min={new Date().toISOString().slice(0, 16)} type='datetime-local' placeholder='Set appointment date' className='w-full text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none' />
-                            <button type='submit' className="bg-[#cb4900] rounded-xl px-4 py-2 text-white font-semibold cursor-pointer hover:bg-orange-400" >Submit</button>
+                            <input required onChange={(e)=>setDate(e.target.value)} min={new Date().toISOString().slice(0, 16)} type='datetime-local' placeholder='Set appointment date' className='w-full text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none' />
+                            {
+                                feedback.message &&
+                                <Alert onClose={()=>setFeedback({error:false, message:''})} severity={feedback.error? 'error':'success'} >{feedback.message}</Alert>
+                            }
+                            <button disabled={isLoading} type='submit' className={isLoading?loadStyle:normalStyle} >{isLoading? 'Loading...': 'Submit'}</button>
                         </>
                         :
                         <span className="font-bold text-xl md:text-2xl text-center" >Login to Book an Appointment</span>
                         }
                             <span className="font-bold text-2xl text-center">OR</span>
-                            <span className="font-bold text-xl text-[#cb4900] cursor-pointer hover:underline text-center" >Schedule online meeting</span>
+                            <a className="text-center " target="blank" href="https://calendly.com/diamondtoursghana">
+                                <span className="font-bold text-xl text-[#cb4900] cursor-pointer hover:underline text-center" >Schedule online meeting</span>
+                            </a>
                         </form>
                     </div>
                 </div>

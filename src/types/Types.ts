@@ -10,8 +10,18 @@ export type PackagesProps = {
     text:string,
 }|null
 export type BookingsProps = {
-    id:number,
+    _id:string,
+    email:string,
+    fullname: { last: string, first: string },
+    phone:string,
     service:string,
-    package:string,
+    package: string,
     date:string,
-}|null
+    userId: string,
+    location: { country:string, region:string, city:string },
+}
+
+export type FeedBackPops = {
+    error:boolean,
+    message:string
+}
