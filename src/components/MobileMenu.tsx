@@ -1,3 +1,4 @@
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import { MdOutlinePhoneAndroid } from "react-icons/md";
 
 type menuProps = {
@@ -22,9 +23,18 @@ return (
                 <MdOutlinePhoneAndroid size={25} />
                 <span className=" text-xl" >Get App</span>
               </div>
-              <div className="rounded-2xl w-1/2 flex items-center justify-center bg-[#CB4900] hover:bg-orange-300 text-white text-[0.5rem] sm:text-sm px-4 py-2 cursor-pointer ">
-                <span className="text-xl" >Register</span>
+              <SignedOut>
+              <div className="rounded-2xl bg-[#CB4900] hover:bg-orange-300 text-white text-[0.5rem] sm:text-sm px-4 py-2 cursor-pointer ">
+                {/* <span>Register</span> */}
+                  <SignInButton />
               </div>
+                </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+              {/* <div className="rounded-2xl w-1/2 flex items-center justify-center bg-[#CB4900] hover:bg-orange-300 text-white text-[0.5rem] sm:text-sm px-4 py-2 cursor-pointer ">
+                <span className="text-xl" >Register</span>
+              </div> */}
             </div>
       </nav>
   </section>

@@ -3,6 +3,8 @@ import { MdOutlinePhoneAndroid } from "react-icons/md";
 import MobileMenu from "./MobileMenu";
 import { HeaderData } from "../data/LocalData";
 // import IMAGE from '../../public/imgs/photo_6028099600981803407_y-removebg-preview.png';
+import { SignedIn, SignedOut, SignInButton, UserButton, useAuth } from "@clerk/clerk-react";
+import { Alert } from "@mui/material";
 
 type HeaderProps ={
   title:string,
@@ -14,8 +16,24 @@ const Header = () => {
   const [currentTitle, setCurrentTitle] = useState<string>('');
   const headerStyle = "dark:text-white hover:text-slate-300 cursor-pointer";
   const selectedHeaderStyle = "text-slate-300 cursor-pointer";
+  const [showError, setShowError] = useState<boolean>(false);
+  const {isSignedIn} = useAuth();
+
+  const handleTitle = (t:string)=>{
+    if(!isSignedIn && t === 'Bookings'){
+      setShowError(true);
+    }else{
+      setCurrentTitle(t);
+      setShowError(false);
+    }
+  }
+
   return (
     <header id="header" className="w-full flex items-center mx-auto py-2 justify-center font-semibold bg-[#676161] sticky top-0" >
+      {
+        showError &&
+        <Alert onClose={()=>setShowError(false)} className="fixed top-16 self-center w-5/6 lg:w-1/2" severity='error' variant='standard' >Please sign in to see your bookings</Alert>
+      }
         <MobileMenu showMenu={showMenu} setShowMenu={setShowMenu} />
         <div className="w-5/6 flex flex-row justify-between items-center">
             <div className="flex gap-2 flex-row items-center justify-center">
@@ -28,7 +46,7 @@ const Header = () => {
             <div className="hidden md:flex flex-row justify-center text-sm text-black gap-6">
               {
                 HeaderData.map((item:HeaderProps)=>(
-                  <a onClick={()=>setCurrentTitle(item.title)} key={item.title} href={item.link}>
+                  <a onClick={()=>handleTitle(item.title)} key={item.title} href={item.link}>
                     <span className={currentTitle === item.title?selectedHeaderStyle:headerStyle} >{item.title}</span>
                   </a>
                 ))
@@ -40,9 +58,15 @@ const Header = () => {
                 <MdOutlinePhoneAndroid size={15} />
                 <span className=" text-[0.5rem] sm:text-sm " >Get App</span>
               </div>
+              <SignedOut>
               <div className="rounded-2xl bg-[#CB4900] hover:bg-orange-300 text-white text-[0.5rem] sm:text-sm px-4 py-2 cursor-pointer ">
-                <span>Register</span>
+                {/* <span>Register</span> */}
+                  <SignInButton />
               </div>
+                </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
             </div>
             <button onClick={()=>setShowMenu('flex')} className="text-white text-3xl md:hidden block cursor-pointer">&#9776;</button>
         </div>

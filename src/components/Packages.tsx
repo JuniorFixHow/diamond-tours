@@ -7,6 +7,7 @@ import 'react-phone-input-2/lib/style.css'
 import axios from "axios";
 import Alert from '@mui/material/Alert';
 import { API } from "../data/Constats";
+import { useAuth } from "@clerk/clerk-react"
 
 
 const Packages = () => {
@@ -24,7 +25,7 @@ const Packages = () => {
     const [feedback, setFeedback] = useState<FeedBackPops>({error:false, message:''});
 
     const formRef = useRef<HTMLFormElement | null>(null);
-    const user = true;
+    const {userId, isSignedIn} = useAuth();
     const handleSubmit =async(e: React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
         setFeedback({error:false, message:''});
@@ -49,12 +50,12 @@ const Packages = () => {
                   service,
                   package: packages,
                   date,
-                  userId: "1234",
+                  userId,
                   location: { country, region, city },
                 };
                 const res = await axios.post(`${API}bookings/create`, data);
                 if(res.status === 200){
-                    setFeedback({error:false, message:'Appointment booked successfully'});
+                    setFeedback({error:false, message:'Appointment booked successfully. Check the Bookings section to see your appointments'});
                     formRef.current?.reset();
                 }
            } catch (error) {
@@ -92,7 +93,7 @@ const Packages = () => {
                         <h2 className="text-black text-2xl sm:text-3xl text-center font-bold mt-4 xl:mt-0" ><span className="text-[#CB4900]" >Book</span> An Appointment</h2>
                         <form ref={formRef} onSubmit={handleSubmit}  className="bg-white shadow-lg rounded-2xl p-4 w-full gap-4 flex flex-col md:w-2/3 lg:w-full">
                         {
-                            user?
+                            isSignedIn?
                         <>
                             <div className="flex-col gap-0 lg:gap-4 flex lg:flex-row w-full items-center justify-between">
                                 <input required onChange={(e)=>setFname(e.target.value)} type="text" className="w-full xl:w-1/2 text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none" placeholder="First Name" />

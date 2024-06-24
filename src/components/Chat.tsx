@@ -3,6 +3,7 @@ import { IoMdPaperPlane } from "react-icons/io";
 import { KeyboardEventHandler, useEffect, useRef, useState } from "react";
 import { Timestamp, addDoc, collection, deleteDoc, doc, onSnapshot, query, serverTimestamp, where } from "firebase/firestore";
 import {db} from '../../firebase';
+import { useAuth } from "@clerk/clerk-react";
 
 type ChatProps = {
     id:string,
@@ -24,6 +25,8 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
     const [message, setMessage] = useState<string>('');
     const [chats, setChats] = useState<ChatProps[]>([]);
     const [currentId, setCurrentId] = useState<string>('');
+
+    const {userId, isLoaded, isSignedIn} = useAuth();
     
     const formRef = useRef<HTMLFormElement | null>(null)
 
@@ -36,35 +39,39 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
 
 
       useEffect(()=>{
-      
-        const reference = collection(db, 'Chats');
-        const q = query(reference, where('userId', '==', '1234'))
-        const unsub = onSnapshot(
-            q,  (snapshot)=>{
-                const list:ChatProps[] = [];
-                snapshot.docs.forEach((doc)=>{
-                    list.push({id:doc.id, ...doc.data()} as ChatProps )
-                })
-                // console.log(list)
-                setChats(list.sort((a, b)=> new Date(a.time.toDate()) < new Date(b.time.toDate()) ? -1:1));
-                
-            },
-            (error)=>{
-                console.log(error)
-            },
-        )
-        // user && unsub();
-        return()=>{
-            unsub()
-        }
-    },[])
+      if(isLoaded && isSignedIn){
+          const reference = collection(db, 'Chats');
+          const q = query(reference, where('userId', '==', userId))
+          const unsub = onSnapshot(
+              q,  (snapshot)=>{
+                  const list:ChatProps[] = [];
+                  snapshot.docs.forEach((doc)=>{
+                      list.push({id:doc.id, ...doc.data()} as ChatProps )
+                  })
+                  // console.log(list)
+                  if(list.length){
+                      setChats(list.sort((a, b)=> a?.time?.toDate() < b?.time?.toDate() ? -1:1));
+                  }
+                  
+              },
+              (error)=>{
+                  console.log(error)
+              },
+          )
+          // user && unsub();
+          return()=>{
+              unsub()
+          }
+
+      }
+    },[userId, isSignedIn, isLoaded])
 
 
     const chatContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
     if (chatContainerRef.current) {
-        // chatContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
+        chatContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
         chatContainerRef.current?.scrollHeight;
     }
     }, [chats]);
@@ -77,9 +84,9 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
             setIsLoading(true);
             try {
                 await addDoc(collection(db, 'Chats'), {
-                    message, userId:'1234', time:serverTimestamp(), read:false, sent:true
+                    message, userId, time:serverTimestamp(), read:false, sent:true
                 })
-                // chatContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
+                chatContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
                 chatContainerRef.current?.scrollHeight
                 formRef.current?.reset();
                 setMessage('');
@@ -110,6 +117,8 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
     const normalStyle = "flex items-center justify-center p-4 hover:bg-orange-400 bg-[#cb4900] rounded-full cursor-pointer";
     const loadStyle = "flex items-center justify-center p-4 bg-slate-400 rounded-full cursor-default";
 
+    if (!isLoaded) return "Loading..."
+
   return (
     <div className={showChat? chatStyle : 'hidden'}>
         <button onClick={()=>setShowChat(false)} className="absolute text-4xl right-2 top-0 cursor-pointer text-red-500 rounded-full hover:text-red-300" >&times;</button>
@@ -119,7 +128,7 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
         </div>
         <div ref={chatContainerRef} className="flex  flex-col w-full h-3/4 overflow-y-scroll overflow-x-hidden mt-4 gap-4 md:gap-6 border border-slate-400 py-2 px-1">
         {
-            chats.length > 0 &&
+            chats.length > 0 ?
             chats.map((chat:ChatProps)=>(
                 <div key={chat.id} className={chat.sent?sentAlign:receivedAlign}>
                     <div className={chat.sent ? sentStyle:receivedStyle}>
@@ -139,17 +148,19 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
                             minute: 'numeric',
                             timeZone: 'America/New_York',
                         })}</small> */}
-                        <small className="text-[0.6rem] text-slate-300" >{chat.time.toDate().toLocaleString(navigator.language, {
+                        <small className="text-[0.6rem] text-slate-300" >{chat?.time?.toDate().toLocaleString(navigator.language, {
                             dateStyle: 'short',
                             timeStyle: 'short',
                         })}</small>
                         {
-                            currentId !== chat.id &&
-                            <IoTrashBinOutline onClick={()=>deleteChat(chat.id)} className="cursor-pointer" size={20} color="tomato" />
+                            currentId !== chat?.id &&
+                            <IoTrashBinOutline onClick={()=>deleteChat(chat?.id)} className="cursor-pointer" size={20} color="tomato" />
                         }
                     </div>
                 </div>
             ))
+            :
+            <span className="text-white text-2xl text-center font-bold" >Start the coversation by typing</span>
         }
         </div>
         <form onSubmit={sendChat} ref={formRef} className="w-full items-center justify-between flex flex-row bg-[#d9d9d9] rounded-full bottom-4 self-center">
