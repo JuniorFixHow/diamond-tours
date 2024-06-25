@@ -50,7 +50,7 @@ const Bookings = () => {
   // }
 
   return (
-    <section className="w-full bg-white py-8 flex flex-col items-center justify-center gap-6" id='bookings' >
+    <section className="w-full scroll-mt-14 bg-white py-8 flex flex-col items-center justify-center gap-6" id='bookings' >
       {
         feedback.message &&
         <Alert onClose={()=>setFeedback({error:false, message:''})} className="fixed top-16 self-center w-5/6 lg:w-1/2" severity={feedback.error? 'error':'success'} variant='standard' >{feedback.message}</Alert>
