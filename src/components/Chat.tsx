@@ -160,7 +160,7 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
                 </div>
             ))
             :
-            <span className="text-white text-2xl text-center font-bold" >Start the coversation by typing</span>
+            <span className="text-white text-2xl text-center font-bold" >Start the <span className="text-[#cb4900]" >conversation</span> by asking</span>
         }
         </div>
         <form onSubmit={sendChat} ref={formRef} className="w-full items-center justify-between flex flex-row bg-[#d9d9d9] rounded-full bottom-4 self-center">

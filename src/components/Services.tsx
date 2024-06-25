@@ -15,7 +15,7 @@ const Services = () => {
         setOpenModal(false);
     }
   return (
-    <section id="services" className="w-5/6 flex flex-col py-8 self-center gap-8 items-center justify-center" >
+    <section id="services" className="w-5/6 scroll-mt-14 flex flex-col py-8 self-center gap-8 items-center justify-center" >
         <h2 className="text-black text-center text-2xl sm:text-3xl font-bold" ><span className="text-[#CB4900]" >Services</span> We Offer</h2>
         <div className="grid place-items-center grid-cols-1 md:grid-cols-2  lg:grid-cols-3 xl:grid-cols-4 gap-8 w-full">
             {

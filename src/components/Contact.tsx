@@ -41,7 +41,7 @@ const Contact = () => {
     const loadStyle = "bg-slate-400 border-none px-4 py-2 cursor-default text-white font-bold  rounded-xl"
     const normalStyle = "bg-[#CB4900] border-none px-4 py-2 cursor-pointer text-white font-bold hover:bg-orange-500 rounded-xl"
   return (
-    <section id='contact' className="w-full bg-[#d9d9d9] flex flex-col items-center justify-center py-8" >
+    <section id='contact' className="w-full scroll-mt-14 bg-[#d9d9d9] flex flex-col items-center justify-center py-8" >
      <div className="w-5/6 flex flex-col items-center justify-center gap-8" >
       <h2 className="text-black text-2xl sm:text-3xl font-bold text-center md:text-left w-full" ><span className="text-[#CB4900]" >Contact Us</span></h2>
         <div className="flex flex-col w-full lg:flex-row items-center lg:items-start lg:justify-between">

@@ -32,7 +32,7 @@ const Header = () => {
     <header id="header" className="w-full flex items-center mx-auto py-2 justify-center font-semibold bg-[#676161] sticky top-0" >
       {
         showError &&
-        <Alert onClose={()=>setShowError(false)} className="fixed top-16 self-center w-5/6 lg:w-1/2" severity='error' variant='standard' >Please sign in to see your bookings</Alert>
+        <Alert onClose={()=>setShowError(false)} className="fixed top-16 self-center w-5/6 lg:w-1/2" severity='error' variant='standard' >Please sign in to see your appointments</Alert>
       }
         <MobileMenu showMenu={showMenu} setShowMenu={setShowMenu} />
         <div className="w-5/6 flex flex-row justify-between items-center">
