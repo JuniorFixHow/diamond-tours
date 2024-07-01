@@ -3,7 +3,7 @@ import { IoMdPaperPlane } from "react-icons/io";
 import { KeyboardEventHandler, useEffect, useRef, useState } from "react";
 import { Timestamp, addDoc, collection, deleteDoc, doc, onSnapshot, query, serverTimestamp, where } from "firebase/firestore";
 import {db} from '../../firebase';
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth, useSession } from "@clerk/clerk-react";
 
 type ChatProps = {
     id:string,
@@ -11,7 +11,13 @@ type ChatProps = {
     time:Timestamp,
     read:boolean,
     userId:string,
-    sent:boolean
+    sent:boolean,
+    user?:{
+        email:string,
+        name:string,
+        image:string,
+        hasImage:boolean
+    }
 }
 
 export type ShowChatProps = {
@@ -27,6 +33,8 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
     const [currentId, setCurrentId] = useState<string>('');
 
     const {userId, isLoaded, isSignedIn} = useAuth();
+    const {session} = useSession();
+    // console.log(session?.user);
     
     const formRef = useRef<HTMLFormElement | null>(null)
 
@@ -84,7 +92,14 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
             setIsLoading(true);
             try {
                 await addDoc(collection(db, 'Chats'), {
-                    message, userId, time:serverTimestamp(), read:false, sent:true
+                    message, userId, time:serverTimestamp(), read:false, sent:true,
+                    lastMessage:message,
+                    user:{
+                        email:session?.user.emailAddresses[0].emailAddress,
+                        hasImage:session?.user?.hasImage,
+                        image: session?.user?.imageUrl,
+                        name: session?.user?.fullName
+                    }
                 })
                 chatContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
                 chatContainerRef.current?.scrollHeight
@@ -121,7 +136,7 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
 
   return (
     <div className={showChat? chatStyle : 'hidden'}>
-        <button onClick={()=>setShowChat(false)} className="absolute text-4xl right-2 top-0 cursor-pointer text-red-500 rounded-full hover:text-red-300" >&times;</button>
+        <button type='button' onClick={()=>setShowChat(false)} className="absolute text-4xl right-2 top-0 cursor-pointer text-red-500 rounded-full hover:text-red-300" >&times;</button>
         <div className="flex flex-row gap-4 items-center justify-center">
             <img src="/imgs/9187604.png" className="w-6 h-6 rounded-full" alt="" />
             <h2 className="font-bold text-white text-[1rem] text-left w-full">Live Chat with <span className="text-[#e7854b]">Dimaond Tours</span></h2>

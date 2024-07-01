@@ -24,6 +24,7 @@ const Contact = () => {
           const res = await axios.post(`${API}contacts/create`, data);
           if(res.status===200){
             setFeedback({error:false, message:"Message sent. We'll reply shortly."})
+            formRef.current?.reset();
           }
         } catch (error) {
           console.log(error);

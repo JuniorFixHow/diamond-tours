@@ -19,6 +19,7 @@ export type BookingsProps = {
     date:string,
     userId: string,
     location: { country:string, region:string, city:string },
+    status:'Pending'|'Approved'|'Cancelled'
 }
 
 export type FeedBackPops = {

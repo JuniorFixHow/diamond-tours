@@ -1,1 +1,1 @@
-export const API = 'https://diamond-tours.onrender.com/api/'
+export const API = import.meta.env.VITE_API_URL

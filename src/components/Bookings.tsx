@@ -63,6 +63,7 @@ const Bookings = () => {
             <div key={item?._id} className="bg-white hover:bg-slate-300 shadow-2xl rounded-xl p-4 flex flex-col gap-4 lg:gap-2 w-full ">
               <span className="text-[1rem] md:text-xl font-semibold text-[#cb4900]" >{item?.service}</span>
               <span className="text-[1rem] md:text-xl font-medium" >{item?.package}</span>
+              <span className={`text-[1rem] md:text-xl font-medium ${item.status === 'Pending'?'text-red-400':'text-green-500'}`} >{item?.status}</span>
               <div className="flex flex-row w-full justify-between items-center">
                 <span className="text-[1rem] md:text-xl font-medium italic" >{item?.date && new Date(item?.date).toLocaleDateString()}</span>
                 {

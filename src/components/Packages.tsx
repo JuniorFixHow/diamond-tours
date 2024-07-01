@@ -48,10 +48,11 @@ const Packages = () => {
                   fullname: { last: lname, first: fname },
                   phone,
                   service,
-                  package: packages,
+                  packages,
                   date,
                   userId,
                   location: { country, region, city },
+                  status:'Pending'
                 };
                 const res = await axios.post(`${API}bookings/create`, data);
                 if(res.status === 200){
@@ -124,7 +125,7 @@ const Packages = () => {
                             <div className="flex-col gap-0 lg:gap-4 flex lg:flex-row w-full items-center justify-between">
                             <select
                                 onChange={(e) => setService(e.target.value)}
-                                defaultValue=""
+                                defaultValue="Visa Application and Advisory"
                                 className="w-full xl:w-1/2 text-xl sm:tex-[1rem] py-2 px-4 rounded-xl border border-[#CB4900] outline-none"
                                 name="service"
                                 id=""
@@ -138,7 +139,7 @@ const Packages = () => {
                             </select>
                             <select
                                 onChange={(e) => setPackages(e.target.value)}
-                                defaultValue=""
+                                defaultValue="Canada"
                                 className="w-full xl:w-1/2 text-xl sm:tex-[1rem] mt-4 md:mt-0 py-2 px-4 rounded-xl border border-[#CB4900] outline-none"
                                 name="service"
                                 id=""
