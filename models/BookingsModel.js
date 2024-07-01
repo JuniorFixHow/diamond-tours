@@ -19,7 +19,7 @@ const BookingsSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    package:{
+    packages:{
         type:String,
         required:true
     },
@@ -30,6 +30,10 @@ const BookingsSchema = new mongoose.Schema({
     userId:{
         type:String,
         required:true
+    },
+    status:{
+        type:String,
+        default:'Pending'
     },
 },{timestamps:true});
 

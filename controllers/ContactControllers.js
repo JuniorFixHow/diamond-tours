@@ -37,3 +37,14 @@ export const deleteContact = async(req, res)=>{
         console.log(error);
     }
 }
+
+export const updateContact = async(req, res)=>{
+    try {
+        const {id} = req.params;
+        const contact = await Contact.findByIdAndUpdate(id,
+            {$set:req.body},{new:true});
+        res.status(200).json(contact);
+    } catch (error) {
+        console.log(error);
+    }
+}

@@ -2,7 +2,7 @@ import sgMail from '@sendgrid/mail';
 import dotenv  from 'dotenv';
 import postmark from 'postmark'
 
-// sgMail.setApiKey(process.env.MAIL_KEY)
+sgMail.setApiKey(process.env.MAIL_KEY)
 // export const sendEmail = async(content, toEmail, fromEmail, subject, fromName, bodyText)=>{
 //     const msg = {
 //         to: toEmail,
@@ -26,55 +26,55 @@ import postmark from 'postmark'
 // }
 
 
-// export const sendOne = async (fullname, toEmail, subject, body) =>{
-//     const msg = {
-//         to: toEmail,
-//         from:{
-//             name: 'Diamond Tours GH',
-//             email:process.env.EMAIL
-//         },
-//         templateId: process.env.TEMP_KEY,
-//         dynamicTemplateData:{
-//             fullname,
-//             subject,
-//             body
-//         }
-//     }
+export const sendOne = async (name, email, subject, message) =>{
+    const msg = {
+        to: email,
+        from:{
+            name: 'Diamond Tours GH',
+            email:process.env.EMAIL
+        },
+        templateId: process.env.SINGLE_ID,
+        dynamicTemplateData:{
+            name,
+            subject,
+            message
+        }
+    }
 
-//     try {
-//         await sgMail.send(msg);
-//         console.log('Message sent')
-//     } catch (error) {
-//         console.error(error)
-//         if(error.response){
-//             console.log(error.response.body);
-//         }
-//     }
-// }
-// export const sendMany = async (toEmails, subject, body) =>{
-//     const msg = {
-//         to: toEmails,
-//         from:{
-//             name: 'Diamond Tours GH',
-//             email:process.env.EMAIL
-//         },
-//         templateId: process.env.TEMP_KEY,
-//         dynamicTemplateData:{
-//             subject,
-//             body
-//         }
-//     }
+    try {
+        await sgMail.send(msg);
+        console.log('Message sent')
+    } catch (error) {
+        console.error(error)
+        if(error.response){
+            console.log(error.response.body);
+        }
+    }
+}
+export const sendMany = async (emails, subject, message) =>{
+    const msg = {
+        to: emails,
+        from:{
+            name: 'Diamond Tours GH',
+            email:process.env.EMAIL
+        },
+        templateId: process.env.MANY_ID,
+        dynamicTemplateData:{
+            subject,
+            message
+        }
+    }
 
-//     try {
-//         await sgMail.send(msg);
-//         console.log('Message sent')
-//     } catch (error) {
-//         console.error(error)
-//         if(error.response){
-//             console.log(error.response.body);
-//         }
-//     }
-// }
+    try {
+        await sgMail.send(msg);
+        console.log('Message sent')
+    } catch (error) {
+        console.error(error)
+        if(error.response){
+            console.log(error.response.body);
+        }
+    }
+}
 
 
 
@@ -103,22 +103,22 @@ import postmark from 'postmark'
 //     }
 // }
 
-const client = new postmark.ServerClient(process.env.POSTMARK_TOKEN )
+// const client = new postmark.ServerClient(process.env.POSTMARK_TOKEN )
 
-export const sendOne = async(fullname, toEmail, subject, body)=>{
-    try {
-        await client.sendEmail({
-            'From':'rjannan@st.ug.edu.gh',
-            'To': toEmail,
-            'Subject':subject,
-            'TextBody':body
-        })
-        console.log('sent')
-    } catch (error) {
-        console.log(error)
-    }
-}
+// export const sendOne = async(fullname, toEmail, subject, body)=>{
+//     try {
+//         await client.sendEmail({
+//             'From':'rjannan@st.ug.edu.gh',
+//             'To': toEmail,
+//             'Subject':subject,
+//             'TextBody':body
+//         })
+//         console.log('sent')
+//     } catch (error) {
+//         console.log(error)
+//     }
+// }
 
-export const sendMany = async (toEmails, subject, body)=>{
+// export const sendMany = async (toEmails, subject, body)=>{
 
-}
+// }
