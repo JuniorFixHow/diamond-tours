@@ -159,7 +159,7 @@ const Appointments = ({setCurrentPage}:PageProp) => {
           </div>
         </div>
         <hr className="w-full bg-slate-700" />
-        <div className="w-full flex flex-col gap-8 items-center">
+        <div className="w-full flex flex-col gap-8 items-center pb-10">
           {
             (pendings.length > 0 && viewMode === 'pending')?
             pendings.map((item:BookingsProps)=>(

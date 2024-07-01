@@ -147,7 +147,7 @@ const deleteChatsForUser=async(userId: string)=> {
           </div>
         </div>
       </div>
-      <div className="flex flex-col lg:flex-row w-5/6 mb-4 items-start justify-between gap-4 p-4 md:p-8 border border-black rounded-2xl shadow-lg">
+      <div className="flex flex-col lg:flex-row w-5/6 mb-10 md:mb-0 items-start justify-between gap-4 p-4 md:p-8 border border-black rounded-2xl shadow-lg">
         <div
           className={`${
             openChat === "flex" && "hidden"

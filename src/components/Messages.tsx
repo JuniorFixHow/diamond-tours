@@ -113,7 +113,7 @@ const Messages = ({setCurrentPage}:PageProp) => {
                     
                 {
                     (!showNew && currentContact) &&
-                    <div className={`${messageList === 'flex' && 'hidden'} lg:flex flex-col w-full bg-white p-4 md:p-8 rounded-2xl shadow-xl lg:w-1/2 gap-4`}>
+                    <div className={`${messageList === 'flex' && 'hidden'} mb-10 md:mb-0 lg:flex flex-col w-full bg-white p-4 md:p-8 rounded-2xl shadow-xl lg:w-1/2 gap-4`}>
                         <span className="text-xl md:text-2xl font-semibold md:font-bold">{currentContact?.subject}</span>
                         <hr className='w-full bg-slate-500' />
                         <div className="flex flex-col p-4 items-start h-[30rem] overflow-x-hidden overflow-y-scroll gap-4 relative scroll-smooth">
