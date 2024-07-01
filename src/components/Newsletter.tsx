@@ -147,7 +147,7 @@ const Newsletter = ({setCurrentPage}:PageProp) => {
                 <CiSearch size={24} className='text-slate-500 absolute left-2' />
                 <input type="text" placeholder="search..." onChange={(e)=>setSearch(e.target.value)} className='w-full outline-none border-none py-2 px-4 bg-transparent placeholder:italic' />
             </div>
-                <div className="w-full flex flex-col items-start justify-center">
+                <div className="w-full flex flex-col items-start justify-center mb-10 md:mb-0">
                     {
                         messages.length > 0?
                         messages.filter((sess:MessageProps)=>{
