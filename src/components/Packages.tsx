@@ -15,8 +15,8 @@ const Packages = () => {
     const [country, setCountry] = useState<string>('');
     const [region, setRegion] = useState<string>('');
     const [city, setCity] = useState<string>('');
-    const [service, setService] = useState<string>('');
-    const [packages, setPackages] = useState<string>('');
+    const [service, setService] = useState<string>('Visa Application and Advisory');
+    const [packages, setPackages] = useState<string>('Canada');
     const [date, setDate] = useState<string>('');
     const [fname, setFname] = useState<string>('');
     const [lname, setLname] = useState<string>('');
@@ -32,8 +32,6 @@ const Packages = () => {
         setIsLoading(true);
         if (
           city.trim() !== "" &&
-          service !== "" &&
-          packages !== "" &&
           date.trim() !== "" &&
           phone.trim() !== "" &&
           region.trim() !== "" &&
