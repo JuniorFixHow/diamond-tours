@@ -28,10 +28,21 @@ const Newsletter = ({setCurrentPage}:PageProp) => {
         const fetchData = async()=>{
             try {
                 const res = await axios.get(`${API}news`);
-                const news = await axios.get(`${API}messages/many`);
                 if(res.status === 200){
                     setEmails(res.data);
                 }
+                
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        fetchData();
+    },[emails])
+
+    useEffect(()=>{
+        const fetchData = async()=>{
+            try {
+                const news = await axios.get(`${API}messages/many`);  
                 if(news.status === 200){
                     setMessages(
                       news.data.sort((a: MessageProps, b: MessageProps) =>
@@ -47,9 +58,10 @@ const Newsletter = ({setCurrentPage}:PageProp) => {
             }
         }
         fetchData();
-    },[emails, messages])
+    },[messages])
 
     // console.log(messages)
+    // console.log(emails)
 
 
     const sendNews = async(e:React.FormEvent<HTMLFormElement>)=>{
