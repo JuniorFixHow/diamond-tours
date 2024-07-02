@@ -168,7 +168,7 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
                             timeStyle: 'short',
                         })}</small>
                         {
-                            currentId !== chat?.id &&
+                            (currentId !== chat?.id) && chat?.sent &&
                             <IoTrashBinOutline onClick={()=>deleteChat(chat?.id)} className="cursor-pointer" size={20} color="tomato" />
                         }
                     </div>
