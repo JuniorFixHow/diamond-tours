@@ -4,6 +4,10 @@ import Messages from '../components/Messages'
 import Chat from '../components/Chat'
 import Newsletter from '../components/Newsletter'
 import { useState } from 'react'
+import Orders from '../components/Orders'
+import Tours from '../components/Tours'
+import Hotels from '../components/Hotels'
+import Flights from '../components/Flights'
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState<string>('home')
@@ -28,6 +32,22 @@ const Dashboard = () => {
       {
         currentPage === 'chats' &&
         <Chat setCurrentPage={setCurrentPage} />
+      }
+      {
+        currentPage === 'orders' &&
+        <Orders setCurrentPage={setCurrentPage} />
+      }
+      {
+        currentPage === 'tours' &&
+        <Tours setCurrentPage={setCurrentPage} />
+      }
+      {
+        currentPage === 'hotels' &&
+        <Hotels setCurrentPage={setCurrentPage} />
+      }
+      {
+        currentPage === 'flights' &&
+        <Flights setCurrentPage={setCurrentPage} />
       }
     </div>
   )
