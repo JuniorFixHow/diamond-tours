@@ -120,7 +120,7 @@ const NewTour = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
     >
       <div
         onClick={() => {}}
-        className="flex cursor-pointer w-full h-screen py-10 items-center justify-center"
+        className="flex cursor-pointer w-full h-screen py-20 lg:py-10 items-center justify-center"
       >
         <div className="flex w-[90%] xl:w-5/6 p-4 rounded-xl h-full overflow-y-scroll overflow-x-hidden  z-10 cursor-default bg-white flex-col gap-4 items-center">
           <span className="text-2xl font-semibold self-start">

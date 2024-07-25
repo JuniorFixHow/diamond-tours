@@ -123,7 +123,7 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
   aria-labelledby="modal-modal-title"
   aria-describedby="modal-modal-description"
 >
- <div onClick={()=>{}} className="flex cursor-pointer w-full py-10 h-screen items-center justify-center">
+ <div onClick={()=>{}} className="flex cursor-pointer w-full py-20 lg:py-10 h-screen items-center justify-center">
  <div className="flex w-[90%] xl:w-5/6 p-4 rounded-xl h-full overflow-y-scroll  overflow-x-hidden z-10 cursor-default bg-white flex-col gap-4 items-center">
     <span className="text-2xl font-semibold self-start">Add new flight</span>
     <form ref={formRef} onSubmit={ currentData ? updateFlight : addFlight } className="flex flex-col gap-4 bg-[#F8F8F8] w-full rounded-2xl px-4 grow">
