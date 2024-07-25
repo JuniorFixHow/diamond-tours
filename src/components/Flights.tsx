@@ -1,17 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useRef, useState } from "react";
-// import AppCard from "../miscellaneous/AppCard";
+import  { useState } from "react";
 import Header from "../miscellaneous/Header"
 import { IoIosArrowRoundBack } from "react-icons/io";
-import { BookingsProps,  FeedbackProps,  PageProp } from "../assets/types/Types";
-import axios from "axios";
-import { API } from "../common/contants";
-import  {Alert}  from "@mui/material";
-import { FlightData, HotelData, TourData } from "../utils/DummyData";
-import { FlightDataProps, FlightProps, HotelProps, TourDataProps, ToursProps } from "../types/Types";
-import { formatDateAndTime } from "../functions/Dates";
-import { ToursTable } from "../tables/ToursTable";
-import NewTour from "../miscellaneous/NewTour";
+import { PageProp } from "../assets/types/Types";
+
+import { FlightDataProps } from "../types/Types";
 import { FlightTable } from "../tables/FlightsTable";
 import NewFlight from "../miscellaneous/NewFlight";
 
@@ -19,7 +11,6 @@ import NewFlight from "../miscellaneous/NewFlight";
 const Flights = ({setCurrentPage}:PageProp) => {
 
     const [search, setSearch] = useState<string>('');
-    const formRef = useRef<HTMLFormElement | null>(null);
     const [currentData, setCurrentData] = useState<FlightDataProps | null> (null);
     const [isNew, setIsNew] = useState<boolean> (false);
 

@@ -1,15 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useRef, useState } from "react";
+import  { useState } from "react";
 // import AppCard from "../miscellaneous/AppCard";
 import Header from "../miscellaneous/Header"
 import { IoIosArrowRoundBack } from "react-icons/io";
-import { BookingsProps,  FeedbackProps,  PageProp } from "../assets/types/Types";
-import axios from "axios";
-import { API } from "../common/contants";
-import  {Alert}  from "@mui/material";
-import { FlightData, HotelData, TourData } from "../utils/DummyData";
-import { FlightProps, HotelProps, TourDataProps, ToursProps } from "../types/Types";
-import { formatDateAndTime } from "../functions/Dates";
+import { PageProp } from "../assets/types/Types";
+
+import {  TourDataProps } from "../types/Types";
 import { ToursTable } from "../tables/ToursTable";
 import NewTour from "../miscellaneous/NewTour";
 
@@ -17,7 +12,6 @@ import NewTour from "../miscellaneous/NewTour";
 const Tours = ({setCurrentPage}:PageProp) => {
 
     const [search, setSearch] = useState<string>('');
-    const formRef = useRef<HTMLFormElement | null>(null);
     const [currentData, setCurrentData] = useState<TourDataProps | null> (null);
     const [isNew, setIsNew] = useState<boolean> (false);
 

@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useRef, useState } from "react";
+import  { useEffect, useRef, useState } from "react";
 // import AppCard from "../miscellaneous/AppCard";
 import Header from "../miscellaneous/Header"
 import { IoIosArrowRoundBack } from "react-icons/io";
-import { BookingsProps,  FeedbackProps,  PageProp } from "../assets/types/Types";
+import {   FeedbackProps,  PageProp } from "../assets/types/Types";
 import axios from "axios";
 import { API } from "../common/contants";
 import  {Alert}  from "@mui/material";
@@ -14,9 +13,9 @@ import { formatDateAndTime } from "../functions/Dates";
 
 const Orders = ({setCurrentPage}:PageProp) => {
     const [cancelMode, setCancelMode] = useState<boolean>(false);
-    const [tours, setTours] =useState<BookingsProps[]>([]);
-    const [hotels, setHotels] =useState<BookingsProps[]>([]);
-    const [flights, setFlights] =useState<BookingsProps[]>([]);
+    // const [tours, setTours] =useState<BookingsProps[]>([]);
+    // const [hotels, setHotels] =useState<BookingsProps[]>([]);
+    // const [flights, setFlights] =useState<BookingsProps[]>([]);
     const [viewMode, setViewMode] =useState<string>('tours');
     const [currentTour, setCurrentTour] = useState<ToursProps | null>();
     const [currentHotel, setCurrentHotel] = useState<HotelProps | null>();
@@ -31,6 +30,14 @@ const Orders = ({setCurrentPage}:PageProp) => {
     const [search, setSearch] = useState<string>('');
 
     const formRef = useRef<HTMLFormElement | null>(null);
+
+    useEffect(()=>{
+      console.log(currentFlight)
+      console.log(tourReason)
+      console.log(hotelReason)
+      console.log(flightReason)
+      setIsLoading(false);
+    },[currentFlight,tourReason,hotelReason,flightReason])
 
     // useEffect(()=>{
     //     const fetchData = async()=>{
@@ -112,15 +119,15 @@ const Orders = ({setCurrentPage}:PageProp) => {
             setFeedback({error:true, message:'Error occured. Please retry'});
         }
     }
-    const deleteHistory = async(id:string)=>{
-        try {
-            await axios.delete(`${API}bookings/${id}`);
-            setFeedback({error:false, message:'Operation successfull'});
-        } catch (error) {
-            console.log(error);
-            setFeedback({error:true, message:'Error occured. Please retry'});
-        }
-    }
+    // const deleteHistory = async(id:string)=>{
+    //     try {
+    //         await axios.delete(`${API}bookings/${id}`);
+    //         setFeedback({error:false, message:'Operation successfull'});
+    //     } catch (error) {
+    //         console.log(error);
+    //         setFeedback({error:true, message:'Error occured. Please retry'});
+    //     }
+    // }
 
     
     
@@ -235,7 +242,7 @@ const Orders = ({setCurrentPage}:PageProp) => {
                 }
                 {
                   (cancelMode && currentTour?.id === item?.id) &&
-                  <form ref={formRef} className='w-full flex flex-col gap-2' onSubmit={(e)=>{}} >
+                  <form ref={formRef} className='w-full flex flex-col gap-2' onSubmit={(e)=>{console.log(e)}} >
                     <textarea required onChange={(e)=>setTourReason(e.target.value)} className='w-full p-2 border border-slate-400 rounded-2xl outline-none placeholder:italic' rows={5} placeholder="Let the client know why you are cancelling their appointment" />
                     <div className="flex  self-end items-center justify-center gap-4">
                       <button onClick={handleTourCancelCancel} type='button' className='border self-end border-slate-500 px-3 py-1 rounded-full text-black text-[0.8rem] md:text-[0.9rem] hover:bg-slate-100' >Cancel</button>
@@ -282,7 +289,7 @@ const Orders = ({setCurrentPage}:PageProp) => {
                 }
                 {
                   (cancelMode && currentHotel?.id === item?.id) &&
-                  <form ref={formRef} className='w-full flex flex-col gap-2' onSubmit={(e)=>{}} >
+                  <form ref={formRef} className='w-full flex flex-col gap-2' onSubmit={(e)=>{console.log(e)}} >
                     <textarea required onChange={(e)=>setHotelReason(e.target.value)} className='w-full p-2 border border-slate-400 rounded-2xl outline-none placeholder:italic' rows={5} placeholder="Let the client know why you are cancelling their appointment" />
                     <div className="flex  self-end items-center justify-center gap-4">
                       <button onClick={handleHotelCancelCancel} type='button' className='border self-end border-slate-500 px-3 py-1 rounded-full text-black text-[0.8rem] md:text-[0.9rem] hover:bg-slate-100' >Cancel</button>
@@ -345,7 +352,7 @@ const Orders = ({setCurrentPage}:PageProp) => {
                 }
                 {
                   (cancelMode && currentHotel?.id === item?.id) &&
-                  <form ref={formRef} className='w-full flex flex-col gap-2' onSubmit={(e)=>{}} >
+                  <form ref={formRef} className='w-full flex flex-col gap-2' onSubmit={(e)=>{console.log(e)}} >
                     <textarea required onChange={(e)=>setFlightReason(e.target.value)} className='w-full p-2 border border-slate-400 rounded-2xl outline-none placeholder:italic' rows={5} placeholder="Let the client know why you are cancelling their appointment" />
                     <div className="flex  self-end items-center justify-center gap-4">
                       <button onClick={handleFlightCancelCancel} type='button' className='border self-end border-slate-500 px-3 py-1 rounded-full text-black text-[0.8rem] md:text-[0.9rem] hover:bg-slate-100' >Cancel</button>
