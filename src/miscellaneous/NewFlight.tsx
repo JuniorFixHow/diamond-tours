@@ -1,9 +1,9 @@
 import { Alert, Modal } from '@mui/material'
-import React, { useRef, useState } from 'react'
+import React, {    useRef, useState } from 'react'
 import { FlightDataProps } from '../types/Types'
 // import { CiImageOn } from "react-icons/ci";
 // import { FaPlus } from "react-icons/fa6";
-import { calcMinDate } from '../functions/Dates';
+import { calcMinDate,  formatFirebaeDateAndTime } from '../functions/Dates';
 import { FeedbackProps } from '../assets/types/Types';
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -42,6 +42,7 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
         setCurrentData(null);
         setIsNew(false);
     }
+ 
 
     const addFlight = async(e:React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
@@ -178,7 +179,7 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                     
                     <div className="flex w-full flex-col">
                         <span className="text-[0.rem] text-[grey]">Departure Time</span>
-                        <input defaultValue={currentData ? currentData?.departureTimestamps.toString():''} required min={calcMinDate()} value={depDate} onChange={(e)=>setDepDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
+                        <input defaultValue={currentData ? formatFirebaeDateAndTime(currentData?.departureTimestamps):''} required min={calcMinDate()} value={depDate} onChange={(e)=>setDepDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
                     </div>
                     
                 </div>
@@ -193,14 +194,14 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                     
                     <div className="flex w-full flex-col">
                         <span className="text-[0.rem] text-[grey]">Arrival Time</span>
-                        <input defaultValue={currentData ? currentData?.arrivalTimestamps.toString():''} required min={calcMinDate()} value={arrDate} onChange={(e)=>setArrDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
+                        <input defaultValue={currentData ? formatFirebaeDateAndTime(currentData?.arrivalTimestamps):''} required min={calcMinDate()} value={arrDate} onChange={(e)=>setArrDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
                     </div>
                     
                     {
                         tripType === 'Round Trip' &&
                         <div className="flex w-full flex-col">
                             <span className="text-[0.rem] text-[grey]">Returning Time</span>
-                            <input defaultValue={currentData ? currentData?.retturnTimestamps.toString():''} required={tripType === 'Round Trip'} min={calcMinDate()} value={retDate} onChange={(e)=>setRetDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
+                            <input defaultValue={currentData ? formatFirebaeDateAndTime(currentData?.retturnTimestamps):''} required={tripType === 'Round Trip'} min={calcMinDate()} value={retDate} onChange={(e)=>setRetDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
                         </div>
                     }
                     {
@@ -213,7 +214,7 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                         
                         <div className="flex w-full flex-col">
                             <span className="text-[0.rem] text-[grey]">2nd Arrival Time</span>
-                            <input defaultValue={currentData ? currentData?.secondArrivalTimestamps.toString():''} required = {tripType === 'Multicity'} min={calcMinDate()} value={secondDate} onChange={(e)=>setSecondDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
+                            <input defaultValue={currentData ? formatFirebaeDateAndTime(currentData?.secondArrivalTimestamps):''} required = {tripType === 'Multicity'} min={calcMinDate()} value={secondDate} onChange={(e)=>setSecondDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
                         </div>
                         <div className="flex w-full flex-col">
                             <span className="text-[0.rem] text-[grey]">3rd Arrival</span>
@@ -222,7 +223,7 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                         
                         <div className="flex w-full flex-col">
                             <span className="text-[0.rem] text-[grey]">3rd Arrival Time</span>
-                            <input defaultValue={currentData ? currentData?.thirdArrivalTimestamps.toString():''} required = {tripType === 'Multicity'} min={calcMinDate()} value={thirdDate} onChange={(e)=>setThirdDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
+                            <input defaultValue={currentData ? formatFirebaeDateAndTime(currentData?.thirdArrivalTimestamps):''} required = {tripType === 'Multicity'} min={calcMinDate()} value={thirdDate} onChange={(e)=>setThirdDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
                         </div>
                         </>
                     }

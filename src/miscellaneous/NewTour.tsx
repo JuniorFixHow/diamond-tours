@@ -1,5 +1,5 @@
 import { Alert, Modal } from '@mui/material'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { TourDataProps } from '../types/Types'
 // import { CiImageOn } from "react-icons/ci";
 // import { FaPlus } from "react-icons/fa6";
@@ -26,10 +26,17 @@ const NewTour = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
     const [tripPlan, setTripPlan] = useState<string>('');
     const [photos, setPhotos] = useState<string>('');
     const [name, setName] = useState<string>('');
+    const [featured, setFeatured] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [feedback, setFeedback] = useState<FeedbackProps>({error:false, message:''});
     const formRef = useRef<HTMLFormElement>(null);
   
+    useEffect(()=>{
+      if(currentData){
+        setFeatured(currentData?.featured);
+        // setRating(currentData?.rating);
+      }
+    },[currentData])
     const handleClose = ()=>{
         setCurrentData(null);
         setIsNew(false);
@@ -55,6 +62,7 @@ const NewTour = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
               price,
               photos,
               tripPlan,
+              featured,
               from: depDate,
               to: retDate,
               favourites: [],
@@ -93,6 +101,7 @@ const NewTour = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
             photos:photos ||currentData?.photos,
             tripPlan:tripPlan ||currentData?.tripPlan,
             from: depDate ||currentData?.from,
+            featured,
             to: retDate||currentData?.to,
             favourites: currentData?.favourites,
             createdAt:serverTimestamp()
@@ -176,6 +185,16 @@ const NewTour = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                       placeholder="insert image link, press comma then proceed with another link. It is recommended to add at least 5 images"
                     />
                   </div>
+                  <div className="flex w-full flex-row gap-4 items-center">
+                    <span className="text-[0.rem] text-[grey]">Featured</span>
+                    <input
+                      onClick={() => setFeatured(pre => !pre)}
+                      checked={featured}
+                      className="bg-transparent cursor-pointer px-3 rounded-md border border-[grey] outline-none py-2"
+                      type='checkbox'
+                      placeholder="type here"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -253,10 +272,11 @@ const NewTour = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                     <input
                       min={new Date().toISOString().split("T")[0]}
                       onChange={(e) => setDepDate(e.target.value)}
-                      defaultValue={currentData ? new Date(currentData?.from).toLocaleDateString():new Date().toLocaleDateString()}
+                      // defaultValue={currentData ? new Date(currentData?.from).toLocaleDateString():new Date().toLocaleDateString()}
+                      defaultValue={currentData?.from}
                       className="w-32 bg-transparent  rounded-md border border-[grey] outline-none py-1"
                       type="date"
-                      placeholder="date"
+                      placeholder={currentData?.from}
                     />
                   </div>
                   <div className="flex w-full flex-col">
@@ -268,10 +288,11 @@ const NewTour = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                         depDate && new Date(depDate).toISOString().split("T")[0]
                       }
                       onChange={(e) => setRetDate(e.target.value)}
-                      defaultValue={currentData ? new Date(currentData?.to).toLocaleDateString():new Date().toLocaleDateString()}
+                      // defaultValue={currentData ? new Date(currentData?.to).toLocaleDateString():new Date().toLocaleDateString()}
                       className="w-32 bg-transparent  rounded-md border border-[grey] outline-none py-1"
                       type="date"
-                      placeholder="date"
+                      defaultValue={currentData?.to}
+                      placeholder={currentData?.to}
                     />
                   </div>
                 </div>

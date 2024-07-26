@@ -66,15 +66,16 @@ export type TourDataProps = {
     id: string,
     name: string,
     location: string,
-    rating: string,
-    price: string,
+    rating: number,
+    price: number,
     image: string,
     photos:string,
     createdAt:Timestamp,
     tripPlan:string,
     to:string,
     from:string,
-    favourites?:string[]
+    favourites?:string[],
+    featured:boolean
 }
 
 export type HotelDataProps = {
@@ -87,7 +88,8 @@ export type HotelDataProps = {
     photos:string,
     createdAt:Timestamp
     description:string,
-    favourites:string[]
+    favourites:string[],
+    featured:boolean
 }
 
 export type FlightDataProps = {

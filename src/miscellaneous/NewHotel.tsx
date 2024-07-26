@@ -1,5 +1,5 @@
 import { Alert, Modal } from '@mui/material'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { HotelDataProps } from '../types/Types'
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -24,9 +24,17 @@ const NewHotel = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
     const [photos, setPhotos] = useState<string>('');
     const [name, setName] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+    const [featured, setFeatured] = useState<boolean>(false);
+
     const [feedback, setFeedback] = useState<FeedbackProps>({error:false, message:''});
     const formRef = useRef<HTMLFormElement>(null);
   
+    useEffect(()=>{
+      if(currentData){
+        setFeatured(currentData?.featured);
+      }
+    },[currentData])
+
     const handleClose = ()=>{
         setCurrentData(null);
         setIsNew(false);
@@ -47,7 +55,7 @@ const NewHotel = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
           try {
             setLoading(true);
             const data = {
-             name, location, rating, adultPrice:price,
+             name, location, rating, featured, adultPrice:price,
              childPrice:cprice, photos,
               favourites:[], description, createdAt:serverTimestamp()
             };
@@ -75,6 +83,7 @@ const NewHotel = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
         try {
           setLoading(true);
           const data = {
+           featured,
            name:name||currentData?.name, 
            location:location||currentData?.location, 
            rating:rating || currentData?.rating, 
@@ -129,6 +138,18 @@ const NewHotel = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                       placeholder="insert image link, press comma then proceed with another link. It is recommended to add at least 5 images"
                     />
                   </div>
+
+                  <div className="flex w-full flex-row gap-4 items-center">
+                    <span className="text-[0.rem] text-[grey]">Featured</span>
+                    <input
+                      onClick={() => setFeatured(pre => !pre)}
+                      checked={featured}
+                      className="bg-transparent cursor-pointer px-3 rounded-md border border-[grey] outline-none py-2"
+                      type='checkbox'
+                      placeholder="type here"
+                    />
+                  </div>
+
                 </div>
             </div>
 
