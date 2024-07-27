@@ -67,7 +67,7 @@ export const FlightTable = ({setCurrentData, search}:TableProps) => {
 
         
         {
-            field: 'type',
+            field: 'tripType',
             headerName: 'Type',
             width: 150,
         },

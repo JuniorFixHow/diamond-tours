@@ -1,39 +1,44 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs, } from "firebase/firestore";
+import { collection,  onSnapshot, orderBy, query, } from "firebase/firestore";
 import { db } from '../firebase';
 import { FlightDataProps } from "../types/Types";
 
 export const useFetchFlights =()=>{
     const [flights, setFlights] = useState<FlightDataProps[]>([]);
 
-    const fetchData = async () => {
+    useEffect(() => {
         const reference = collection(db, 'Flights');
-        // const q = query(reference, orderBy("createdAt", "desc"));
-        const data = await getDocs(reference);
-        
-        try {
-            const list: FlightDataProps[] = data.docs.map((doc) => {
-                const hotelData = doc.data() as FlightDataProps;
-                return {
-                  ...hotelData,
-                  id: doc.id,
-                };
-              });
-
-            // Create a Map to store the most recent chat for each user
-            // console.log(list)
-
-            // Convert the Map back to an array
-            setFlights(list.sort((a, b)=>a?.createdAt > b?.createdAt ? 1:-1));
-        } catch (error) {
+        const q = query(reference, orderBy('createdAt', 'asc'));
+        const unsub = onSnapshot(
+          q,
+          { includeMetadataChanges: true },
+          (snapshot) => {
+            const list: FlightDataProps[] = [];
+            snapshot.docs.forEach((doc) => {
+              const tourData = doc.data() as FlightDataProps;
+              list.push({ ...tourData, id: doc.id });
+            //   console.log(doc.data());
+            });
+            if (list.length) {
+              setFlights(list.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
+            //   console.log(list)
+            }
+          },
+          (error) => {
             console.log(error);
-        }
-    };
+          }
+        );
+      
+        return () => {
+          unsub();
+        };
+      }, []);
 
-    fetchData();
-    useEffect(() => {  
-        fetchData();
-    }, [flights]);
 
-    return { fetchData, flights };
+    // fetchData();
+    // useEffect(() => {  
+    //     fetchData();
+    // }, [flights]);
+
+    return {  flights };
 };

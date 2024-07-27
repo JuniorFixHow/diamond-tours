@@ -1,9 +1,9 @@
 import { Alert, Modal } from '@mui/material'
-import React, {    useRef, useState } from 'react'
+import React, {    useCallback, useEffect, useRef, useState } from 'react'
 import { FlightDataProps } from '../types/Types'
 // import { CiImageOn } from "react-icons/ci";
 // import { FaPlus } from "react-icons/fa6";
-import { calcMinDate,  formatFirebaeDateAndTime } from '../functions/Dates';
+import { calcMinDate,   formatDateAndTime } from '../functions/Dates';
 import { FeedbackProps } from '../assets/types/Types';
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -35,13 +35,30 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
     const [feedback, setFeedback] = useState<FeedbackProps>({error:false, message:''});
     const [tripType, setTripType] = useState<string>('One Way');
     const formRef = useRef<HTMLFormElement>(null);
+    const secondRef = useRef<HTMLInputElement>(null);
 
+    useEffect(()=>{
+        if(tripType === 'Round Trip'){
+            setSecondArrival(departure);
+            if(secondRef.current){
+                if(departure?.trim().length){
+                    secondRef.current.value = departure
+                    
+                }
+                else if(currentData){
+                    secondRef.current.value = currentData?.departure
+
+                }
+            }
+        }
+    },[tripType, departure, currentData])
     
     
-    const handleClose = ()=>{
+    const handleClose = useCallback(()=>{
         setCurrentData(null);
         setIsNew(false);
-    }
+        setFeedback({error:false, message:''});
+    },[setCurrentData, setIsNew, setFeedback])
  
 
     const addFlight = async(e:React.FormEvent<HTMLFormElement>)=>{
@@ -58,7 +75,7 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                 departureTimestamps:depDate,
                 arrival,
                 arrivalTimestamps:arrDate,
-                secondArrival,
+                secondArrival: secondArrival,
                 secondArrivalTimestamps:secondDate,
                 thirdArrival,
                 thirdArrivalTimestamps:thirdDate,
@@ -71,6 +88,7 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
             await addDoc(collection(db, 'Flights'), data);
             setFeedback({error:false, message:'Flight added successfully'});
             formRef.current?.reset();
+            handleClose();
         } catch (error) {
             console.log(error);
             setFeedback({error:true, message:'Error occured. Please retry'});
@@ -95,7 +113,7 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                 departureTimestamps:depDate || currentData?.departureTimestamps,
                 arrival:arrival || currentData?.arrival,
                 arrivalTimestamps:arrDate || currentData?.arrivalTimestamps,
-                secondArrival:secondArrival || currentData?.secondArrival,
+                secondArrival: secondArrival || currentData?.secondArrival,
                 secondArrivalTimestamps:secondDate || currentData?.secondArrivalTimestamps,
                 thirdArrival:thirdArrival || currentData?.thirdArrival,
                 thirdArrivalTimestamps:thirdDate || currentData?.thirdArrivalTimestamps,
@@ -108,6 +126,7 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
             currentData && await updateDoc(doc(db, 'Flights', currentData?.id), data);
             setFeedback({error:false, message:'Flight updated successfully'});
             formRef.current?.reset();
+            handleClose();
         } catch (error) {
             console.log(error);
             setFeedback({error:true, message:'Error occured. Please retry'});
@@ -160,7 +179,7 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                     </div>
                     <div className="flex w-full flex-col">
                         <span className="text-[0.rem] text-[grey]">Type</span>
-                        <select onChange={(e)=>setTripType(e.target.value)} title='select type' defaultValue='One Way' className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' name="type" id="type">
+                        <select onChange={(e)=>setTripType(e.target.value)} title='select type' defaultValue={currentData?.tripType} className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' name="type" id="type">
                             <option value="">{currentData?currentData.tripType : '--select--'}</option>
                             <option defaultChecked defaultValue='One Way' value="One Way">One Way</option>
                             <option value="Round Trip">Round Trip</option>
@@ -170,16 +189,16 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                     </div>
                     <div className="flex w-full flex-col">
                         <span className="text-[0.rem] text-[grey]">Price</span>
-                        <input defaultValue={currentData?.price} required  onChange={(e)=>setPrice(parseFloat(e.target.value))} step='any' className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type="number" placeholder='$' />
+                        <input defaultValue={currentData?.price}  onChange={(e)=>setPrice(parseFloat(e.target.value))} step='any' className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type="number" placeholder='$' />
                     </div>
                     <div className="flex w-full flex-col">
                         <span className="text-[0.rem] text-[grey]">Departure</span>
-                        <input defaultValue={currentData?.departure} required onChange={(e)=>setDeparture(e.target.value)} className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='text'  placeholder='enter city' />
+                        <input defaultValue={currentData?.departure} onChange={(e)=>setDeparture(e.target.value)} className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='text'  placeholder='enter city' />
                     </div>
                     
                     <div className="flex w-full flex-col">
                         <span className="text-[0.rem] text-[grey]">Departure Time</span>
-                        <input defaultValue={currentData ? formatFirebaeDateAndTime(currentData?.departureTimestamps):''} required min={calcMinDate()} value={depDate} onChange={(e)=>setDepDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
+                        <input defaultValue={currentData ? formatDateAndTime(currentData?.departureTimestamps):''}  min={calcMinDate()} value={depDate} onChange={(e)=>setDepDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
                     </div>
                     
                 </div>
@@ -194,36 +213,41 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                     
                     <div className="flex w-full flex-col">
                         <span className="text-[0.rem] text-[grey]">Arrival Time</span>
-                        <input defaultValue={currentData ? formatFirebaeDateAndTime(currentData?.arrivalTimestamps):''} required min={calcMinDate()} value={arrDate} onChange={(e)=>setArrDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
+                        <input defaultValue={currentData ? formatDateAndTime(currentData?.arrivalTimestamps):''}  min={calcMinDate()} value={arrDate} onChange={(e)=>setArrDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
                     </div>
                     
                     {
-                        tripType === 'Round Trip' &&
+                        (tripType === 'Round Trip' || currentData?.tripType === 'Round Trip') &&
                         <div className="flex w-full flex-col">
                             <span className="text-[0.rem] text-[grey]">Returning Time</span>
-                            <input defaultValue={currentData ? formatFirebaeDateAndTime(currentData?.retturnTimestamps):''} required={tripType === 'Round Trip'} min={calcMinDate()} value={retDate} onChange={(e)=>setRetDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
+                            <input defaultValue={currentData ? formatDateAndTime(currentData?.retturnTimestamps):''} required={tripType === 'Round Trip'} min={calcMinDate()} value={retDate} onChange={(e)=>setRetDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
                         </div>
                     }
                     {
-                        tripType === 'Multicity' &&
+                        (tripType === 'Multicity' || tripType === 'Round Trip' || currentData?.tripType === 'Round Trip' || currentData?.tripType === 'Multicity') &&
                         <>
                         <div className="flex w-full flex-col">
                             <span className="text-[0.rem] text-[grey]">2nd Arrival</span>
-                            <input defaultValue={currentData?.secondArrival} onChange={(e)=>setSecondArrival(e.target.value)} required = {tripType === 'Multicity'} className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='text'  placeholder='enter city' />
+                            <input readOnly={tripType === 'Round Trip' || currentData?.tripType === 'Round Trip'} ref={secondRef} defaultValue={currentData?.secondArrival} onChange={(e)=>setSecondArrival(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='text'  placeholder='enter city' />
                         </div>
                         
                         <div className="flex w-full flex-col">
                             <span className="text-[0.rem] text-[grey]">2nd Arrival Time</span>
-                            <input defaultValue={currentData ? formatFirebaeDateAndTime(currentData?.secondArrivalTimestamps):''} required = {tripType === 'Multicity'} min={calcMinDate()} value={secondDate} onChange={(e)=>setSecondDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
+                            <input defaultValue={currentData ? formatDateAndTime(currentData?.secondArrivalTimestamps):''}  min={calcMinDate()} value={secondDate} onChange={(e)=>setSecondDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
                         </div>
+                        </>
+                    }
+                    {
+                        (tripType === 'Multicity' || currentData?.tripType === 'Multicity') &&
+                        <>
                         <div className="flex w-full flex-col">
                             <span className="text-[0.rem] text-[grey]">3rd Arrival</span>
-                            <input defaultValue={currentData?.thirdArrival} onChange={(e)=>setThirdArrival(e.target.value)} required = {tripType === 'Multicity'} className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='text'  placeholder='enter city' />
+                            <input defaultValue={currentData?.thirdArrival} onChange={(e)=>setThirdArrival(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='text'  placeholder='enter city' />
                         </div>
                         
                         <div className="flex w-full flex-col">
                             <span className="text-[0.rem] text-[grey]">3rd Arrival Time</span>
-                            <input defaultValue={currentData ? formatFirebaeDateAndTime(currentData?.thirdArrivalTimestamps):''} required = {tripType === 'Multicity'} min={calcMinDate()} value={thirdDate} onChange={(e)=>setThirdDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
+                            <input defaultValue={currentData ? formatDateAndTime(currentData?.thirdArrivalTimestamps):''}  min={calcMinDate()} value={thirdDate} onChange={(e)=>setThirdDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
                         </div>
                         </>
                     }

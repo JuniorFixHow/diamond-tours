@@ -98,16 +98,16 @@ export type FlightDataProps = {
     tripType: string,
     price: number,
     departure: string,
-    departureTimestamps: Timestamp,
+    departureTimestamps: string,
     arrival: string,
-    arrivalTimestamps: Timestamp,
+    arrivalTimestamps: string,
     secondArrival: string,
-    secondArrivalTimestamps: Timestamp,
+    secondArrivalTimestamps: string,
     thirdArrival: string,
-    thirdArrivalTimestamps: Timestamp,
+    thirdArrivalTimestamps: string,
     retturn: string,
-    retturnTimestamps: Timestamp,
+    retturnTimestamps: string,
     image: string,
     description:string,
-    createdAt:Timestamp
+    createdAt:string
 }
