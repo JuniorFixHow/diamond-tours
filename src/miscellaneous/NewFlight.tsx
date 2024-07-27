@@ -33,10 +33,11 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
     const [thirdArrival, setThirdArrival] = useState<string>('');
     const [image, setImage] = useState<string>('');
     const [feedback, setFeedback] = useState<FeedbackProps>({error:false, message:''});
-    const [tripType, setTripType] = useState<string>('One Way');
+    const [tripType, setTripType] = useState<string>('');
     const formRef = useRef<HTMLFormElement>(null);
     const secondRef = useRef<HTMLInputElement>(null);
 
+    
     useEffect(()=>{
         if(tripType === 'Round Trip'){
             setSecondArrival(departure);
@@ -220,7 +221,7 @@ const NewFlight = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                         (tripType === 'Round Trip' || currentData?.tripType === 'Round Trip') &&
                         <div className="flex w-full flex-col">
                             <span className="text-[0.rem] text-[grey]">Returning Time</span>
-                            <input defaultValue={currentData ? formatDateAndTime(currentData?.retturnTimestamps):''} required={tripType === 'Round Trip'} min={calcMinDate()} value={retDate} onChange={(e)=>setRetDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
+                            <input defaultValue={currentData ? formatDateAndTime(currentData?.retturnTimestamps):''}  min={calcMinDate()} value={retDate} onChange={(e)=>setRetDate(e.target.value)}  className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type='datetime-local'  placeholder='date-time' />
                         </div>
                     }
                     {
