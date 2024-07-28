@@ -164,7 +164,7 @@ const NewHotel = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                     </div>
                     <div className="flex w-full flex-col">
                         <span className="text-[0.rem] text-[grey]">Location</span>
-                        <input defaultValue={currentData?.location} onChange={(e)=>setLocation(e.target.value)} className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type="text" placeholder='type here' />
+                        <input defaultValue={currentData?.location} onChange={(e)=>setLocation(e.target.value)} className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type="text" placeholder='eg. Ghana, Accra' />
                     </div>
                     <div className="flex w-full flex-col">
                         <span className="text-[0.rem] text-[grey]">Rating</span>
