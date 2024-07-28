@@ -88,6 +88,7 @@ export type HotelDataProps = {
     photos:string,
     createdAt:Timestamp
     description:string,
+    discount:number,
     favourites:string[],
     featured:boolean
 }

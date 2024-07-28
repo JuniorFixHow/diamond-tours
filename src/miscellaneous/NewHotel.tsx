@@ -25,6 +25,7 @@ const NewHotel = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
     const [name, setName] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
     const [featured, setFeatured] = useState<boolean>(false);
+    const [discount, setDiscount] = useState<number>(0);
 
     const [feedback, setFeedback] = useState<FeedbackProps>({error:false, message:''});
     const formRef = useRef<HTMLFormElement>(null);
@@ -56,7 +57,7 @@ const NewHotel = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
             setLoading(true);
             const data = {
              name, location, rating, featured, adultPrice:price,
-             childPrice:cprice, photos,
+             childPrice:cprice, photos, discount,
               favourites:[], description, createdAt:serverTimestamp()
             };
             await addDoc(collection(db, "Hotels"), data);
@@ -85,6 +86,7 @@ const NewHotel = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
           const data = {
            featured,
            name:name||currentData?.name, 
+           discount:discount > 0 ? discount : currentData?.discount, 
            location:location||currentData?.location, 
            rating:rating || currentData?.rating, 
            adultPrice:price || currentData?.adultPrice,
@@ -167,6 +169,10 @@ const NewHotel = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                     <div className="flex w-full flex-col">
                         <span className="text-[0.rem] text-[grey]">Rating</span>
                         <input defaultValue={currentData?.rating} step={0.1} onChange={(e)=>setRating(parseFloat(e.target.value))} className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type="number" min={1} max={5} placeholder='rate' />
+                    </div>
+                    <div className="flex w-full flex-col">
+                        <span className="text-[0.rem] text-[grey]">Discount (%) </span>
+                        <input defaultValue={currentData?.discount} step={0.0001} onChange={(e)=>setDiscount(parseFloat(e.target.value))} className='w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2' type="number" min={0} max={100} placeholder='%' />
                     </div>
                     <div className="flex w-full flex-col">
                         <span className="text-[0.rem] text-[grey]">Hotel description</span>
