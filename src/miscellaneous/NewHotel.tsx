@@ -88,7 +88,7 @@ const NewHotel = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
            name:name||currentData?.name, 
            discount:discount > 0 ? discount : currentData?.discount, 
            location:location||currentData?.location, 
-           rating:rating || currentData?.rating, 
+           rating:rating > 1 ? rating : currentData?.rating, 
            adultPrice:price || currentData?.adultPrice,
            childPrice:cprice || currentData?.childPrice, 
            photos:photos || currentData?.photos,

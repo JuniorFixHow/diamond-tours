@@ -96,7 +96,7 @@ const NewTour = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
           const data = {
             name:name||currentData?.name,
             location: location||currentData?.location,
-            rating:rating ||currentData?.rating,
+            rating:rating > 1 ? rating : currentData?.rating,
             price:price ||currentData?.price,
             photos:photos ||currentData?.photos,
             tripPlan:tripPlan ||currentData?.tripPlan,
