@@ -1,4 +1,4 @@
-import { Image, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { Colours } from '../utils/Colours';
 import PhoneInput from 'react-native-phone-number-input';
@@ -6,29 +6,89 @@ import {Entypo, Ionicons, AntDesign} from '@expo/vector-icons';
 import RNDateTimePicker, {  DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { MyStyles } from '../utils/Styles';
 import Button from '../misc/Button';
+import { HotelDataProps, OrderProps } from '../types/Types';
+import { deleteDoc, doc, onSnapshot, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+import { useRouter } from 'expo-router';
+import { calculateDateDifference } from '../functions/Date';
 
-const EditHotel = () => {
+type EditProps = {
+    itemId:string,
+    data:OrderProps
+}
+
+const EditHotel = ({itemId, data}:EditProps) => {
     const currentDate = new Date();
     const tomorrow = new Date(currentDate.getTime() + (24 * 60 * 60 * 1000));
     const [phoneNumber, setPhoneNumber] = useState<string>('');
     const [formattedNumber, setFormattedNumber] = useState<string>('');
     const [isValid, setIsValid] = useState<boolean>(false);
-    const [sDate, setSDate] = useState<Date>(new Date);
-    const [eDate, setEDate] = useState<Date>(tomorrow);
+    const [sDate, setSDate] = useState<Date>(new Date());
+    const [eDate, setEDate] = useState<Date>(new Date());
     const [showStart, setShowStart] = useState<boolean>(false);
     const [showEnd, setShowEnd] = useState<boolean>(false);
-    const [children, setChildren] = useState<number>(0)
-    const [adults, setAdults] = useState<number>(0)
+    const [children, setChildren] = useState<number>(0);
+    const [total, setTotal] = useState<number>(0);
+    const [subTotal, setSubTotal] = useState<number>(0);
+    const [adults, setAdults] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [email, setEmail] = useState<string>('');
+    const [fullname, setFullname] = useState<string>('');
+    const [currentHotel, setCurrentHotel] = useState<HotelDataProps>();
+    const [delLoading, setDelLoading] = useState<boolean>(false);
     const phone = useRef<PhoneInput>(null);
     const MyPhto  = 'https://picsum.photos/id/2/800/600';
 
+    const router = useRouter();
     const getTomorrow = (date:Date)=>{
         return new Date(date.getTime() + (24 * 60 * 60 * 1000));
     }
 
     useEffect(()=>{
-        setEDate(getTomorrow(sDate))
+        const FetchData = ()=>{
+          if(itemId){
+            const unsub = onSnapshot(doc(db, "Hotels", itemId), (doc) => {
+                if(!doc.exists()){
+                  
+                    alert('Sorry, the hotel you booked for has been deleted');
+                    router.back();
+                }else{
+                    const res = doc.data() as HotelDataProps;
+                    setCurrentHotel({...res, id:doc.id});
+                }
+               
+            });
+            return ()=>{
+              unsub();
+            }
+          }
+        }
+        FetchData();
+    },[itemId])
+
+    useEffect(()=>{
+        setEDate(sDate)
     },[sDate])
+
+    // console.log(currentHotel);
+
+
+    useEffect(()=>{
+        if(currentHotel){
+            const child = children * currentHotel.childPrice;
+            const adult = adults * currentHotel.adultPrice;
+            const st = child + adult + currentHotel.adultPrice
+            setSubTotal(st);
+            // const t = st + currentHotel?.charges - discount
+            const t = st - ((currentHotel.discount/100) * st);
+            if(currentHotel?.charges){
+                setTotal(t + currentHotel.charges);
+            }else{
+                setTotal(t);
+            }
+        }
+      },[children, adults, currentHotel])
+
     const handleChangeStart = (event: DateTimePickerEvent, date: Date | undefined) => {
         if (date) {
           setShowStart(false);
@@ -60,14 +120,68 @@ const EditHotel = () => {
         }
     }, [phoneNumber, phone, formattedNumber])
 
+
+    const updateHotelOrder = async()=>{
+        const hasDatechanged = sDate.toLocaleDateString() !== new Date().toLocaleDateString(); 
+        try {
+            setLoading(true);
+            const info = {
+                email: email || data?.email, 
+                fullname: fullname || data?.fullname, 
+                phone:isValid ? formattedNumber : data?.phone,
+                tip: hasDatechanged ? calculateDateDifference(sDate, eDate) : data?.tip,
+                extras:{
+                    adults:adults > 0 ? adults : data?.extras.adults,
+                    children:children > 0 ? children : data?.extras.children,
+                    checkin: sDate.toLocaleDateString() !== new Date().toLocaleDateString() ? sDate.toDateString(): data?.extras?.checkin,
+                    checkout: eDate.toLocaleDateString() !== new Date().toLocaleDateString() ? eDate.toDateString(): data?.extras?.checkout,
+                    amount:(children>0 || adults > 0) ? total:data.extras.amount,
+                    image:currentHotel?.photos?.split(',')[0].trim()
+                },
+
+                createdAt:serverTimestamp()
+            }
+            await updateDoc(doc(db, 'Orders', data?.id), info);
+            alert('Booking updated successfully ✅');
+            // console.log(hasDatechanged);
+        } catch (error) {
+            console.log(error);
+            ToastAndroid.showWithGravityAndOffset(
+                'Error occured. Please retry', 
+                ToastAndroid.LONG, 
+                ToastAndroid.BOTTOM, 25, 50);
+        }finally{
+            setLoading(false);
+        }
+    }
+
+    const deleteHotelOrder = async() =>{
+        try {
+            setDelLoading(true);  
+            await deleteDoc(doc(db, 'Orders', data?.id));
+            alert('Booking deleted successfully ✅');
+            router.back();
+            
+        } catch (error) {
+            console.log(error);
+            ToastAndroid.showWithGravityAndOffset(
+                'Error occured. Please retry', 
+                ToastAndroid.LONG, 
+                ToastAndroid.BOTTOM, 25, 50);
+        }finally{
+            setDelLoading(false);
+        }
+    }
+
+
   return (
     <View style={{width:'100%', alignSelf:'center', gap:8, flexDirection:'column'}} >
         <View style={{flexDirection:'column', width:'100%'}} >
-            <Image source={{uri:MyPhto}} style={{width:'100%', objectFit:'cover', borderRadius:10, height:180}} />
-            <Text style={{fontWeight:'700', fontSize:22}} >Super Star Hotel</Text>
+            <Image source={{uri:currentHotel?.photos?.split(',')[0].trim()}} style={{width:'100%', objectFit:'cover', borderRadius:10, height:180}} />
+            <Text style={{fontWeight:'700', fontSize:22}} >{data?.title.slice(0,25)}</Text>
             <View style={{width:'100%', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}} >
                 <Text style={{fontSize:18, }} >Status</Text>
-                <Text style={{fontSize:18, color:'#cb4900'}} >Pending</Text>
+                <Text style={{fontSize:18, color:'#cb4900'}} >{data?.status}</Text>
             </View>
         </View>
       
@@ -77,18 +191,18 @@ const EditHotel = () => {
         <View style={{width:'100%', flexDirection:'column', gap:8}} >
             <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%'}} >
                 <Text style={styles.label} >Full name</Text>
-                <TextInput placeholder='type here' cursorColor='black' style={styles.input} />
+                <TextInput defaultValue={data?.fullname} placeholder='type here' cursorColor='black' style={styles.input} />
             </KeyboardAvoidingView>
             <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', flex:1}} >
                 <Text style={styles.label} >Email</Text>
-                <TextInput placeholder='type here' cursorColor='black' keyboardType='email-address' style={styles.input} />
+                <TextInput defaultValue={data?.email} placeholder='type here' cursorColor='black' keyboardType='email-address' style={styles.input} />
             </KeyboardAvoidingView>
             <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', flex:1}} >
                 <Text style={styles.label} >Phone number</Text>
                 <View style={styles.valid} >
                     <PhoneInput
                         ref={phone}
-                        defaultValue={phoneNumber}
+                        defaultValue={data?.phone.replace('+','')}
                         defaultCode="GH"
                         layout="first"
                         onChangeText={(text) => {
@@ -119,7 +233,7 @@ const EditHotel = () => {
             <Text style={styles.label} >Guests</Text>
             <View style={styles.increase} >
                 <View style={{flexDirection:'column', gap:2}} >
-                    <Text style={{fontWeight:'700', fontSize:13, color:'dimgrey'}} >Adults</Text>
+                    <Text style={{fontWeight:'700', fontSize:13, color:'dimgrey'}} >Adults ({data?.extras?.adults})</Text>
                     <Text style={[MyStyles.greySmall, {fontSize:12}]}>18 and above</Text>
                 </View>
                 <View style={{gap:10, flexDirection:'row', alignItems:'center'}} >
@@ -134,7 +248,7 @@ const EditHotel = () => {
             </View>
             <View style={styles.increase} >
                 <View style={{flexDirection:'column', gap:2}} >
-                    <Text style={{fontWeight:'700', fontSize:13, color:'dimgrey'}} >Children</Text>
+                    <Text style={{fontWeight:'700', fontSize:13, color:'dimgrey'}} >Children ({data?.extras?.children})</Text>
                     <Text style={[MyStyles.greySmall, {fontSize:12}]}>Below 18</Text>
                 </View>
                 <View style={{gap:10, flexDirection:'row', alignItems:'center'}} >
@@ -152,7 +266,7 @@ const EditHotel = () => {
             <Text style={styles.label} >Check date</Text>
             <View style={{width:'100%', alignItems:'center', justifyContent:'space-between', flexDirection:'row'}} >
                 <View style={{flexDirection:'column'}} >
-                    <Text style={{color:Colours.grey, fontSize:13}} >Check in</Text>
+                    <Text style={{color:Colours.grey, fontSize:13}} >{data?.extras?.checkin}</Text>
                     <TouchableOpacity onPress={()=>setShowStart(true)} style={{flexDirection:'row', gap:15, alignItems:'center'}} >
                         <Text style={{fontSize:14}} >{sDate.toDateString()}</Text>
                         <AntDesign size={12} name='down' color={Colours.grey} />
@@ -171,7 +285,7 @@ const EditHotel = () => {
                 </View>
                 <View style={{width:1, height:'100%', backgroundColor:'grey'}} />
                 <View style={{flexDirection:'column'}} >
-                    <Text style={{color:Colours.grey, fontSize:13}} >Check out</Text>
+                    <Text style={{color:Colours.grey, fontSize:13}} >{data?.extras?.checkout}</Text>
                     <TouchableOpacity onPress={()=>setShowEnd(true)} style={{flexDirection:'row', gap:15, alignItems:'center'}} >
                         <Text style={{fontSize:14}} >{eDate.toDateString()}</Text>
                         <AntDesign size={12} name='down' color={Colours.grey} />
@@ -198,10 +312,10 @@ const EditHotel = () => {
                 <Text style={styles.head}>Payment Summary</Text>
                 <View style={styles.payItem} >
                     <View style={{flexDirection:'column', gap:1}} >
-                        <Text style={styles.subtotal}>Hotel name</Text>
-                        <Text style={{fontSize:10, color:Colours.grey}} >16 x 2 x $ hotel price</Text>
+                        <Text style={styles.subtotal}>{currentHotel?.name?.slice(0,40)}</Text>
+                        <Text style={{fontSize:10, color:Colours.grey}} >({adults} x ${currentHotel?.adultPrice}) + ({children} x ${currentHotel?.childPrice})  + ${currentHotel?.adultPrice}</Text>
                     </View>
-                    <Text style={styles.subtotal} >$1,600</Text>
+                    <Text style={styles.subtotal} >${currentHotel?.adultPrice}</Text>
                 </View>
             </View>
             <View style={styles.pay} >
@@ -209,34 +323,40 @@ const EditHotel = () => {
                     <View style={{flexDirection:'column', gap:1}} >
                         <Text style={styles.subtotal}>Subtotal</Text>
                     </View>
-                    <Text style={styles.subtotal} >$1,600</Text>
+                    <Text style={styles.subtotal} >${subTotal}</Text>
                 </View>
                 <View style={styles.payItem} >
                     <View style={{flexDirection:'column', gap:1}} >
                         <Text style={styles.subtotal}>Service charge</Text>
                     </View>
-                    <Text style={styles.subtotal} >$20</Text>
+                    <Text style={styles.subtotal} >${currentHotel?.charges ? currentHotel?.charges : 0}</Text>
                 </View>
                 <View style={styles.payItem} >
                     <View style={{flexDirection:'column', gap:1}} >
                         <Text style={styles.subtotal}>Discount</Text>
                     </View>
-                    <Text style={styles.subtotal} >$0</Text>
+                    <Text style={styles.subtotal} >-${currentHotel?.discount}</Text>
                 </View>
             </View>
             <View style={styles.pay} >
                 <View style={styles.payItem} >
                     <View style={{flexDirection:'column', gap:1}} >
-                        <Text style={styles.subtotal}>Total</Text>
+                        <Text style={styles.subtotal}>Cuurent Amount</Text>
                     </View>
-                    <Text style={styles.subtotal} >$1,620</Text>
+                    <Text style={styles.subtotal} >${total}</Text>
+                </View>
+                <View style={styles.payItem} >
+                    <View style={{flexDirection:'column', gap:1}} >
+                        <Text style={styles.subtotal}>Booked Amount</Text>
+                    </View>
+                    <Text style={styles.subtotal} >${data?.extras.amount}</Text>
                 </View>
                 
             </View>
         </View>
         <View style={{width:'100%', flexDirection:'column', gap:10, }} >
-            <Button text='Save Changes' onClick={()=>{}} />
-            <Button type='danger' text='Delete' onClick={()=>{}} />
+            <Button text='Save Changes' loading={loading} onClick={updateHotelOrder} />
+            <Button type='danger' text='Delete' loading={delLoading} onClick={deleteHotelOrder} />
         </View>
 
       </View>

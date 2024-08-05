@@ -2,6 +2,8 @@ import { Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View 
 import React from 'react'
 import { AirlineProps } from '../types/Types'
 import { MyStyles } from '../utils/Styles'
+import { useFetchFlights } from '../hooks/useFetchFlights'
+import { UniqueAirLines } from '../functions/Unique'
 
 type ModalProps = {
     showAirline:boolean,
@@ -11,29 +13,30 @@ type ModalProps = {
 }
 
 const SelectAirLine = ({showAirline, setShowAirline, setSelectedValue, data}:ModalProps) => {
+    const {flights} = useFetchFlights();
 
 
-    const handleSelect=(item:AirlineProps)=>{
+    const handleSelect=(item:string)=>{
         setShowAirline(false);
-        setSelectedValue(item.name);
+        setSelectedValue(item);
         
     }
 
-    function mapWithUniqueNames(arr: AirlineProps[]) {
-        const uniqueNames = new Map<string, AirlineProps>();
+    // function mapWithUniqueNames(arr: AirlineProps[]) {
+    //     const uniqueNames = new Map<string, AirlineProps>();
       
-        // Iterate through the array and store unique names
-        arr.forEach(item => {
-          if (!uniqueNames.has(item.name)) {
-            uniqueNames.set(item.name, item);
-          }
-        });
+    //     // Iterate through the array and store unique names
+    //     arr.forEach(item => {
+    //       if (!uniqueNames.has(item.name)) {
+    //         uniqueNames.set(item.name, item);
+    //       }
+    //     });
         
-        // Create a new array with unique items
-        return Array.from(uniqueNames.values());
-      }
+    //     // Create a new array with unique items
+    //     return Array.from(uniqueNames.values());
+    // }
 
-      const UniqueAirlines = mapWithUniqueNames(data);
+    //   const UniqueAirlines = mapWithUniqueNames(data);
     //   console.log(UniqueAirlines)
   return (
     <Modal
@@ -48,9 +51,9 @@ const SelectAirLine = ({showAirline, setShowAirline, setSelectedValue, data}:Mod
             <ScrollView style={{width:'100%'}} >
                 <View style={{width:'100%', paddingBottom:70, flexDirection:'column', gap:6}} >
                     {
-                        UniqueAirlines.map((item:AirlineProps)=>(
-                            <TouchableOpacity onPress={()=>handleSelect(item)} style={{width:'100%', paddingBottom:4, borderColor:'rgb(182 181 181)', borderBottomWidth:1, }} key={item.id}>
-                                <Text style={{fontSize:18}} >{item.name.slice(0, 25)}</Text>
+                        UniqueAirLines(flights).map((item:string)=>(
+                            <TouchableOpacity onPress={()=>handleSelect(item)} style={{width:'100%', paddingBottom:4, borderColor:'rgb(182 181 181)', borderBottomWidth:1, }} key={item}>
+                                <Text style={{fontSize:18}} >{item.slice(0, 25)}</Text>
                             </TouchableOpacity>
                         ))
                     }

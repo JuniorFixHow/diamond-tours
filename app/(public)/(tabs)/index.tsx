@@ -11,11 +11,18 @@ import { useRouter } from 'expo-router';
 import { Hotels } from '../../../utils/DummyData';
 import { Greetings } from '../../../functions/Date';
 import { useAuth, useUser } from '@clerk/clerk-expo';
+import { useFetchHotels } from '../../../hooks/useFetchHotels';
+import { useFetchNotifications } from '../../../hooks/useFetchNotifications';
+import { useFetchTours } from '../../../hooks/useFetchTour';
+import Loader from '../../../misc/Loader';
 
 const index = () => {
   const router = useRouter();
   const {isSignedIn} = useAuth();
   const {user} = useUser();
+  const {hotels, hotelLoading} = useFetchHotels();
+  const {tours, toursLoading} = useFetchTours();
+  const {unreads} = useFetchNotifications();
   if(!isSignedIn) return null;
   return (
     <SafeAreaView style={[MyStyles.main, {backgroundColor:Colors.bg}]} >
@@ -32,7 +39,10 @@ const index = () => {
             </Pressable>
             <Pressable onPress={()=>router.navigate('(public)/(messages)/notifications')} style={{position:'relative'}} >
               <FontAwesome name="bell" size={20} color="black" />
-              <View style={styles.dot} />
+              {
+                unreads > 0 &&
+                <View style={styles.dot} />
+              }
             </Pressable>
           </View>
         </View>
@@ -45,21 +55,30 @@ const index = () => {
 
         <View style={{gap:7, flexDirection:'column', width:'100%'}} >
           <View style={{width:'100%', alignItems:'center', justifyContent:'space-between', flexDirection:'row'}} >
-            <Text style={MyStyles.welcomeText} >Tourist Packages</Text>
+            <Text style={MyStyles.welcomeText} >Featured sites</Text>
             <Pressable onPress={()=>router.navigate('(public)/(tours)')} >
               <Text style={MyStyles.greyText} >See All</Text>
             </Pressable>
           </View>
-          <TourWidget />
+          {
+            (tours.length < 1 && toursLoading) ?
+            <Loader small />:
+            <TourWidget  />
+          }
+          {/* <TourWidget /> */}
         </View>
         <View style={{gap:7, flexDirection:'column', width:'100%'}} >
           <View style={{width:'100%', alignItems:'center', justifyContent:'space-between', flexDirection:'row'}} >
-            <Text style={MyStyles.welcomeText} >Hotels</Text>
+            <Text style={MyStyles.welcomeText} >Featured hotels</Text>
             <Pressable onPress={()=>router.navigate('(public)/(hotels)')} >
               <Text style={MyStyles.greyText} >See All</Text>
             </Pressable>
           </View>
-          <HotelWidget margins data={Hotels} />
+          {
+            (hotels.length < 1 && hotelLoading) ?
+            <Loader small />:
+            <HotelWidget data={hotels.filter(item => item.featured)} margins />
+          }
         </View>
 
       </View>

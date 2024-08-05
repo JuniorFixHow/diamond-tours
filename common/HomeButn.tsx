@@ -1,4 +1,4 @@
-import { StyleSheet, Text, Pressable,  View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity,  View } from 'react-native'
 import React, { ReactNode } from 'react'
 
 type BtnProps = {
@@ -9,10 +9,10 @@ type BtnProps = {
 
 const HomeButn = ({text, onTap, icon}:BtnProps) => {
   return (
-    <Pressable style={styles.btn} onPress={onTap} >
+    <TouchableOpacity style={styles.btn} onPress={onTap} >
       {icon}
       <Text style={{color:'white', fontSize:18}} >{text}</Text>
-    </Pressable>
+    </TouchableOpacity>
   )
 }
 

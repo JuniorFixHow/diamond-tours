@@ -1,36 +1,68 @@
-import { Image, ImageBackground, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Image, ImageBackground, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { MyStyles } from '../../../utils/Styles';
-import { TouristSiteProps } from '../../../types/Types';
+import { TourDataProps, TouristSiteProps } from '../../../types/Types';
 import { TouristSites } from '../../../utils/DummyData';
 import {AntDesign, Ionicons, MaterialIcons} from '@expo/vector-icons';
 import { Colours } from '../../../utils/Colours';
 import ImageViewer from '../../../common/ImageViewer';
 import TourForm from '../../../common/TourForm';
 import Button from '../../../misc/Button';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '../../../firebase';
+import { useUser } from '@clerk/clerk-expo';
+import { makeFavourite, removeFavourite } from '../../../functions/firestore';
 
 const Tour = () => {
     const param = useLocalSearchParams();
-    const [currentTour, setCurrentTour]=useState<TouristSiteProps>();
+    const {user} = useUser();
+    const [currentTour, setCurrentTour]=useState<TourDataProps>();
     const [currentImage, setCurrentImage]=useState<string | null>(null);
     const [showForm, setShowForm] = useState<boolean>(false);
+    const [IMAGES, setIMAGES] = useState<string[]>([]);
+    const [isFav, setIsFav] = useState<boolean>(false);
+
     const router = useRouter();
     useEffect(()=>{
-        if(param.id){
-            setCurrentTour(TouristSites.filter((item:TouristSiteProps)=>item.id === param.id)[0])
+        const FetchData = ()=>{
+          if(param?.id && user){
+            const unsub = onSnapshot(doc(db, "Tours", param?.id.toString()), (doc) => {
+              const data = doc.data() as TourDataProps;
+              setIMAGES(data.photos.trim().split(','));
+              setCurrentTour({...data, id:doc.id});
+              setIsFav(data.favourites.includes(user.id))
+            });
+            return ()=>{
+              unsub();
+            }
+          }
         }
-    },[param.id])
+        FetchData();
+    },[param?.id, user])
+
+    const handleFavourite = ()=>{
+        if(user){
+            if(isFav && currentTour){
+                removeFavourite(currentTour?.id, 'Tours', user?.id);
+            }
+            else if(!isFav && currentTour){
+                makeFavourite(currentTour?.id, 'Tours', user?.id);
+            }
+        }
+    }
+
+
   return (
-      <ImageBackground source={{uri:currentTour?.image}} style={MyStyles.main} >
+      <ImageBackground source={{uri:currentTour?.photos.split(',')[0].trim()}} style={MyStyles.main} >
         <SafeAreaView style={{marginTop:50, width:'100%', height:'100%', gap:70, flexDirection:'column'}} >
             <View style={{width:'90%', flexDirection:'row', justifyContent:'space-between', alignItems:'center', alignSelf:'center'}} >
                 <Pressable onPress={()=>router.back()} >
                     <Ionicons name="arrow-back" size={24} color="white" />
                 </Pressable>
-                <Pressable>
-                    <AntDesign name="heart" size={20} color='white' />
-                </Pressable>
+                <TouchableOpacity onPress={handleFavourite} >
+                    <AntDesign name="heart" size={20} color={isFav ? '#cb4900':'white'} />
+                </TouchableOpacity>
             </View>
 
             <View style={styles.container} >
@@ -69,35 +101,32 @@ const Tour = () => {
                                 <Text style={MyStyles.welcomeText} >Photo Gallery</Text>
                                 <View style={{width:'100%', gap:10, flexDirection:'column'}} >
                                     <View style={{width:'100%', flexDirection:'row', justifyContent:'space-between',}} >
-                                        <Pressable onPress={()=> currentTour && setCurrentImage(currentTour?.image)} style={{width:'30%'}} >
-                                            <Image source={{uri:currentTour?.image}} style={{width:'100%', height:100, borderRadius:10,}} />
+                                    <FlatList
+                                        data={IMAGES}
+                                        numColumns={3}
+                                        style={{width:'100%', }}
+                                        contentContainerStyle={{alignItems:'flex-start', width:'100%',  gap:10}}
+                                        showsVerticalScrollIndicator={false}
+                                        showsHorizontalScrollIndicator={false}
+                                        columnWrapperStyle={{justifyContent:'flex-start', gap:10, width:'100%'}}
+                                        keyExtractor={(link:string)=>link}
+                                        renderItem={({item})=>(
+
+                                        <Pressable onPress={()=> currentTour && setCurrentImage(item.trim())} style={{width:'30%'}} >
+                                            <Image source={{uri:item.trim()}} style={{width:'100%', height:100, borderRadius:10,}} />
                                         </Pressable>
-                                        <Pressable onPress={()=> currentTour && setCurrentImage(currentTour?.image)} style={{width:'30%'}} >
-                                            <Image source={{uri:currentTour?.image}} style={{width:'100%', height:100, borderRadius:10,}} />
-                                        </Pressable>
-                                        <Pressable onPress={()=> currentTour && setCurrentImage(currentTour?.image)} style={{width:'30%'}} >
-                                            <Image source={{uri:currentTour?.image}} style={{width:'100%', height:100, borderRadius:10,}} />
-                                        </Pressable>
+                                        
+                                        )}
+                                    />
+                                        
                                     </View>
                                 </View>
-                                <View style={{width:'100%', gap:10, flexDirection:'column'}} >
-                                    <View style={{width:'100%', flexDirection:'row', justifyContent:'space-between',}} >
-                                        <Pressable onPress={()=> currentTour && setCurrentImage(currentTour?.image)} style={{width:'30%'}} >
-                                            <Image source={{uri:currentTour?.image}} style={{width:'100%', height:100, borderRadius:10,}} />
-                                        </Pressable>
-                                        <Pressable onPress={()=> currentTour && setCurrentImage(currentTour?.image)} style={{width:'30%'}} >
-                                            <Image source={{uri:currentTour?.image}} style={{width:'100%', height:100, borderRadius:10,}} />
-                                        </Pressable>
-                                        <Pressable onPress={()=> currentTour && setCurrentImage(currentTour?.image)} style={{width:'30%'}} >
-                                            <Image source={{uri:currentTour?.image}} style={{width:'100%', height:100, borderRadius:10,}} />
-                                        </Pressable>
-                                    </View>
-                                </View>
+                                
                             </View>
                             <Button text='Check out' onClick={()=>setShowForm(true)} margin />
                         </>
                         :
-                        <TourForm setShowForm={setShowForm} />
+                        <TourForm itemId={ currentTour ? currentTour?.id?.toString():''} setShowForm={setShowForm} />
                     }
 
                     </View>

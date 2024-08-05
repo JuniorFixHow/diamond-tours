@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "diamond-tours",
+    "name": "Diamond Tours Gh",
     "slug": "diamond-tours",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -19,15 +19,24 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.fixhowguests.diamondtours"
     },
     "web": {
-      "favicon": "./assets/favicon.png",
+      "favicon": "./assets/icon.png",
       "bundler": "metro"
     },
     "plugins": [
       "expo-router",
       "expo-localization"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "7a1814ae-f5e6-4486-bded-34eca60c5430"
+      }
+    }
   }
 }

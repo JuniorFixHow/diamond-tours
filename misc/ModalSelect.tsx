@@ -1,58 +1,39 @@
 import { Modal, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { AirlineProps } from '../types/Types'
+import { AirlineProps, FlightDataProps } from '../types/Types'
 import { MyStyles } from '../utils/Styles'
+import { useFetchFlights } from '../hooks/useFetchFlights'
+import { UniqueArrivals, UniqueDepartures } from '../functions/Unique'
 
 type ModalProps = {
     fromModal:boolean,
     toModal:boolean,
     setFromModal:React.Dispatch<React.SetStateAction<boolean>>,
     setToModal:React.Dispatch<React.SetStateAction<boolean>>,
-    data:AirlineProps[],
     setSelectedValue:React.Dispatch<React.SetStateAction<string>>,
 }
 
-const ModalSelect = ({fromModal, toModal, setFromModal, setSelectedValue, setToModal, data}:ModalProps) => {
+const ModalSelect = ({fromModal, toModal, setFromModal, setSelectedValue, setToModal}:ModalProps) => {
+    const {flights} = useFetchFlights();
     const handleClose = ()=>{
         setFromModal(false);
         setToModal(false);
     }
 
-    const handleSelect=(item:AirlineProps)=>{
+    const handleSelect=(item:string)=>{
         if(fromModal){
             setFromModal(false);
-            setSelectedValue(item.from);
+            setSelectedValue(item);
         }
         else if(toModal){
             setToModal(false);
-            setSelectedValue(item.to);
+            setSelectedValue(item);
         }
     }
 
-    function mapWithUniqueNames(arr: AirlineProps[]) {
-        const uniqueNames = new Map<string, AirlineProps>();
-      
-        // Iterate through the array and store unique names
-        if(fromModal){
-            
-            arr.forEach(item => {
-              if (!uniqueNames.has(item.from)) {
-                uniqueNames.set(item.from, item);
-              }
-            });
-        }else{
-            arr.forEach(item => {
-                if (!uniqueNames.has(item.to)) {
-                  uniqueNames.set(item.to, item);
-                }
-              });
-        }
-      
-        // Create a new array with unique items
-        return Array.from(uniqueNames.values());
-      }
+   const unique = fromModal ? UniqueDepartures(flights) : UniqueArrivals(flights)
 
-      const UniqueAirlines = mapWithUniqueNames(data);
+    //   const UniqueAirlines:FlightDataProps = mapWithUniqueNames(data);
     //   console.log(UniqueAirlines)
   return (
     <Modal
@@ -67,9 +48,9 @@ const ModalSelect = ({fromModal, toModal, setFromModal, setSelectedValue, setToM
             <ScrollView style={{width:'100%'}} >
                 <View style={{width:'100%', paddingBottom:70, flexDirection:'column', gap:6}} >
                     {
-                        UniqueAirlines.map((item:AirlineProps)=>(
-                            <TouchableOpacity onPress={()=>handleSelect(item)} style={{width:'100%', paddingBottom:4, borderColor:'rgb(182 181 181)', borderBottomWidth:1, }} key={item.id}>
-                                <Text style={{fontSize:18}} >{fromModal ? item.from.slice(0, 25) :item.to.slice(0, 25)}</Text>
+                        unique.map((item:string)=>(
+                            <TouchableOpacity onPress={()=>handleSelect(item)} style={{width:'100%', paddingBottom:4, borderColor:'rgb(182 181 181)', borderBottomWidth:1, }} key={item}>
+                                <Text style={{fontSize:18}} >{item.slice(0, 25)}</Text>
                             </TouchableOpacity>
                         ))
                     }

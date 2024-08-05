@@ -5,9 +5,16 @@ import { Colours } from '../../../utils/Colours'
 import ToursList from '../../../common/ToursList'
 import { Hotels, TouristSites } from '../../../utils/DummyData'
 import HotelWidget from '../../../components/HotelWidget'
+import { useFetchHotels } from '../../../hooks/useFetchHotels'
+import { useUser } from '@clerk/clerk-expo'
+import { useFetchTours } from '../../../hooks/useFetchTour'
+import Loader from '../../../misc/Loader'
 
 const favourites = () => {
     const [activeTab, setActiveTab] = useState<string>('Tours');
+    const {hotels, hotelLoading} = useFetchHotels();
+    const {tours, toursLoading} = useFetchTours();
+    const {user} = useUser();
   return (
     <SafeAreaView style={[MyStyles.main, {backgroundColor:Colours.bg}]} >
       <View style={{width:'90%', marginTop:50, alignItems:'center', flexDirection:'column', gap:15}} >
@@ -21,12 +28,25 @@ const favourites = () => {
           </Pressable>
         </View>
         {
-            activeTab === 'Tours' &&
-            <ToursList data={TouristSites} />
+          (tours.length < 1 && toursLoading) ?
+          <Loader /> :
+          <>
+            {
+                activeTab === 'Tours' && user &&
+                <ToursList data={tours.filter((item)=>item.favourites?.includes(user?.id))} />
+            }
+          </>
         }
+
         {
-            activeTab === 'Hotels' &&
-            <HotelWidget data={Hotels} />
+          (hotels.length < 1 && hotelLoading)?
+          <Loader /> :
+          <>
+            {
+                activeTab === 'Hotels' && user &&
+                <HotelWidget data={ hotels.filter((item)=>item.favourites?.includes(user?.id))} />
+            }
+          </>
         }
       </View>
     </SafeAreaView>

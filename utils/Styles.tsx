@@ -15,6 +15,11 @@ export const MyStyles= StyleSheet.create({
         fontSize:24,
         fontWeight:'700'
     },
+    welcomeText2:{
+        color:'rgb(94 92 92)',
+        fontSize:22,
+        fontWeight:'600'
+    },
     welcomeMessage:{
         color:Colours.grey,
         fontSize:15,

@@ -9,42 +9,31 @@ import {
   View,
 } from "react-native";
 import React, { useCallback, useEffect, useState } from "react";
-import { MyStyles } from "../../../utils/Styles";
-import { Colours } from "../../../utils/Colours";
+import { MyStyles } from "../../utils/Styles";
+import { Colours } from "../../utils/Colours";
 import { Feather } from "@expo/vector-icons";
-import Google from '../../../assets/imgs/google.png';
+import Google from '../../assets/imgs/google.png';
 import { useRouter } from "expo-router";
-import { useOAuth, useSignIn } from "@clerk/clerk-expo";
+import {  useOAuth, useSignIn } from "@clerk/clerk-expo";
 import * as WebBrowser from "expo-web-browser";
-import { useWarmUpBrowser } from "../../../hooks/useWarmBrowser";
+import { useWarmUpBrowser } from "../../hooks/useWarmBrowser";
 import * as Linking from "expo-linking"
 
 WebBrowser.maybeCompleteAuthSession();
-const index = () => {
-  useWarmUpBrowser();
-
-  const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
-  const { signIn, setActive, isLoaded } = useSignIn();
+const SignInUser = () => {
   const router = useRouter();
   const [showPass, setShowShowPass] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [emailAddress, setEmailAddress] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
+  const { signIn, setActive, isLoaded } = useSignIn();
+  // if(!isLoaded) return null;
 
+  useWarmUpBrowser();
 
-  const onGooglePress = useCallback(async () => {
-    try {
-      const { createdSessionId, signIn, signUp, setActive } =
-        await startOAuthFlow({ redirectUrl: Linking.createURL("/dashboard", { scheme: "myapp" })});
+  // let isLoaded
 
-      if (createdSessionId) {
-        setActive!({ session: createdSessionId });
-      } else {
-        // Use signIn or signUp for next steps such as MFA
-      }
-    } catch (err) {
-      console.error("OAuth error", err);
-    }
-  }, []);
 
   const onSignInPress = useCallback(async () => {
     if (!isLoaded) {
@@ -52,6 +41,7 @@ const index = () => {
     }
 
     try {
+      setLoading(true);
       const signInAttempt = await signIn.create({
         identifier: emailAddress,
         password,
@@ -71,8 +61,29 @@ const index = () => {
         err?.errors[0].longMessage, 
         ToastAndroid.LONG, 
         ToastAndroid.TOP, 25, 50);
+    }finally{
+      setLoading(false);
     }
   }, [isLoaded, emailAddress, password]);
+
+
+  const onGooglePress = useCallback(async () => {
+    if (!isLoaded) {
+      return;
+    }
+    try {
+      const { createdSessionId,  setActive } =
+        await startOAuthFlow({ redirectUrl: Linking.createURL("/dashboard", { scheme: "myapp" })});
+
+      if (createdSessionId) {
+        setActive!({ session: createdSessionId });
+      } else {
+        // Use signIn or signUp for next steps such as MFA
+      }
+    } catch (err) {
+      console.error("OAuth error", err);
+    }
+  }, []);
 
 
   return (
@@ -152,17 +163,18 @@ const index = () => {
           </Pressable>
 
           <TouchableOpacity
+            disabled={loading}
             style={{
               width: "90%",
               paddingVertical: 12,
               borderRadius: 8,
               alignItems: "center",
-              backgroundColor: "#cb4900",
+              backgroundColor: loading ? 'gainsboro':"#cb4900",
             }}
             onPress={onSignInPress}
           >
             <Text style={{ color: "white", fontWeight: "600", fontSize: 14 }}>
-              Login
+              {loading ? 'loading...':'Login'}
             </Text>
           </TouchableOpacity>
 
@@ -228,7 +240,7 @@ const index = () => {
   );
 };
 
-export default index;
+export default SignInUser;
 
 const styles = StyleSheet.create({
   eye: {

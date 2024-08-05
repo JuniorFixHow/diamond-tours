@@ -27,7 +27,7 @@ const SlidePage = ({pageNumber, isLast, title, text, setPageNumber}:SlideProps) 
         }
         else{
           setIsNew(false);  
-          router.replace('/(public)/(auth)');
+          router.replace('/(auth)');
         }
     }
   return (

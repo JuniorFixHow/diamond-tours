@@ -9,15 +9,15 @@ import {
   View,
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { MyStyles } from "../../../utils/Styles";
-import { Colours } from "../../../utils/Colours";
+import { MyStyles } from "../../utils/Styles";
+import { Colours } from "../../utils/Colours";
 import { Feather } from "@expo/vector-icons";
-import Google from "../../../assets/imgs/google.png";
+import Google from "../../assets/imgs/google.png";
 import { useRouter } from "expo-router";
 import OTPTextInput from 'react-native-otp-textinput';
 import { useAuth, useClerk, useOAuth, useSignUp, useUser } from "@clerk/clerk-expo";
 import * as WebBrowser from "expo-web-browser";
-import { useWarmUpBrowser } from "../../../hooks/useWarmBrowser";
+import { useWarmUpBrowser } from "../../hooks/useWarmBrowser";
 import * as Linking from "expo-linking"
 
 WebBrowser.maybeCompleteAuthSession();

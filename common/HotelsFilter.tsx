@@ -4,10 +4,11 @@ import { MyStyles } from '../utils/Styles';
 import {AntDesign} from '@expo/vector-icons';
 import SelectInput from '../misc/SelectInput';
 import Slider from '@react-native-community/slider';
+import Button from '../misc/Button';
+import { useFetchHotels } from '../hooks/useFetchHotels';
+import { UniqueHotels } from '../functions/Unique';
 import ViewButton from '../misc/ViewButton';
-import { useFetchTours } from '../hooks/useFetchTour';
-import { UniqueTours } from '../functions/Unique';
-import { SearchTour } from '../functions/search';
+import { SearchHotel } from '../functions/search';
 
 type FilterProps = {
     setCloseFilter:React.Dispatch<React.SetStateAction<boolean>>,
@@ -21,9 +22,10 @@ type FilterProps = {
     search:string,
 }
 
-const ToursFilter = ({setCloseFilter, search, rate, setRate, country, setCountry, price, setPrice, clearFilter}:FilterProps) => {
+const HotelsFilter = ({setCloseFilter, search, rate, setRate, country, setCountry, price, setPrice, clearFilter}:FilterProps) => {
     const Ratings: (string | number)[] = ['All', 5, 4, 3];
-    const {tours} = useFetchTours();
+    const {hotels} = useFetchHotels();
+
   return (
     <View style={styles.container} >
       <View style={{width:'90%', marginTop:20, alignItems:'center', flexDirection:'row', justifyContent:'space-between'}} >
@@ -40,7 +42,7 @@ const ToursFilter = ({setCloseFilter, search, rate, setRate, country, setCountry
       <View style={{width:'90%', flexDirection:'column', gap:15}} >
         <View style={{flexDirection:'column', gap:5}} >
             <Text style={styles.label}>Country</Text>
-            <SelectInput data={UniqueTours(tours)} onTap={setCountry} selected={country} />
+            <SelectInput data={UniqueHotels(hotels)} onTap={setCountry} selected={country} />
         </View>
         <View style={{flexDirection:'column', gap:5}} >
             <Text style={styles.label}>Rating</Text>
@@ -50,8 +52,8 @@ const ToursFilter = ({setCloseFilter, search, rate, setRate, country, setCountry
             <Text style={styles.label}>Price range</Text>
             <Slider
                 style={{width: '100%', height: 40}}
-                minimumValue={tours.length && Math.min(...tours.map(item=>item.price))}
-                maximumValue={tours.length && Math.max(...tours.map(item=>item.price))}
+                minimumValue={hotels.length && Math.min(...hotels.map(item=>item.adultPrice))}
+                maximumValue={hotels.length && Math.max(...hotels.map(item=>item.adultPrice))}
                 // lowerLimit={0}
                 // upperLimit={50}
                 step={10}
@@ -62,15 +64,15 @@ const ToursFilter = ({setCloseFilter, search, rate, setRate, country, setCountry
             <Text style={{textAlign:'center'}} >${price.toFixed(2)}</Text>
         </View>
         {
-            tours.length > 0 &&
-            <ViewButton text={SearchTour(tours, search, country.toString(), price, rate).length.toString() + ' results'} />
+            hotels.length > 0 &&
+            <ViewButton text={SearchHotel(hotels, search, country.toString(), price, rate).length.toString() + ' results'} />
         }
       </View>
     </View>
   )
 }
 
-export default ToursFilter
+export default HotelsFilter
 
 const styles = StyleSheet.create({
     label:{

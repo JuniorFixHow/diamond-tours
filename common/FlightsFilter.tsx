@@ -11,6 +11,9 @@ import { Colours } from '../utils/Colours';
 import RNDateTimePicker, {  DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import ModalSelect from '../misc/ModalSelect';
 import SelectAirLine from '../misc/SelectAirLine';
+import { useFetchFlights } from '../hooks/useFetchFlights';
+import ViewButton from '../misc/ViewButton';
+import { SearchFlights } from '../functions/search';
 
 
 
@@ -18,27 +21,40 @@ type FilterProps = {
     setCloseFilter:React.Dispatch<React.SetStateAction<boolean>>,
     setSelectedAirline:React.Dispatch<React.SetStateAction<string>>,
     selectedAirline:string,
+    price:number,
+    setPrice:React.Dispatch<React.SetStateAction<number>>,
+    selectedFrom:string,
+    setSelectedFrom:React.Dispatch<React.SetStateAction<string>>,
+    selectedTo:string,
+    setSelectedTo:React.Dispatch<React.SetStateAction<string>>,
+    sDate:Date,
+    setSDate:React.Dispatch<React.SetStateAction<Date>>,
+    eDate:Date,
+    setEDate:React.Dispatch<React.SetStateAction<Date>>,
+    search:string,
+    clearFilter:()=>void
 }
 
-const FlightsFilter = ({setCloseFilter, setSelectedAirline, selectedAirline}:FilterProps) => {
-    const currentDate = new Date();
-    const tomorrow = new Date(currentDate.getTime() + 0);
-    
-    const Countries:string[] = ['All','Ghana', 'USA', 'Nigeria', 'Canada', 'Argentina'];
-    const Ratings:string[] = ['All', '5', '4', '3'];
-    const [country, setCountry] = useState<string>(Countries[0]);
-    const [ratings, setRatings] = useState<string>(Ratings[0]);
-    const [price, setPrice] = useState<number>(0);
-    const airlineArray = Airlines.map((item:AirlineProps)=>item.name);
-    const [sDate, setSDate] = useState<Date>(new Date);
-    const [eDate, setEDate] = useState<Date>(tomorrow);
+const FlightsFilter = ({
+    setCloseFilter, selectedTo, setSelectedTo,
+    setSelectedAirline, selectedFrom, setSelectedFrom,
+    selectedAirline, price, setPrice, sDate, setSDate,
+    eDate, setEDate, search, clearFilter
+}:FilterProps) => {
+    // const currentDate = new Date();
+     
+    // const [price, setPrice] = useState<number>(0);
+    // const [sDate, setSDate] = useState<Date>(new Date);
+    // const [eDate, setEDate] = useState<Date>(new Date);
+    // const [selectedFrom, setSelectedFrom] = useState<string>('All');
+    // const [selectedTo, setSelectedTo] = useState<string>('All');
     const [showStart, setShowStart] = useState<boolean>(false);
     const [showEnd, setShowEnd] = useState<boolean>(false);
     const [fromModal, setFromModal] = useState<boolean>(false);
     const [toModal, setToModal] = useState<boolean>(false);
     const [showAirline, setShowAirline] = useState<boolean>(false);
-    const [selectedFrom, setSelectedFrom] = useState<string>('All');
-    const [selectedTo, setSelectedTo] = useState<string>('All');
+
+    const {flights} = useFetchFlights();
     // console.log(airlineArray.includes('United Airline'));
    
 
@@ -47,7 +63,7 @@ const FlightsFilter = ({setCloseFilter, setSelectedAirline, selectedAirline}:Fil
     }
 
     useEffect(()=>{
-        setEDate(getTomorrow(sDate))
+        setEDate(sDate)
     },[sDate])
     const handleChangeStart = (event: DateTimePickerEvent, date: Date | undefined) => {
         if (date) {
@@ -73,7 +89,7 @@ const FlightsFilter = ({setCloseFilter, setSelectedAirline, selectedAirline}:Fil
             </Pressable>
             <Text style={MyStyles.welcomeText} >Filter</Text>
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={clearFilter} >
             <Text style={MyStyles.greyText} >Clear</Text>
         </TouchableOpacity>
       </View>
@@ -98,12 +114,12 @@ const FlightsFilter = ({setCloseFilter, setSelectedAirline, selectedAirline}:Fil
                 <View style={{flexDirection:'column'}} >
                     <Text style={{color:Colours.grey, fontSize:13}} >Departure</Text>
                     <TouchableOpacity  onPress={()=>setFromModal(true)} style={{flexDirection:'row', gap:15, alignItems:'center'}} >
-                        <Text style={{fontSize:14}} >{selectedFrom.slice(0,13)}</Text>
+                        <Text style={{fontSize:14}} >{selectedFrom?.slice(0,13)}</Text>
                         <AntDesign size={12} name='down' color={Colours.grey} />
                     </TouchableOpacity>
                     {
                         (fromModal) &&
-                        <ModalSelect setSelectedValue={setSelectedFrom} toModal={toModal} fromModal={fromModal} setFromModal={setFromModal} setToModal={setToModal} data={Airlines} />
+                        <ModalSelect setSelectedValue={setSelectedFrom} toModal={toModal} fromModal={fromModal} setFromModal={setFromModal} setToModal={setToModal} />
                     }
                 </View>
                 {/* <View style={{width:1, height:'100%', backgroundColor:'grey'}} /> */}
@@ -111,12 +127,12 @@ const FlightsFilter = ({setCloseFilter, setSelectedAirline, selectedAirline}:Fil
                 <View style={{flexDirection:'column'}} >
                     <Text style={{color:Colours.grey, fontSize:13}} >Arrival</Text>
                     <TouchableOpacity onPress={()=>setToModal(true)} style={{flexDirection:'row', gap:15, alignItems:'center'}} >
-                        <Text style={{fontSize:14}} >{selectedTo.slice(0,13)}</Text>
+                        <Text style={{fontSize:14}} >{selectedTo?.slice(0,13)}</Text>
                         <AntDesign size={12} name='down' color={Colours.grey} />
                     </TouchableOpacity>
                     {
                          (toModal) &&
-                        <ModalSelect setSelectedValue={setSelectedTo} toModal={toModal} fromModal={fromModal} setFromModal={setFromModal} setToModal={setToModal} data={Airlines} />
+                        <ModalSelect setSelectedValue={setSelectedTo} toModal={toModal} fromModal={fromModal} setFromModal={setFromModal} setToModal={setToModal} />
                     }
                 </View>
             </View>
@@ -129,7 +145,7 @@ const FlightsFilter = ({setCloseFilter, setSelectedAirline, selectedAirline}:Fil
                 <View style={{flexDirection:'column'}} >
                     <Text style={{color:Colours.grey, fontSize:13}} >Departure</Text>
                     <TouchableOpacity onPress={()=>setShowStart(true)} style={{flexDirection:'row', gap:15, alignItems:'center'}} >
-                        <Text style={{fontSize:14}} >{sDate.toDateString()}</Text>
+                        <Text style={{fontSize:14}} >{sDate?.toDateString()}</Text>
                         <AntDesign size={12} name='down' color={Colours.grey} />
                     </TouchableOpacity>
                     {
@@ -149,7 +165,7 @@ const FlightsFilter = ({setCloseFilter, setSelectedAirline, selectedAirline}:Fil
                 <View style={{flexDirection:'column'}} >
                     <Text style={{color:Colours.grey, fontSize:13}} >Arrival</Text>
                     <TouchableOpacity onPress={()=>setShowEnd(true)} style={{flexDirection:'row', gap:15, alignItems:'center'}} >
-                        <Text style={{fontSize:14}} >{eDate.toDateString()}</Text>
+                        <Text style={{fontSize:14}} >{eDate?.toDateString()}</Text>
                         <AntDesign size={12} name='down' color={Colours.grey} />
                     </TouchableOpacity>
                     {
@@ -159,7 +175,7 @@ const FlightsFilter = ({setCloseFilter, setSelectedAirline, selectedAirline}:Fil
                         value={eDate}
                         mode='date'
                         is24Hour={true}
-                        minimumDate={getTomorrow(sDate)}
+                        minimumDate={new Date()}
                         onChange={handleChangeEnd}
                         />
                     }
@@ -172,18 +188,18 @@ const FlightsFilter = ({setCloseFilter, setSelectedAirline, selectedAirline}:Fil
             <Text style={styles.label}>Price range</Text>
             <Slider
                 style={{width: '100%', height: 40}}
-                minimumValue={0}
-                maximumValue={100}
+                minimumValue={flights.length && Math.min(...flights.map(item=> item.price)) }
+                maximumValue={flights.length && Math.max(...flights.map(item=> item.price)) }
                 // lowerLimit={0}
                 // upperLimit={50}
-                step={5}
+                step={10}
                 minimumTrackTintColor="grey"
                 maximumTrackTintColor="#cb4900"
                 onValueChange={(e)=>setPrice(e)}
             />
-            <Text style={{textAlign:'center'}} >${price.toFixed(2)}</Text>
+            <Text style={{textAlign:'center'}} >${price?.toFixed(2)}</Text>
         </View>
-        <Button onClick={()=>{}} text='Apply' />
+        <ViewButton text={SearchFlights(flights, search, selectedAirline, price, selectedFrom, selectedTo, eDate, sDate).length+' results'} />
       </View>
     </View>
   )

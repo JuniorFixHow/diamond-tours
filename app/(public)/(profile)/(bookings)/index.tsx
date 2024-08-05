@@ -4,12 +4,14 @@ import { MyStyles } from '../../../../utils/Styles'
 import {Ionicons, AntDesign} from '@expo/vector-icons';
 import { Colours } from '../../../../utils/Colours';
 import { useRouter } from 'expo-router';
-import { Bookings } from '../../../../utils/DummyData';
-import { BookingProps } from '../../../../types/Types';
+import {  OrderProps } from '../../../../types/Types';
+import { useFetchOrders } from '../../../../hooks/useFetchOrders';
+import Loader from '../../../../misc/Loader';
 
 const index = () => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<string>('All');
+  const {orders, pendingOrders, approvedOrders, cancelledOrders, ordersLoading} = useFetchOrders();
   return (
     <SafeAreaView style={[MyStyles.main, {backgroundColor:Colours.bg}]} >
       <View style={{width:'90%', flexDirection:'column', marginTop:50, alignSelf:'center', gap:20 }} >
@@ -35,37 +37,122 @@ const index = () => {
             <Text style={{color:activeTab === 'Cancelled' ? 'white':'grey', fontWeight:'700',}} >Cancelled</Text>
           </Pressable>
         </View>
-
-        <ScrollView showsVerticalScrollIndicator={false} style={{width:'100%'}} contentContainerStyle={{width:'100%'}} >
-          <View style={{width:'100%', flexDirection:'column', gap:15, marginBottom:130}} >
-            {
-              Bookings.map((item:BookingProps)=>(
-                <Pressable onPress={()=>router.push({pathname:`(public)/(profile)/(bookings)/${item.productId}`, params:{data:JSON.stringify(item)}})} style={{width:'100%', backgroundColor:'#fff', flexDirection:'row', gap:7, borderRadius:8, padding:4,}} key={item.id} >
-                  <Image source={{uri:item?.image}} style={{width:80, height:80, borderRadius:10}} />
-                  <View style={{flexDirection:'column', height:80, justifyContent:'space-between', gap:2, flexGrow:1}} >
-                    <View style={{width:'85%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} >
-                      <Text style={{fontSize:14, fontWeight:'700'}} >{item?.title.slice(0,25)}</Text>
-                      <View style={{backgroundColor:'#cb4900', borderRadius:6, paddingHorizontal:4, paddingVertical:4}} >
-                        <Text style={{color:'#fff', fontSize:12}} >{item.status}</Text>
+        {
+         ( orders.length < 1 && ordersLoading) ?
+         <Loader />
+         :
+          <ScrollView showsVerticalScrollIndicator={false} style={{width:'100%'}} contentContainerStyle={{width:'100%'}} >
+            <View style={{width:'100%', flexDirection:'column', gap:15, marginBottom:130}} >
+              {
+                activeTab === 'All' && orders.length > 0 ?
+                orders.map((item:OrderProps)=>(
+                  <Pressable onPress={()=>router.push({pathname:`(public)/(profile)/(bookings)/${item.itemId}`, params:{data:JSON.stringify(item)}})} style={{width:'100%', backgroundColor:'#fff', flexDirection:'row', gap:7, borderRadius:8, padding:4,}} key={item.id} >
+                    <Image source={{uri:item?.extras.image}} style={{width:80, height:80, borderRadius:10}} />
+                    <View style={{flexDirection:'column', height:80, justifyContent:'space-between', gap:2, flexGrow:1}} >
+                      <View style={{width:'85%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} >
+                        <Text style={{fontSize:14, fontWeight:'700'}} >{item?.title?.slice(0,25)}</Text>
+                        <View style={{backgroundColor:'#cb4900', borderRadius:6, paddingHorizontal:4, paddingVertical:4}} >
+                          <Text style={{color:'#fff', fontSize:12}} >{item.status}</Text>
+                        </View>
+                      </View>
+                      <Text style={{fontSize:11, color:'rgb(194 194 194)'}} >{item.tip} {item.type === 'hotel' ?' nights': item.type==='tour'?' days':''}</Text>
+                      <View style={{width:'85%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} >
+                        <View style={{flexDirection:'row', alignItems:'center', gap:2}} >
+                          <AntDesign name='calendar' size={14} color='#cb4900' />
+                          <Text style={{fontSize:12, color:'#cb4900'}} >{item.createdAt?.toDate()?.toLocaleDateString()}</Text>
+                        </View>
+                        <View style={{flexDirection:'row', alignItems:'center', gap:2}} >
+                          <Text style={{fontSize:12, color:'#cb4900'}} >View Details</Text>
+                          <AntDesign name='right' size={14} color='#cb4900' />
+                        </View>
                       </View>
                     </View>
-                    <Text style={{fontSize:11, color:'rgb(194 194 194)'}} >{item.type}</Text>
-                    <View style={{width:'85%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} >
-                      <View style={{flexDirection:'row', alignItems:'center', gap:2}} >
-                        <AntDesign name='calendar' size={14} color='#cb4900' />
-                        <Text style={{fontSize:12, color:'#cb4900'}} >{item.date}</Text>
+                  </Pressable>
+                ))
+                :
+                activeTab === 'Pending' && pendingOrders.length > 0 ?
+                pendingOrders.map((item:OrderProps)=>(
+                  <Pressable onPress={()=>router.push({pathname:`(public)/(profile)/(bookings)/${item.itemId}`, params:{data:JSON.stringify(item)}})} style={{width:'100%', backgroundColor:'#fff', flexDirection:'row', gap:7, borderRadius:8, padding:4,}} key={item.id} >
+                    <Image source={{uri:item?.extras.image}} style={{width:80, height:80, borderRadius:10}} />
+                    <View style={{flexDirection:'column', height:80, justifyContent:'space-between', gap:2, flexGrow:1}} >
+                      <View style={{width:'85%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} >
+                        <Text style={{fontSize:14, fontWeight:'700'}} >{item?.title?.slice(0,25)}</Text>
+                        <View style={{backgroundColor:'#cb4900', borderRadius:6, paddingHorizontal:4, paddingVertical:4}} >
+                          <Text style={{color:'#fff', fontSize:12}} >{item.status}</Text>
+                        </View>
                       </View>
-                      <View style={{flexDirection:'row', alignItems:'center', gap:2}} >
-                        <Text style={{fontSize:12, color:'#cb4900'}} >View Details</Text>
-                        <AntDesign name='right' size={14} color='#cb4900' />
+                      <Text style={{fontSize:11, color:'rgb(194 194 194)'}} >{item.tip} {item.type === 'hotel' ?' nights': item.type==='tour'?' days':''}</Text>
+                      <View style={{width:'85%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} >
+                        <View style={{flexDirection:'row', alignItems:'center', gap:2}} >
+                          <AntDesign name='calendar' size={14} color='#cb4900' />
+                          <Text style={{fontSize:12, color:'#cb4900'}} >{item?.createdAt?.toDate()?.toLocaleDateString()}</Text>
+                        </View>
+                        <View style={{flexDirection:'row', alignItems:'center', gap:2}} >
+                          <Text style={{fontSize:12, color:'#cb4900'}} >View Details</Text>
+                          <AntDesign name='right' size={14} color='#cb4900' />
+                        </View>
                       </View>
                     </View>
-                  </View>
-                </Pressable>
-              ))
-            }
-          </View>
-        </ScrollView>
+                  </Pressable>
+                ))
+                :
+                activeTab === 'Approved' && approvedOrders.length > 0 ?
+                approvedOrders.map((item:OrderProps)=>(
+                  <Pressable onPress={()=>router.push({pathname:`(public)/(profile)/(bookings)/${item.itemId}`, params:{data:JSON.stringify(item)}})} style={{width:'100%', backgroundColor:'#fff', flexDirection:'row', gap:7, borderRadius:8, padding:4,}} key={item.id} >
+                    <Image source={{uri:item?.extras.image}} style={{width:80, height:80, borderRadius:10}} />
+                    <View style={{flexDirection:'column', height:80, justifyContent:'space-between', gap:2, flexGrow:1}} >
+                      <View style={{width:'85%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} >
+                        <Text style={{fontSize:14, fontWeight:'700'}} >{item?.title.slice(0,25)}</Text>
+                        <View style={{backgroundColor:'#cb4900', borderRadius:6, paddingHorizontal:4, paddingVertical:4}} >
+                          <Text style={{color:'#fff', fontSize:12}} >{item.status}</Text>
+                        </View>
+                      </View>
+                      <Text style={{fontSize:11, color:'rgb(194 194 194)'}} >{item.tip} {item.type === 'hotel' ?' nights': item.type==='tour'?' days':''}</Text>
+                      <View style={{width:'85%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} >
+                        <View style={{flexDirection:'row', alignItems:'center', gap:2}} >
+                          <AntDesign name='calendar' size={14} color='#cb4900' />
+                          <Text style={{fontSize:12, color:'#cb4900'}} >{item.createdAt.toDate().toLocaleDateString()}</Text>
+                        </View>
+                        <View style={{flexDirection:'row', alignItems:'center', gap:2}} >
+                          <Text style={{fontSize:12, color:'#cb4900'}} >View Details</Text>
+                          <AntDesign name='right' size={14} color='#cb4900' />
+                        </View>
+                      </View>
+                    </View>
+                  </Pressable>
+                ))
+                :
+                activeTab === 'Cancelled' && cancelledOrders.length > 0 ?
+                cancelledOrders.map((item:OrderProps)=>(
+                  <Pressable onPress={()=>router.push({pathname:`(public)/(profile)/(bookings)/${item.itemId}`, params:{data:JSON.stringify(item)}})} style={{width:'100%', backgroundColor:'#fff', flexDirection:'row', gap:7, borderRadius:8, padding:4,}} key={item.id} >
+                    <Image source={{uri:item?.extras.image}} style={{width:80, height:80, borderRadius:10}} />
+                    <View style={{flexDirection:'column', height:80, justifyContent:'space-between', gap:2, flexGrow:1}} >
+                      <View style={{width:'85%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} >
+                        <Text style={{fontSize:14, fontWeight:'700'}} >{item?.title.slice(0,25)}</Text>
+                        <View style={{backgroundColor:'#cb4900', borderRadius:6, paddingHorizontal:4, paddingVertical:4}} >
+                          <Text style={{color:'#fff', fontSize:12}} >{item.status}</Text>
+                        </View>
+                      </View>
+                      <Text style={{fontSize:11, color:'rgb(194 194 194)'}} >{item.tip} {item.type === 'hotel' ?' nights': item.type==='tour'?' days':''}</Text>
+                      <View style={{width:'85%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} >
+                        <View style={{flexDirection:'row', alignItems:'center', gap:2}} >
+                          <AntDesign name='calendar' size={14} color='#cb4900' />
+                          <Text style={{fontSize:12, color:'#cb4900'}} >{item.createdAt.toDate().toLocaleDateString()}</Text>
+                        </View>
+                        <View style={{flexDirection:'row', alignItems:'center', gap:2}} >
+                          <Text style={{fontSize:12, color:'#cb4900'}} >View Details</Text>
+                          <AntDesign name='right' size={14} color='#cb4900' />
+                        </View>
+                      </View>
+                    </View>
+                  </Pressable>
+                ))
+                :
+                <Text style={MyStyles.welcomeText2} >No Data</Text>
+              }
+            </View>
+          </ScrollView>
+        }
       </View>
     </SafeAreaView>
   )

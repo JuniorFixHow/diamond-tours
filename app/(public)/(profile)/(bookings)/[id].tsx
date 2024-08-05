@@ -1,7 +1,7 @@
 import { Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { BookingProps } from '../../../../types/Types';
+import { BookingProps, OrderProps } from '../../../../types/Types';
 import { Bookings } from '../../../../utils/DummyData';
 import { Colours } from '../../../../utils/Colours';
 import { MyStyles } from '../../../../utils/Styles';
@@ -16,7 +16,7 @@ const Booking = () => {
   if(!params.id) return;
 
 
-  const [currentBooking, setCurrentBooking] = useState<BookingProps>();
+  const [currentBooking, setCurrentBooking] = useState<OrderProps>();
   // console.log(params.id);
   
   useEffect(()=>{
@@ -39,16 +39,16 @@ const Booking = () => {
         <ScrollView style={{width:'100%'}} contentContainerStyle={{width:'100%'}} >
           <View style={{paddingBottom:100, padding:20, backgroundColor:'#fff', borderRadius:10, flexDirection:'column', gap:10, width:'100%'}} >
             {
-              currentBooking?.mode === 'Hotel' &&
-              <EditHotel />
+              currentBooking?.type === 'hotel' &&
+              <EditHotel data={params?.data && JSON.parse(params.data.toString())} itemId ={params?.id && params?.id.toString()} />
             }
             {
-              currentBooking?.mode === 'Flight' &&
-              <EditFlight flightId={params?.id.toString()} />
+              currentBooking?.type === 'flight' &&
+              <EditFlight data={params?.data && JSON.parse(params.data.toString())} itemId ={params?.id && params?.id.toString()} />
             }
             {
-              currentBooking?.mode === 'Tour' &&
-              <EditTours />
+              currentBooking?.type === 'tour' &&
+              <EditTours data={params?.data && JSON.parse(params.data.toString())} itemId ={params?.id && params?.id.toString()} />
             }
 
           </View>

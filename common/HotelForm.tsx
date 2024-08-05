@@ -1,37 +1,69 @@
-import { KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { Colours } from '../utils/Colours';
 import PhoneInput from 'react-native-phone-number-input';
 import {Entypo, Ionicons, AntDesign} from '@expo/vector-icons';
 import RNDateTimePicker, {  DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { MyStyles } from '../utils/Styles';
+import { HotelDataProps } from '../types/Types';
+
 
 type HotelFormProps = {
     setShowForm:React.Dispatch<React.SetStateAction<boolean>>;
+    data:HotelDataProps,
+    children:number,
+    setChildren:React.Dispatch<React.SetStateAction<number>>,
+    adults:number,
+    setAdults:React.Dispatch<React.SetStateAction<number>>,
+    subTotal:number,
+    setSubTotal:React.Dispatch<React.SetStateAction<number>>,
+    total:number,
+    setTotal:React.Dispatch<React.SetStateAction<number>>,
+
+    setEmail:React.Dispatch<React.SetStateAction<string>>,
+    setFullname:React.Dispatch<React.SetStateAction<string>>,
+    formattedNumber:string,
+    setFormattedNumber:React.Dispatch<React.SetStateAction<string>>,
+    isValid:boolean,
+    setIsValid:React.Dispatch<React.SetStateAction<boolean>>,
+    sDate:Date,
+    setSDate:React.Dispatch<React.SetStateAction<Date>>,
+    eDate:Date,
+    setEDate:React.Dispatch<React.SetStateAction<Date>>,
+    phoneNumber:string,
+    setPhoneNumber:React.Dispatch<React.SetStateAction<string>>,
+    email:string,
+    fullname:string,
 }
 
-const HotelForm = ({setShowForm}:HotelFormProps) => {
+const HotelForm = ({setShowForm, data, 
+    children, setChildren, adults, 
+    setAdults,  setSubTotal, 
+    setTotal,  setEmail,
+    email, fullname,
+    setFullname, formattedNumber,
+    setFormattedNumber, isValid, setIsValid,
+    eDate, setEDate, sDate, setSDate,
+    phoneNumber, setPhoneNumber
+}:HotelFormProps) => {
     // DateTimePickerAndroid.open(params: AndroidNativeProps)
     // DateTimePickerAndroid.dismiss(mode: AndroidNativeProps['mode'])
-    const currentDate = new Date();
-    const tomorrow = new Date(currentDate.getTime() + (24 * 60 * 60 * 1000));
-    const [phoneNumber, setPhoneNumber] = useState<string>('');
-    const [formattedNumber, setFormattedNumber] = useState<string>('');
-    const [isValid, setIsValid] = useState<boolean>(false);
-    const [sDate, setSDate] = useState<Date>(new Date);
-    const [eDate, setEDate] = useState<Date>(tomorrow);
+    // const currentDate = new Date();
+    // const tomorrow = new Date(new Date());
+    // const [phoneNumber, setPhoneNumber] = useState<string>('');
+  
     const [showStart, setShowStart] = useState<boolean>(false);
     const [showEnd, setShowEnd] = useState<boolean>(false);
-    const [children, setChildren] = useState<number>(0)
-    const [adults, setAdults] = useState<number>(0)
-    const phone = useRef<PhoneInput>(null);
+    const phone = useRef<PhoneInput>(null)
+    
+    
 
     const getTomorrow = (date:Date)=>{
         return new Date(date.getTime() + (24 * 60 * 60 * 1000));
     }
 
     useEffect(()=>{
-        setEDate(getTomorrow(sDate))
+        setEDate(sDate)
     },[sDate])
     const handleChangeStart = (event: DateTimePickerEvent, date: Date | undefined) => {
         if (date) {
@@ -46,6 +78,21 @@ const HotelForm = ({setShowForm}:HotelFormProps) => {
         }
       };
     
+      useEffect(()=>{
+        if(data){
+            const child = children * data.childPrice;
+            const adult = adults * data.adultPrice;
+            const st = child + adult + data.adultPrice
+            setSubTotal(st);
+            // const t = st + data?.charges - discount
+            const t = st - ((data.discount/100) * st);
+            if(data?.charges){
+                setTotal(t + data.charges);
+            }else{
+                setTotal(t);
+            }
+        }
+      },[children, adults, data])
 
     useEffect(()=>{
         if(formattedNumber !== '' && phone){
@@ -64,6 +111,8 @@ const HotelForm = ({setShowForm}:HotelFormProps) => {
         }
     }, [phoneNumber, phone, formattedNumber])
 
+   
+
   return (
     <View style={{width:'95%', alignSelf:'center', gap:15, flexDirection:'column'}} >
         <View style={{width:'100%', alignItems:'center', flexDirection:'row', justifyContent:'space-between'}} >
@@ -78,11 +127,11 @@ const HotelForm = ({setShowForm}:HotelFormProps) => {
         <View style={{width:'100%', flexDirection:'column', gap:8}} >
             <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%'}} >
                 <Text style={styles.label} >Full name</Text>
-                <TextInput placeholder='type here' cursorColor='black' style={styles.input} />
+                <TextInput value={fullname} onChangeText={(e)=>setFullname(e)} placeholder='type here' cursorColor='black' style={styles.input} />
             </KeyboardAvoidingView>
             <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', flex:1}} >
                 <Text style={styles.label} >Email <Text style={{color:'grey', fontSize:12}} >(leave this field to use your primary email)</Text></Text>
-                <TextInput placeholder='type here' cursorColor='black' keyboardType='email-address' style={styles.input} />
+                <TextInput value={email} onChangeText={(e)=>setEmail(e)} placeholder='type here' cursorColor='black' keyboardType='email-address' style={styles.input} />
             </KeyboardAvoidingView>
             <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', flex:1}} >
                 <Text style={styles.label} >Phone number</Text>
@@ -184,7 +233,7 @@ const HotelForm = ({setShowForm}:HotelFormProps) => {
                         value={eDate}
                         mode='date'
                         is24Hour={true}
-                        minimumDate={getTomorrow(sDate)}
+                        minimumDate={sDate}
                         onChange={handleChangeEnd}
                         />
                     }

@@ -4,14 +4,14 @@ import { MyStyles } from '../utils/Styles'
 import { AntDesign } from '@expo/vector-icons';
 import { Colours } from '../utils/Colours';
 type SelectProps = {
-    data:string[],
-    onTap:React.Dispatch<React.SetStateAction<string>>,
-    selected:string
+    data:(string | number)[],
+    onTap:React.Dispatch<React.SetStateAction<string | number>>,
+    selected:string | number
 }
 
 const SelectInput = ({data, onTap, selected}:SelectProps) => {
     const [openSelect, setOpenSelect] = useState<boolean>(false);
-    const handleSelect = (item:string)=>{
+    const handleSelect = (item:string | number)=>{
         onTap(item);
         setOpenSelect(false);
     }
@@ -29,7 +29,7 @@ const SelectInput = ({data, onTap, selected}:SelectProps) => {
             openSelect &&
             <View style={{width:'100%',  marginTop:0, alignItems:'flex-start', justifyContent:'flex-start', borderBottomLeftRadius:10, borderBottomRightRadius:10, borderWidth:1, borderTopWidth:0, borderColor:'#FFC9B8', padding:5, paddingTop:0, flexDirection:'column', gap:8}} >
                 {
-                    data.map((item:string)=>(
+                    data.map((item:string | number)=>(
                         <TouchableOpacity style={{width:'100%'}} onPress={()=>handleSelect(item)} key={item} >
                             <Text style={{fontSize:18}} >{item}</Text>
                         </TouchableOpacity>

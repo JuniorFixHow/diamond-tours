@@ -1,4 +1,4 @@
-import { Image, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { Colours } from '../utils/Colours';
 import PhoneInput from 'react-native-phone-number-input';
@@ -6,29 +6,64 @@ import {Entypo, Ionicons, AntDesign} from '@expo/vector-icons';
 import DropDown from '../misc/DropDown';
 import { MyStyles } from '../utils/Styles';
 import Button from '../misc/Button';
-import { AirlineProps } from '../types/Types';
+import { AirlineProps, FlightDataProps, OrderProps } from '../types/Types';
 import { formatDateDiff } from '../functions/Date';
 import { Airlines } from '../utils/DummyData';
+import { collection, deleteDoc, doc, onSnapshot, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { db } from '../firebase';
+import { useRouter } from 'expo-router';
+import { useUser } from '@clerk/clerk-expo';
 
 type EditFlightProps = {
-    flightId:string,
+    itemId:string,
+    data:OrderProps
 }
 
-const EditFlight = ({flightId}:EditFlightProps) => {
-    const [currentFlight, setCurrentFlight] = useState<AirlineProps | null>(null);
+const EditFlight = ({itemId, data}:EditFlightProps) => {
+    const [currentFlight, setCurrentFlight] = useState<FlightDataProps | null>(null);
     const TRIPS:string[] = ['One Way', 'Round Trip', 'Multicity'];
     const [phoneNumber, setPhoneNumber] = useState<string>('');
     const [formattedNumber, setFormattedNumber] = useState<string>('');
-    const [passengers, setPassengers] = useState<number>(0);
     const [selectedTrip, setSelectedTrip] = useState<string>(TRIPS[0]);
     const [isValid, setIsValid] = useState<boolean>(false);
+
+    const [total, setTotal] = useState<number>(0);
+    const [subTotal, setSubTotal] = useState<number>(0);
+    const [passengers, setPassengers] = useState<number>(1);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [email, setEmail] = useState<string>('');
+    const [passport, setPassport] = useState<string>('');
+    const [passportNum, setPassportNum] = useState<string>('');
+
+    const [delLoading, setDelLoading] = useState<boolean>(false);
+
+
     const phone = useRef<PhoneInput>(null);
+    const router = useRouter();
+    const {user} = useUser();
 
     useEffect(()=>{
-        if(flightId){
-            setCurrentFlight(Airlines.filter((item:AirlineProps)=>item.id.toString() === flightId)[0]);
+        const FetchData = ()=>{
+          if(itemId){
+            const unsub = onSnapshot(doc(db, "Flights", itemId), (doc) => {
+                if(!doc.exists()){
+                  
+                    alert('Sorry, the flight you booked for has been deleted');
+                    router.back();
+                }else{
+                    const res = doc.data() as FlightDataProps;
+                    setCurrentFlight({...res, id:doc.id});
+                }
+               
+            });
+            return ()=>{
+              unsub();
+            }
+          }
         }
-    },[flightId])
+        FetchData();
+    },[itemId])
+
 
     // console.log(currentFlight);
     useEffect(()=>{
@@ -48,71 +83,90 @@ const EditFlight = ({flightId}:EditFlightProps) => {
         }
     }, [phoneNumber, phone, formattedNumber])
 
+
+    useEffect(()=>{
+        if(currentFlight){
+            const price = passengers * currentFlight.price;
+            setSubTotal(price);
+            // const t = st + currentFlight?.charges - discount
+            if(currentFlight?.charges){
+                setTotal(price + currentFlight.charges);
+            }else{
+                setTotal(price);
+            }
+        }
+      },[passengers, currentFlight])
+
+      const updatelightOrder = async()=>{
+        try {
+            setLoading(true);
+            
+            const info = {
+                email:email || data?.email, 
+                phone:formattedNumber || data?.phone,
+                passport: passport || data?.passport, 
+                passportNum: passportNum.length > 8 ? passportNum : data?.passportNum,
+                userId: user?.id,
+                tip:currentFlight?.tripType,
+                extras:{
+                  image:currentFlight?.image?.trim(),
+                  amount: passengers > 1 ? total : data?.extras.amount,
+                  charges:currentFlight?.charges ? currentFlight.charges : 0,
+                  passengers: passengers>1 ? passengers : data?.extras.passengers,
+                  tripType:currentFlight?.tripType,
+                },
+                createdAt: serverTimestamp()
+            }
+            // console.log(info)
+            await updateDoc(doc(db, 'Orders', data?.id), info);
+            alert('Order updated successfully ✅');
+        } catch (error) {
+            console.log(error);
+            ToastAndroid.showWithGravityAndOffset(
+                'Error occured. Please retry', 
+                ToastAndroid.LONG, 
+                ToastAndroid.BOTTOM, 25, 50);
+        }finally{
+            setLoading(false);
+        }
+    }
+
+    const deleteFlightOrder = async() =>{
+        try {
+            setDelLoading(true);  
+            await deleteDoc(doc(db, 'Orders', data?.id));
+            alert('Booking deleted successfully ✅');
+            router.back();
+            
+        } catch (error) {
+            console.log(error);
+            ToastAndroid.showWithGravityAndOffset(
+                'Error occured. Please retry', 
+                ToastAndroid.LONG, 
+                ToastAndroid.BOTTOM, 25, 50);
+        }finally{
+            setDelLoading(false);
+        }
+    }
+
+
   return (
     <View style={{width:'100%', alignSelf:'center', gap:8, flexDirection:'column'}} >
 
-    <View style={{flexDirection:'row', width:'80%', gap:5, alignItems:'flex-start'}} >
-        <Image style={{width:50, height:50, borderRadius:8}} alt='image' source={{uri:currentFlight?.image}} />
-        <View  style={{flexDirection:'column', gap:5,}} >
-        <Text style={[MyStyles.greySmall, {color:Colours.black}]} >{currentFlight?.name}</Text>
-        <View style={{width:'100%', alignItems:'center', flexDirection:'column'}} >
-            <View style={{width:'100%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} >
-            <Text style={MyStyles.blackSmall} >{currentFlight && new Date(currentFlight?.departureTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-            <View style={{flexDirection:'row', gap:2, alignItems:'center'}}>
-                <Ionicons name="time-outline" size={16} color="grey" />
-                <Text style={MyStyles.greyXsmall}>{currentFlight && formatDateDiff(currentFlight?.departureTime, currentFlight?.arrivalTime)}</Text>
+<View style={{flexDirection:'column', width:'100%'}} >
+            <Image source={{uri:currentFlight?.image}} style={{width:'100%', objectFit:'contain', borderRadius:10, height:180}} />
+            <Text style={{fontWeight:'700', fontSize:22}} >{data?.title.slice(0,25)}</Text>
+            <View style={{width:'100%', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}} >
+                <Text style={{fontSize:18, }} >Status</Text>
+                <Text style={{fontSize:18, color:'#cb4900'}} >{data?.status}</Text>
             </View>
-            <Text style={MyStyles.blackSmall} >{currentFlight && new Date(currentFlight?.arrivalTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-            </View>
-
-            <View style={{width:'80%', flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
-                <View style={styles.circle} />
-                <View style={styles.line} />
-                <View style={styles.circle} />
-            </View>
-
-            <View style={{width:'100%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} >
-            <Text style={MyStyles.blackSmall} >{currentFlight?.from.slice(0,3).toUpperCase()}</Text>
-            <Text style={MyStyles.greyXsmall} >{currentFlight && new Date(currentFlight?.departureTime).toLocaleDateString()}</Text>
-            <Text style={MyStyles.blackSmall} >{currentFlight?.to.slice(0,3).toUpperCase()}</Text>
+            <View style={{width:'100%', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}} >
+                <Text style={{fontSize:18, color:Colours.grey }} >{currentFlight?.tripType}</Text>
+                <TouchableOpacity onPress={()=>router.navigate(`(public)/(flights)/${currentFlight?.id}`)} >
+                    <Text style={{fontSize:18, color:'#cb4900', textDecorationLine:'underline', textShadowColor:'#cb4900'}} >View flight</Text>
+                </TouchableOpacity>
             </View>
         </View>
-        </View>
-    </View>     
-
-    <View style={{flexDirection:'row', width:'80%', gap:5, marginTop:20, alignItems:'flex-start'}} >
-        <Image style={{width:50, height:50, borderRadius:8}} alt='image' source={{uri:currentFlight?.image}} />
-        <View  style={{flexDirection:'column', gap:5,}} >
-        <Text style={[MyStyles.greySmall, {color:Colours.black}]} >{currentFlight?.name}</Text>
-        <View style={{width:'100%', alignItems:'center', flexDirection:'column'}} >
-            <View style={{width:'100%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} >
-            <Text style={MyStyles.blackSmall} >{currentFlight && new Date(currentFlight?.departureTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-            <View style={{flexDirection:'row', gap:2, alignItems:'center'}}>
-                <Ionicons name="time-outline" size={16} color="grey" />
-                <Text style={MyStyles.greyXsmall}>{currentFlight && formatDateDiff(currentFlight?.departureTime, currentFlight?.arrivalTime)}</Text>
-            </View>
-            <Text style={MyStyles.blackSmall} >{currentFlight && new Date(currentFlight?.arrivalTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-            </View>
-
-            <View style={{width:'80%', flexDirection:'row', justifyContent:'center', alignItems:'center'}} >
-                <View style={styles.circle} />
-                <View style={styles.line} />
-                <View style={styles.circle} />
-            </View>
-
-            <View style={{width:'100%', flexDirection:'row', justifyContent:'space-between', alignItems:'center'}} >
-            <Text style={MyStyles.blackSmall} >{currentFlight?.to.slice(0,3).toUpperCase()}</Text>
-            <Text style={MyStyles.greyXsmall} >{currentFlight && new Date(currentFlight?.departureTime).toLocaleDateString()}</Text>
-            <Text style={MyStyles.blackSmall} >{currentFlight?.from.slice(0,3).toUpperCase()}</Text>
-            </View>
-        </View>
-        </View>
-    </View>
-
-    <View style={{width:'100%', alignItems:'center', flexDirection:'row', marginVertical:20, justifyContent:'space-between'}} >
-        <Text style={{fontSize:20,}} >Status</Text>
-        <Text style={{fontSize:20, color:'#cb4900'}} >Pending</Text>
-    </View>
       <View style={{width:'100%', alignItems:'center', flexDirection:'row', justifyContent:'space-between'}} >
             <Text style={{fontSize:22, color:'dimgrey', fontWeight:'700'}} >Personal Information</Text>
             {/* <Pressable onPress={()=>setShowForm(false)} >
@@ -122,22 +176,26 @@ const EditFlight = ({flightId}:EditFlightProps) => {
       <View style={{width:'100%', flexDirection:'column', gap:8}} >
         <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%'}} >
             <Text style={styles.label} >Passport name</Text>
-            <TextInput placeholder='type here' cursorColor='black' style={styles.input} />
+            <TextInput defaultValue={data?.passport} onChangeText={(e)=>setPassport(e)} placeholder='type here' cursorColor='black' style={styles.input} />
+        </KeyboardAvoidingView>
+        <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', flex:1}} >
+            <Text style={styles.label} >Passport number</Text>
+            <TextInput defaultValue={data?.passportNum} onChangeText={(e)=>setPassportNum(e)} placeholder='type here' cursorColor='black' keyboardType='name-phone-pad' style={styles.input} />
         </KeyboardAvoidingView>
         <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', }} >
             <Text style={styles.label} >Email</Text>
-            <TextInput placeholder='type here' cursorColor='black' keyboardType='email-address' style={styles.input} />
+            <TextInput defaultValue={data?.email} onChangeText={(e)=>setEmail(e)} placeholder='type here' cursorColor='black' keyboardType='email-address' style={styles.input} />
         </KeyboardAvoidingView>
-        <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', }} >
+        {/* <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', }} >
             <Text style={styles.label} >Trip type</Text>
             <DropDown selected={selectedTrip} onTap={setSelectedTrip} data={TRIPS} />
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView> */}
         <View style={{flexDirection:'column', gap:5, width:'100%', }} >
             <Text style={styles.label} >Phone number</Text>
             <View style={styles.valid} >
                 <PhoneInput
                     ref={phone}
-                    defaultValue={phoneNumber}
+                    defaultValue={data?.phone.replace('+','')}
                     defaultCode="GH"
                     layout="first"
                     onChangeText={(text) => {
@@ -161,17 +219,17 @@ const EditFlight = ({flightId}:EditFlightProps) => {
                 }
         </View>
         </View>
-        <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', flex:1}} >
+        {/* <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', flex:1}} >
             <Text style={styles.label} >Passport number</Text>
             <TextInput placeholder='type here' cursorColor='black' keyboardType='name-phone-pad' style={styles.input} />
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView> */}
         <View style={styles.increase} >
             <View style={{flexDirection:'column', gap:2}} >
                 <Text style={styles.label} >Passengers</Text>
                 {/* <Text style={[MyStyles.greySmall, {fontSize:12}]}>18 and above</Text> */}
             </View>
             <View style={{gap:10, flexDirection:'row', alignItems:'center'}} >
-                <TouchableOpacity onPress={()=>passengers >=1 && setPassengers(pre=>pre-1) } >
+                <TouchableOpacity onPress={()=>passengers >=2 && setPassengers(pre=>pre-1) } >
                     <AntDesign name="minuscircleo" size={20} color="black" />
                 </TouchableOpacity>
                 <Text>{passengers}</Text>
@@ -188,8 +246,9 @@ const EditFlight = ({flightId}:EditFlightProps) => {
             <View style={styles.payItem} >
                 <View style={{flexDirection:'column', gap:1}} >
                     <Text style={styles.subtotal}>Flight</Text>
+                    <Text style={{fontSize:12, color:'grey'}}>({passengers} x ${currentFlight?.price})</Text>
                 </View>
-                <Text style={styles.subtotal} >$1,600</Text>
+                <Text style={styles.subtotal} >${currentFlight?.price}</Text>
             </View>
         </View>
         <View style={styles.pay} >
@@ -197,32 +256,38 @@ const EditFlight = ({flightId}:EditFlightProps) => {
                 <View style={{flexDirection:'column', gap:1}} >
                     <Text style={styles.subtotal}>Subtotal</Text>
                 </View>
-                <Text style={styles.subtotal} >$1,600</Text>
+                <Text style={styles.subtotal} >${subTotal}</Text>
             </View>
             <View style={styles.payItem} >
                 <View style={{flexDirection:'column', gap:1}} >
                     <Text style={styles.subtotal}>Service charge</Text>
                 </View>
-                <Text style={styles.subtotal} >$20</Text>
+                <Text style={styles.subtotal} >${currentFlight?.charges ? currentFlight?.charges : 0}</Text>
             </View>
-            <View style={styles.payItem} >
+            {/* <View style={styles.payItem} >
                 <View style={{flexDirection:'column', gap:1}} >
                     <Text style={styles.subtotal}>Discount</Text>
                 </View>
                 <Text style={styles.subtotal} >$0</Text>
-            </View>
+            </View> */}
         </View>
         <View style={styles.pay} >
             <View style={styles.payItem} >
                 <View style={{flexDirection:'column', gap:1}} >
-                    <Text style={styles.subtotal}>Total</Text>
+                    <Text style={styles.subtotal}>Current Amount</Text>
                 </View>
-                <Text style={styles.subtotal} >$1,620</Text>
+                <Text style={styles.subtotal} >${total}</Text>
+            </View>     
+            <View style={styles.payItem} >
+                <View style={{flexDirection:'column', gap:1}} >
+                    <Text style={styles.subtotal}>Booked Amount</Text>
+                </View>
+                <Text style={styles.subtotal} >${data?.extras?.amount}</Text>
             </View>     
         </View>
       </View>
-        <Button text='Save Changes' onClick={()=>{}} />
-        <Button text='Delete' type='danger' onClick={()=>{}} />
+        <Button text='Save Changes' loading={loading} onClick={updatelightOrder} />
+        <Button text='Delete' type='danger' loading={delLoading} onClick={deleteFlightOrder} />
     </View>
   )
 }

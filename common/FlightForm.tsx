@@ -4,15 +4,38 @@ import { Colours } from '../utils/Colours';
 import PhoneInput from 'react-native-phone-number-input';
 import {Entypo, Ionicons, AntDesign} from '@expo/vector-icons';
 import DropDown from '../misc/DropDown';
+import { FlightDataProps } from '../types/Types';
 
 
-const FlightForm = () => {
+type FlightFormProps = {
+    data:FlightDataProps,
+    passengers:number,
+    setPassengers:React.Dispatch<React.SetStateAction<number>>,
+    setSubTotal:React.Dispatch<React.SetStateAction<number>>,
+    setTotal:React.Dispatch<React.SetStateAction<number>>,
+
+    setEmail:React.Dispatch<React.SetStateAction<string>>,
+    formattedNumber:string,
+    setFormattedNumber:React.Dispatch<React.SetStateAction<string>>,
+    isValid:boolean,
+    setIsValid:React.Dispatch<React.SetStateAction<boolean>>,
+   
+    passport:string,
+    setPassport:React.Dispatch<React.SetStateAction<string>>,
+    passportNum:string,
+    setPassportNum:React.Dispatch<React.SetStateAction<string>>,
+    email:string,
+}
+
+const FlightForm = ({data,passengers, setPassengers,
+    setSubTotal,  setTotal, email,
+    setEmail,  formattedNumber, setFormattedNumber,
+    isValid, setIsValid, passport, setPassport,
+    passportNum, setPassportNum
+}:FlightFormProps) => {
     const TRIPS:string[] = ['One Way', 'Round Trip', 'Multicity'];
     const [phoneNumber, setPhoneNumber] = useState<string>('');
-    const [formattedNumber, setFormattedNumber] = useState<string>('');
-    const [passengers, setPassengers] = useState<number>(0);
     const [selectedTrip, setSelectedTrip] = useState<string>(TRIPS[0]);
-    const [isValid, setIsValid] = useState<boolean>(false);
     const phone = useRef<PhoneInput>(null);
 
     useEffect(()=>{
@@ -32,6 +55,19 @@ const FlightForm = () => {
         }
     }, [phoneNumber, phone, formattedNumber])
 
+    useEffect(()=>{
+        if(data){
+            const price = passengers * data.price;
+            setSubTotal(price);
+            // const t = st + data?.charges - discount
+            if(data?.charges){
+                setTotal(price + data.charges);
+            }else{
+                setTotal(price);
+            }
+        }
+      },[passengers, data])
+
   return (
     <View style={{width:'100%', alignSelf:'center', gap:8, flexDirection:'column'}} >
       <View style={{width:'100%', alignItems:'center', flexDirection:'row', justifyContent:'space-between'}} >
@@ -43,16 +79,20 @@ const FlightForm = () => {
       <View style={{width:'100%', flexDirection:'column', gap:8}} >
         <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%'}} >
             <Text style={styles.label} >Passport name</Text>
-            <TextInput placeholder='type here' cursorColor='black' style={styles.input} />
+            <TextInput value={passport} onChangeText={(e)=>setPassport(e)} placeholder='type here' cursorColor='black' style={styles.input} />
+        </KeyboardAvoidingView>
+        <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', flex:1}} >
+            <Text style={styles.label} >Passport number</Text>
+            <TextInput value={passportNum} onChangeText={(e)=>setPassportNum(e)} placeholder='type here' cursorColor='black' keyboardType='name-phone-pad' style={styles.input} />
         </KeyboardAvoidingView>
         <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', }} >
             <Text style={styles.label} >Email <Text style={{color:'grey', fontSize:12}} >(leave this field to use your primary email)</Text></Text>
-            <TextInput placeholder='type here' cursorColor='black' keyboardType='email-address' style={styles.input} />
+            <TextInput value={email} onChangeText={(e)=>setEmail(e)} placeholder='type here' cursorColor='black' keyboardType='email-address' style={styles.input} />
         </KeyboardAvoidingView>
-        <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', }} >
+        {/* <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', }} >
             <Text style={styles.label} >Trip type</Text>
             <DropDown selected={selectedTrip} onTap={setSelectedTrip} data={TRIPS} />
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView> */}
         <View style={{flexDirection:'column', gap:5, width:'100%', }} >
             <Text style={styles.label} >Phone number</Text>
             <View style={styles.valid} >
@@ -82,17 +122,14 @@ const FlightForm = () => {
                 }
         </View>
         </View>
-        <KeyboardAvoidingView style={{flexDirection:'column', gap:5, width:'100%', flex:1}} >
-            <Text style={styles.label} >Passport number</Text>
-            <TextInput placeholder='type here' cursorColor='black' keyboardType='name-phone-pad' style={styles.input} />
-        </KeyboardAvoidingView>
+        
         <View style={styles.increase} >
             <View style={{flexDirection:'column', gap:2}} >
                 <Text style={styles.label} >Passengers</Text>
                 {/* <Text style={[MyStyles.greySmall, {fontSize:12}]}>18 and above</Text> */}
             </View>
             <View style={{gap:10, flexDirection:'row', alignItems:'center'}} >
-                <TouchableOpacity onPress={()=>passengers >=1 && setPassengers(pre=>pre-1) } >
+                <TouchableOpacity onPress={()=>passengers >=2 && setPassengers(pre=>pre-1) } >
                     <AntDesign name="minuscircleo" size={20} color="black" />
                 </TouchableOpacity>
                 <Text>{passengers}</Text>

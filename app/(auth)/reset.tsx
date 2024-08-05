@@ -9,16 +9,16 @@ import {
     View,
   } from "react-native";
   import React, { useEffect, useRef, useState } from "react";
-  import { MyStyles } from "../../../utils/Styles";
-  import { Colours } from "../../../utils/Colours";
+  import { MyStyles } from "../../utils/Styles";
+  import { Colours } from "../../utils/Colours";
   import { Feather } from "@expo/vector-icons";
-  import Google from "../../../assets/imgs/google.png";
+  import Google from "../../assets/imgs/google.png";
   import { useRouter } from "expo-router";
   import OTPTextInput from 'react-native-otp-textinput';
   import { useAuth, useClerk, useSignIn, useSignUp, useUser } from "@clerk/clerk-expo";
   
   
-  const register = () => {
+  const reset = () => {
     const [showPass, setShowShowPass] = useState<boolean>(true);
     const [otp, setOtp] = useState<string>('');
     const [email, setEmail] = useState<string>('');
@@ -38,7 +38,7 @@ import {
       }
       if(email.trim()===''){
           ToastAndroid.showWithGravityAndOffset(
-              'Please email', 
+              'Please enter email', 
               ToastAndroid.LONG, 
               ToastAndroid.TOP, 25, 50);
               
@@ -243,7 +243,7 @@ import {
     );
   };
   
-  export default register;
+  export default reset;
   
   const styles = StyleSheet.create({
     eye: {
