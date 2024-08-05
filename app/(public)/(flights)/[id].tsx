@@ -13,15 +13,12 @@ import FlightForm from '../../../common/FlightForm';
 import Button from '../../../misc/Button';
 import { useFetchFlights } from '../../../hooks/useFetchFlights';
 import { addDoc, collection, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../../firebase';
 import { useUser } from '@clerk/clerk-expo';
+import { db } from '../../../firebase';
 
 const {width, height} = Dimensions.get('screen');
 const Flight = () => {
-  const [selectedAirline, setSelectedAirline] = useState<string>('All')
-  const [closeFilter, setCloseFilter] = useState<boolean>(false);
-  const Countries:string[] = ['All', 'USA', 'Europe', 'Asia', 'Canada', 'Middle East', 'Ghana'];
-
+  
   const param = useLocalSearchParams();
   const [currentFlight, setCurrentFlight]=useState<FlightDataProps>();
   const [total, setTotal] = useState<number>(0);

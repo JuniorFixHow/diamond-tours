@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.fixhowguests.diamondtours"
+      "package": "com.diamondtoursghana.diamondtours"
     },
     "web": {
       "favicon": "./assets/icon.png",
@@ -35,7 +35,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "7a1814ae-f5e6-4486-bded-34eca60c5430"
+        "projectId": "cee2d61e-a9d0-457a-a9f9-3b163d25a563"
       }
     }
   }
