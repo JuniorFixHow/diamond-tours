@@ -134,6 +134,10 @@ const OrderDetails = ({currentOrder, setCurrentOrder}:OrderDetailsProps) => {
                 <div className="flex flex-col gap-4">
                     <span className="font-semibold text-xl">Booking Information</span>
                     <div className="flex flex-col gap-0">
+                        <span className="text-[0.8rem] text-slate-500 md:text-[0.9rem] font-semibold" >Ordered</span>
+                        <span className="text-[0.9rem] md:text-[1rem] font-semibold" >{currentOrder?.createdAt?.toDate()?.toDateString()}</span>
+                    </div>
+                    <div className="flex flex-col gap-0">
                         <span className="text-[0.8rem] text-slate-500 md:text-[0.9rem] font-semibold" >Status</span>
                         <span className="text-[0.9rem] md:text-[1rem] font-semibold" >{currentOrder?.status}</span>
                     </div>
