@@ -96,6 +96,7 @@ const NewHotel = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
             description:description||currentData?.description, 
             createdAt:serverTimestamp()
           };
+          // console.log(data)
           currentData && await updateDoc(doc(db, "Hotels", currentData?.id), data);
           formRef.current?.reset();
           setFeedback({ error: false, message: "Hotel updated Successfully" });

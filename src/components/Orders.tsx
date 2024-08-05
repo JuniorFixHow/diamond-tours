@@ -1,164 +1,109 @@
-import  { useEffect, useRef, useState } from "react";
+import  {useState } from "react";
 // import AppCard from "../miscellaneous/AppCard";
 import Header from "../miscellaneous/Header"
 import { IoIosArrowRoundBack } from "react-icons/io";
 import {   FeedbackProps,  PageProp } from "../assets/types/Types";
-import axios from "axios";
-import { API } from "../common/contants";
-import  {Alert}  from "@mui/material";
-import { FlightData, HotelData, TourData } from "../utils/DummyData";
-import { FlightProps, HotelProps, ToursProps } from "../types/Types";
-import { formatDateAndTime } from "../functions/Dates";
+import { useFetchOrders } from "../hooks/useFetchOrders";
+import { OrderProps } from "../types/Types";
+import { SearchOrder } from "../functions/search";
+import OrderDetails from "../miscellaneous/OrderDetails";
+import { approveOrder, cancelOrder, restoreOrder } from "../functions/firestore";
+import { Alert } from "@mui/material";
+
 
 
 const Orders = ({setCurrentPage}:PageProp) => {
-    const [cancelMode, setCancelMode] = useState<boolean>(false);
-    // const [tours, setTours] =useState<BookingsProps[]>([]);
-    // const [hotels, setHotels] =useState<BookingsProps[]>([]);
-    // const [flights, setFlights] =useState<BookingsProps[]>([]);
-    const [viewMode, setViewMode] =useState<string>('tours');
-    const [currentTour, setCurrentTour] = useState<ToursProps | null>();
-    const [currentHotel, setCurrentHotel] = useState<HotelProps | null>();
-    const [currentFlight, setCurrentFlight] = useState<FlightProps | null>();
-    // const [currentApp, setCurrentApp] = useState<BookingsProps>();
-    // const [currentApp, setCurrentApp] = useState<BookingsProps>();
-    const [feedback, setFeedback] = useState<FeedbackProps>({error:false, message:''});
-    const [tourReason, setTourReason] = useState<string>('');
-    const [hotelReason, setHotelReason] = useState<string>('');
-    const [flightReason, setFlightReason] = useState<string>('');
-    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [search, setSearch] = useState<string>('');
-
-    const formRef = useRef<HTMLFormElement | null>(null);
-
-    useEffect(()=>{
-      console.log(currentFlight)
-      console.log(tourReason)
-      console.log(hotelReason)
-      console.log(flightReason)
-      setIsLoading(false);
-    },[currentFlight,tourReason,hotelReason,flightReason])
-
-    // useEffect(()=>{
-    //     const fetchData = async()=>{
-    //         try {
-    //           const pen = await axios.get(`${API}bookings`);
-    //           if(pen.data){
-    //             setTours(pen.data.filter((item:BookingsProps)=>(item.status==='Pending') && new Date() < new Date(item.date)));
-    //             setHotels(pen.data.filter((item:BookingsProps)=>(item.status==='Approved') && new Date() < new Date(item.date)));
-    //             setFlights(pen.data.filter((item:BookingsProps)=> new Date() > new Date(item.date)));
-    //           }  
-    //         } catch (error) {
-    //           console.log(error)
-    //         }
-         
-    //     }
-    //     fetchData();
-    //   },[tours, hotels, flights])
+    const [type, setType] = useState<string>('All');
+    const [currentOrder, setCurrentOrder] = useState<OrderProps | null>(null);
+    const {orders} = useFetchOrders();
+    const [feedback, setFeedback] = useState<FeedbackProps>({error:false, message:''});
+    const [loading, setLoading] = useState<boolean>(false);
 
 
-    //   const sendReason = async(e:React.FormEvent<HTMLFormElement>, book: BookingsProps)=>{
-    //     e.preventDefault();
-    //     setIsLoading(true);
-    //     setFeedback({error:false, message:''});
-    //     if(reason.trim() !== ''){
-    //       try {
-    //         const data = {email:book.email, name:book.fullname.first, message:reason};
-    //         const res = await axios.post(`${API}messages/admin/${book._id}`, data)
-    //         if(res.status === 200){
-    //           setFeedback({error:false, message:'Operation successful'})
-    //           setReason('');
-    //           formRef.current?.reset();
-    //         }
-    //       } catch (error) {
-    //         console.log(error)
-    //       }finally{
-    //         setIsLoading(false);
-    //       }
-    //     }
-    //   }
-
-      const handleCancelTour = (app:ToursProps)=>{
-        setCurrentTour(app);
-        setCancelMode(true)
-      }
-      const handleTourCancelCancel = ()=>{
-        setCurrentTour(null);
-        setCancelMode(false)
-      }
-
-      //hotels
-      const handleCancelHotel = (app:HotelProps)=>{
-        setCurrentHotel(app);
-        setCancelMode(true)
-      }
-      const handleHotelCancelCancel = ()=>{
-        setCurrentHotel(null);
-        setCancelMode(false)
-      }
-
-      //flights
-      const handleCancelFlight = (app:FlightProps)=>{
-        setCurrentFlight(app);
-        setCancelMode(true)
-      }
-      const handleFlightCancelCancel = ()=>{
-        setCurrentFlight(null);
-        setCancelMode(false)
-      }
-
-    const onConfirm = async(id:string)=>{
-        const data = {status:'Approved'};
-        try {
-            const res = await axios.put(`${API}bookings/${id}`, data);
-            if(res.status === 200){
-                setFeedback({error:false, message:'Operation successfull'});
-            }
-        } catch (error) {
-            console.log(error);
-            setFeedback({error:true, message:'Error occured. Please retry'});
-        }
-    }
-    // const deleteHistory = async(id:string)=>{
-    //     try {
-    //         await axios.delete(`${API}bookings/${id}`);
-    //         setFeedback({error:false, message:'Operation successfull'});
-    //     } catch (error) {
-    //         console.log(error);
-    //         setFeedback({error:true, message:'Error occured. Please retry'});
-    //     }
-    // }
-
-    
-    
-    const handleTours = ()=>{
-        setCurrentTour(null);
-        setCurrentHotel(null);
-        setCurrentFlight(null);
-        setViewMode("tours");
-        setCancelMode(false);
-        setTourReason('');
-        setSearch('');
-    }
-    const handleHotels = ()=>{
-        setCurrentTour(null);
-        setCurrentHotel(null);
-        setCurrentFlight(null);
-        setViewMode("hotels");
-        setCancelMode(false);
-        setHotelReason('');
-        setSearch('');
-    }
-    const handleFlight = ()=>{
-        setCurrentTour(null);
-        setCurrentHotel(null);
-        setCurrentFlight(null);
-        setViewMode("flights");
-        setCancelMode(false);
-        setFlightReason('');
-        setSearch('');
+    const handleCancelOrder = async(order:OrderProps)=>{
+          const message = `Your order for ${order.title} has been cancelled`;
+          try {
+              setLoading(true)
+              const cancelled = await cancelOrder(order?.userId, order?.id, message);
+              if(cancelled){
+                  setFeedback({error:false, message:'Order cancelled successfully'});
+              }else{
+                  setFeedback({error:true, message:'Error occured. Please retry'});
+              }
+          } catch (error) {
+              console.log(error);
+          }finally{
+              setLoading(false)
+          }    
     }
 
+    const handleRestoreOrder = async(order:OrderProps)=>{
+      try {
+          setLoading(true)
+          const restored = await restoreOrder(order?.userId, order?.id, order?.title);
+          if(restored){
+              setFeedback({error:false, message:'Order restored successfully'});
+          }else{
+              setFeedback({error:true, message:'Error occured. Please retry'});
+          }
+      } catch (error) {
+          console.log(error);
+      }finally{
+          setLoading(false)
+      }        
+    }
+
+    const handleCancelAll = async()=>{
+      try {
+        setLoading(true);
+        SearchOrder(orders, search, type).filter(item=> item.status !== 'Cancelled')
+        .forEach(async(item)=>{
+          const message = `Your order for ${item.title} has been cancelled`;
+          await cancelOrder(item?.userId, item?.id, message);
+        })
+          
+        setFeedback({error:false, message:'Operation completed successfully'});
+      } catch (error) {
+        setFeedback({error:true, message:'Operation failed. Please retry'});
+        console.log(error);
+      }finally{
+        setLoading(false);
+      }
+    }
+
+
+    const handleApproveAll = async()=>{
+      try {
+        setLoading(true);
+        SearchOrder(orders, search, type).filter(item=> item.status !== 'Approved')
+        .forEach(async(item)=>{
+          await approveOrder(item?.userId, item?.id, item?.title);   
+        })
+        setFeedback({error:false, message:'Operation completed successfully'});
+      } catch (error) {
+        setFeedback({error:true, message:'Operation failed. Please retry'});
+        console.log(error);
+      }finally{
+        setLoading(false);
+      }
+    }
+
+    const handleApproveOrder = async(order:OrderProps)=>{
+      try {
+          setLoading(true)
+          const approved = await approveOrder(order?.userId, order?.id, order?.title);
+          if(approved){
+              setFeedback({error:false, message:'Order approved successfully'});
+          }else{
+              setFeedback({error:true, message:'Error occured. Please retry'});
+          }
+      } catch (error) {
+          console.log(error);
+      }finally{
+          setLoading(false)
+      }        
+    }
 
 
   return (
@@ -168,209 +113,71 @@ const Orders = ({setCurrentPage}:PageProp) => {
         feedback.message &&
         <Alert onClose={()=>setFeedback({error:false, message:''})} severity={feedback.error?'error':'success'} >{feedback.message}</Alert>
       }
-      <div className="flex gap-4 flex-col items-center w-[90%]">
-        <div className="flex flex-row items-center justify-center gap-1 md:gap-4 self-start">
-          <IoIosArrowRoundBack
-            onClick={() => setCurrentPage("home")}
-            size={30}
-            className="cursor-pointer"
-          />
-          <h2 className="font-semibold text-xl md:text-2xl">Orders</h2>
-        </div>
-        <input value={search} onChange={(e)=>setSearch(e.target.value)} type="search" placeholder="search ...." className="w-full px-3 py-2 border border-slate-200 outline-none rounded-md" />
-        <div className="flex flex-col gap-4 w-[90%] justify-center items-center">
-          <div className="flex flex-row justify-center md:justify-around w-full gap-4">
-            <span
-              onClick={handleTours}
-              className={`text-[1rem] ${
-                viewMode === "tours" ? "text-[#cb4900]" : "text-black"
-              } md:text-xl md:hover:bg-slate-100 hover:px-2 font-semibold cursor-pointer`}
-            >
-              Tours
-            </span>
-            <span
-              onClick={handleHotels}
-              className={`text-[1rem] ${
-                viewMode === "hotels" ? "text-[#cb4900]" : "text-black"
-              } md:text-xl md:hover:bg-slate-100 hover:px-2 font-semibold cursor-pointer`}
-            >
-              Hotels
-            </span>
-            <span
-              onClick={handleFlight}
-              className={`text-[1rem] ${
-                viewMode === "flights" ? "text-[#cb4900]" : "text-black"
-              } md:text-xl md:hover:bg-slate-100 hover:px-2 font-semibold cursor-pointer`}
-            >
-              Flights
-            </span>
+      { 
+        currentOrder ?
+        <OrderDetails currentOrder={currentOrder} setCurrentOrder={setCurrentOrder} />
+        :
+        <div className="flex gap-4 flex-col items-center w-[90%]">
+          <div className="flex flex-row items-center justify-center gap-1 md:gap-4 self-start">
+            <IoIosArrowRoundBack
+              onClick={() => setCurrentPage("home")}
+              size={30}
+              className="cursor-pointer"
+            />
+            <h2 className="font-semibold text-xl md:text-2xl">Orders</h2>
+          </div>
+          <hr className="w-full border border-[#cb4900]" />
+          <input value={search} onChange={(e)=>setSearch(e.target.value)} type="search" placeholder="search ...." className="w-full px-3 py-2 border border-slate-200 outline-none rounded-md" />
+          
+          <div className="flex w-full flex-col gap-4 items-center pb-10 gro">
+
+            <div className="flex w-full flex-row justify-between items-center">
+              <select onChange={(e)=>setType(e.target.value)} className="px-3 py-2 border border-slate-200 outline-none rounded-md" name="type" title="type" defaultValue='All'>
+                <option value="All" defaultChecked >All</option>
+                <option value="tour">Tours</option>
+                <option value="hotel">Hotels</option>
+                <option value="flight">Flights</option>
+              </select>
+              {
+                SearchOrder(orders, search, type).length > 1 &&
+                <div className="flex flex-row items-center justify-center gap-4">
+                  <button disabled={loading} onClick={handleApproveAll} type='button' className="rounded-md bg-[#cb4900] hover:bg-orange-400 px-2 py-1 font-semibold text-white text-[0.8rem]" >{loading ? 'wait':'Approve all'}</button>
+                  <button disabled={loading} onClick={handleCancelAll} type='button' className="rounded-md border border-slate-200 hover:bg-slate-200 px-2 py-1 font-semibold text-slate-600 text-[0.8rem]" >{loading ? 'wait':'Cancel all'}</button>
+                </div>
+              }
+            </div>
+
+            {
+              SearchOrder(orders, search, type).length > 0 ?
+              SearchOrder(orders, search, type).map((order:OrderProps)=>(
+                <div key={order.id} className="flex w-[98%] self-center flex-col-reverse gap-4 items-center">
+                  <div className="flex py-4 border-t border-slate-400 flex-row justify-between items-center w-full">
+                    <div onClick={()=>setCurrentOrder(order)} className="flex cursor-pointer flex-row gap-4 items-center">
+                      <img src={order?.extras?.image} className="w-12 h-12 rounded-md object-cover" alt="image" />
+                      <span className="font-semibold text-[0.9rem] md:text-[1rem] hover:underline" >{order?.title}</span>
+                      <span className="font-semibold px-4 hidden md:block text-[0.9rem] md:text-[1rem] border-r-2 border-l-2 border-slate-400" >{order?.tip} {order.type === 'hotel' ?' nights': order.type==='tour'?' days':''} </span>
+                    </div>
+
+                    <div className="flex flex-row items-center justify-center gap-4">
+                      {
+                        order.status !== 'Approved' &&
+                        <button disabled={loading} onClick={order.status === 'Cancelled' ? ()=>handleRestoreOrder(order) : ()=>handleApproveOrder(order)} type='button' className="rounded-md bg-[#cb4900] hover:bg-orange-400 px-2 py-1 font-semibold text-white text-[0.8rem]" >{order.status === 'Cancelled' ?'Restore':'Approve'}</button>
+                      }
+                      {
+                        order.status !== 'Cancelled' &&
+                        <button disabled={loading} onClick={()=>handleCancelOrder(order)} type='button' className="rounded-md border border-slate-200 hover:bg-slate-200 px-2 py-1 font-semibold text-slate-600 text-[0.8rem]" >Cancel</button>
+                      }
+                    </div>
+
+                  </div>
+                </div>
+              ))
+              :
+              <span className="text-xl font-bold">No orders yet</span>
+            }
           </div>
         </div>
-        <hr className="w-full bg-slate-700" />
-        <div className="w-full flex flex-col gap-8 items-center pb-10">
-          {
-            (TourData.length > 0 && viewMode === 'tours')?
-            TourData
-            .filter((item:ToursProps)=>{
-                return search === '' ? item : Object.values(item)
-                  .join(' ')
-                  .toLowerCase()
-                  .includes(search.toLowerCase())
-              })
-            .map((item:ToursProps)=>(
-
-              <div key={item?.id} className='flex flex-col p-6 bg-white shadow-xl rounded-xl md:rounded-2xl w-full lg:w-[90%] gap-4'>
-                <span className='text-[1rem] font-semibold text-right'>{new Date(item?.timestamp).toLocaleString(navigator.language, {
-                            dateStyle: 'short',
-                            timeStyle: 'short',
-                        })}</span>
-                <div className='flex flex-col gap-3'>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Tour: <span className='font-normal'>{item?.title}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Days: <span className='font-normal'>{item?.description.slice(0,10)}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Name: <span className='font-normal'>{item?.name}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Email: <span className='font-normal'>{item?.email}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Phone: <span className='font-normal'>{item?.phone}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Passport Number: <span className='font-normal'>{item?.passportNumber}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Status: <span className='font-normal'>{item?.status}</span> </span>
-                </div>
-                {
-                  (!cancelMode && currentTour?.id !== item?.id) &&
-                  <div className="flex w-full flex-row items-center justify-between">
-                    <button onClick={()=>onConfirm(item?.id)} type='button' className='bg-[#cb4900] px-3 py-1 rounded-full text-white text-[0.8rem] md:text-[0.9rem] hover:bg-orange-400' >Confirm</button>
-                    <button onClick={()=>handleCancelTour(item)} type='button' className='border self-end border-slate-500 px-3 py-1 rounded-full text-black text-[0.8rem] md:text-[0.9rem] hover:bg-slate-100' >Cancel</button>
-                  </div>
-                }
-                {
-                  (cancelMode && currentTour?.id === item?.id) &&
-                  <form ref={formRef} className='w-full flex flex-col gap-2' onSubmit={(e)=>{console.log(e)}} >
-                    <textarea required onChange={(e)=>setTourReason(e.target.value)} className='w-full p-2 border border-slate-400 rounded-2xl outline-none placeholder:italic' rows={5} placeholder="Let the client know why you are cancelling their appointment" />
-                    <div className="flex  self-end items-center justify-center gap-4">
-                      <button onClick={handleTourCancelCancel} type='button' className='border self-end border-slate-500 px-3 py-1 rounded-full text-black text-[0.8rem] md:text-[0.9rem] hover:bg-slate-100' >Cancel</button>
-                      <button disabled={isLoading} type='submit' className={`bg-[#cb4900] w-fit px-6 py-1 rounded-xl text-white text-[0.8rem] md:text-[0.9rem] hover:bg-orange-400 ${isLoading?'bg-orange-200 cursor-default':'bg-[#cb4900] cursor-pointer'}`} >{isLoading?'Loading...':'Proceed'}</button>
-                    </div>
-                  </form>
-                }
-              </div>
-            )):
-            (HotelData.length > 0 && viewMode === 'hotels')?
-            HotelData
-            .filter((item:HotelProps)=>{
-                return search === '' ? item : Object.values(item)
-                  .join(' ')
-                  .toLowerCase()
-                  .includes(search.toLowerCase())
-              })
-            .map((item:HotelProps)=>(
-
-              <div key={item?.id} className='flex flex-col p-6 bg-white shadow-xl rounded-xl md:rounded-2xl w-full lg:w-[90%] gap-4'>
-                {/* <span className='text-[1rem] font-semibold text-right'>{new Date(item?.timestamp).toLocaleString(navigator.language, {
-                            dateStyle: 'short',
-                            timeStyle: 'short',
-                        })}</span> */}
-                <div className='flex flex-col gap-3'>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Tour: <span className='font-normal'>{item?.title}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Days: <span className='font-normal'>{item?.description.slice(0,10)}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Name: <span className='font-normal'>{item?.name}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Email: <span className='font-normal'>{item?.email}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Phone: <span className='font-normal'>{item?.phone}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Adults: <span className='font-normal'>{item?.adults}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Children: <span className='font-normal'>{item?.children}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Check-in Date: <span className='font-normal'>{item?.checkinDate}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Check-out Date: <span className='font-normal'>{item?.checkoutDate}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Price: <span className='font-normal'>{item?.price}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Status: <span className='font-normal'>{item?.status}</span> </span>
-                </div>
-                {
-                  (!cancelMode && currentHotel?.id !== item?.id) &&
-                  <div className="flex w-full flex-row items-center justify-between">
-                    <button onClick={()=>onConfirm(item?.id)} type='button' className='bg-[#cb4900] px-3 py-1 rounded-full text-white text-[0.8rem] md:text-[0.9rem] hover:bg-orange-400' >Confirm</button>
-                    <button onClick={()=>handleCancelHotel(item)} type='button' className='border self-end border-slate-500 px-3 py-1 rounded-full text-black text-[0.8rem] md:text-[0.9rem] hover:bg-slate-100' >Cancel</button>
-                  </div>
-                }
-                {
-                  (cancelMode && currentHotel?.id === item?.id) &&
-                  <form ref={formRef} className='w-full flex flex-col gap-2' onSubmit={(e)=>{console.log(e)}} >
-                    <textarea required onChange={(e)=>setHotelReason(e.target.value)} className='w-full p-2 border border-slate-400 rounded-2xl outline-none placeholder:italic' rows={5} placeholder="Let the client know why you are cancelling their appointment" />
-                    <div className="flex  self-end items-center justify-center gap-4">
-                      <button onClick={handleHotelCancelCancel} type='button' className='border self-end border-slate-500 px-3 py-1 rounded-full text-black text-[0.8rem] md:text-[0.9rem] hover:bg-slate-100' >Cancel</button>
-                      <button disabled={isLoading} type='submit' className={`bg-[#cb4900] w-fit px-6 py-1 rounded-xl text-white text-[0.8rem] md:text-[0.9rem] hover:bg-orange-400 ${isLoading?'bg-orange-200 cursor-default':'bg-[#cb4900] cursor-pointer'}`} >{isLoading?'Loading...':'Proceed'}</button>
-                    </div>
-                  </form>
-                }
-              </div>
-            )):
-
-            (FlightData.length > 0 && viewMode === 'flights')?
-            FlightData
-            .filter((item:FlightProps)=>{
-                return search === '' ? item : Object.values(item)
-                  .join(' ')
-                  .toLowerCase()
-                  .includes(search.toLowerCase())
-              })
-            .map((item:FlightProps)=>(
-
-              <div key={item?.id} className='flex flex-col p-6 bg-white shadow-xl rounded-xl md:rounded-2xl w-full lg:w-[90%] gap-4'>
-                <span className='text-[1rem] font-semibold text-right'>{item.timestamp && formatDateAndTime(item.timestamp)}</span>
-                <div className='flex flex-col gap-3'>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Flight: <span className='font-normal'>{item?.title}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Trip Type: <span className='font-normal'>{item?.type}</span> </span>
-                  {
-                    item.type === 'Multicity' &&
-                    <span className='font-bold text-[0.9rem] md:text-xl' >Loactions: {item.cities.map((city:string)=>(<span className='font-normal'>{city}{' '}</span>))} </span>
-                  }
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Name: <span className='font-normal'>{item?.name}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Email: <span className='font-normal'>{item?.email}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Phone: <span className='font-normal'>{item?.phone}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Passport Number: <span className='font-normal'>{item?.passportNumber}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Passengers: <span className='font-normal'>{item?.passengers}</span> </span>
-                  {
-                    item.type !== 'Multicity' &&
-                    <>
-                    <span className='font-bold text-[0.9rem] md:text-xl' >From: <span className='font-normal'>{item?.from}</span> </span>
-                    <span className='font-bold text-[0.9rem] md:text-xl' >To: <span className='font-normal'>{item?.to}</span> </span>
-                    </>
-                  }
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Departure Time: <span className='font-normal'>{formatDateAndTime(item?.departureDateAndTime)}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Arrival Time: <span className='font-normal'>{formatDateAndTime(item?.arrivalDateAndTime)}</span> </span>
-                  {
-                    item.type === 'Round Trip' &&
-                    <>
-                    <span className='font-bold text-[0.9rem] md:text-xl' >Return Departure Time: <span className='font-normal'>{formatDateAndTime(item?.reurntDepartureDateAndTime)}</span> </span>
-                    <span className='font-bold text-[0.9rem] md:text-xl' >Return Arrival Time: <span className='font-normal'>{formatDateAndTime(item?.returnArrivalDateAndTime)}</span> </span>
-                    </>
-                  }
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Price: <span className='font-normal'>{item?.price}</span> </span>
-                  <span className='font-bold text-[0.9rem] md:text-xl' >Status: <span className='font-normal'>{item?.status}</span> </span>
-                </div>
-                {
-                  (!cancelMode && currentHotel?.id !== item?.id) &&
-                  <div className="flex w-full flex-row items-center justify-between">
-                    <button onClick={()=>onConfirm(item?.id)} type='button' className='bg-[#cb4900] px-3 py-1 rounded-full text-white text-[0.8rem] md:text-[0.9rem] hover:bg-orange-400' >Confirm</button>
-                    <button onClick={()=>handleCancelFlight(item)} type='button' className='border self-end border-slate-500 px-3 py-1 rounded-full text-black text-[0.8rem] md:text-[0.9rem] hover:bg-slate-100' >Cancel</button>
-                  </div>
-                }
-                {
-                  (cancelMode && currentHotel?.id === item?.id) &&
-                  <form ref={formRef} className='w-full flex flex-col gap-2' onSubmit={(e)=>{console.log(e)}} >
-                    <textarea required onChange={(e)=>setFlightReason(e.target.value)} className='w-full p-2 border border-slate-400 rounded-2xl outline-none placeholder:italic' rows={5} placeholder="Let the client know why you are cancelling their appointment" />
-                    <div className="flex  self-end items-center justify-center gap-4">
-                      <button onClick={handleFlightCancelCancel} type='button' className='border self-end border-slate-500 px-3 py-1 rounded-full text-black text-[0.8rem] md:text-[0.9rem] hover:bg-slate-100' >Cancel</button>
-                      <button disabled={isLoading} type='submit' className={`bg-[#cb4900] w-fit px-6 py-1 rounded-xl text-white text-[0.8rem] md:text-[0.9rem] hover:bg-orange-400 ${isLoading?'bg-orange-200 cursor-default':'bg-[#cb4900] cursor-pointer'}`} >{isLoading?'Loading...':'Proceed'}</button>
-                    </div>
-                  </form>
-                }
-              </div>
-            )):
-
-        
-            
-
-            <h2>There are no orders here yet</h2>
-          }
-          
-        </div>
-      </div>
+      }
     </section>
   );
 }

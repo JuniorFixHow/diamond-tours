@@ -112,3 +112,43 @@ export type FlightDataProps = {
     description:string,
     createdAt:string
 }
+
+
+export type OrderProps = {
+    id:string,
+    userId:string,
+    itemId:string,
+    email:string,
+    fullname?:string,
+    passport?:string,
+    passportNum?:string,
+    phone:string,
+    status:string,
+    title:string,
+    tip:string,
+    type:string,
+    extras:{
+      image:string,
+      amount:number,
+      adults?:number,
+      charges?:number,
+      tripType?:string,
+      checkin?:string,
+      checkout?:string,
+      discount?:number,
+      adultPrice?:number,
+      children?:number,
+      childPrice?:number,
+      passengers?:number,
+    },
+    createdAt:Timestamp
+}
+
+export type NotificationProps ={
+    id:string;
+    title:string;
+    content:string;
+    userId:string;
+    timestamp:Timestamp;
+    read:boolean;
+  }
