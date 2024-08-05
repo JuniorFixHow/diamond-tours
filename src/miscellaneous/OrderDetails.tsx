@@ -143,18 +143,31 @@ const OrderDetails = ({currentOrder, setCurrentOrder}:OrderDetailsProps) => {
                     </div>
 
                     {
-                        currentOrder?.type !== 'flight' &&
+                        currentOrder?.type === 'hotel' &&
                         <div className="flex flex-row gap-8">
                             <div className="flex flex-col gap-0">
-                                <span className="text-[0.8rem] text-slate-500 md:text-[0.9rem] font-semibold" >{currentOrder?.type !== 'hotel' ? 'Departure':'Check-in'}</span>
+                                <span className="text-[0.8rem] text-slate-500 md:text-[0.9rem] font-semibold" >Check-in</span>
                                 <span className="text-[0.9rem] md:text-[1rem] font-semibold" >{currentOrder.extras.checkin  ? new Date(currentOrder?.extras?.checkin).toDateString():''}</span>
                             </div>
                             <div className="flex flex-col gap-0">
-                                <span className="text-[0.8rem] text-slate-500 md:text-[0.9rem] font-semibold" >{currentOrder?.type !== 'hotel' ? 'Arrival':'Check-out'}</span>
+                                <span className="text-[0.8rem] text-slate-500 md:text-[0.9rem] font-semibold" >Check-out</span>
                                 <span className="text-[0.9rem] md:text-[1rem] font-semibold" >{currentOrder.extras.checkout ? new Date(currentOrder?.extras?.checkout).toDateString():''}</span>
                             </div>
                         </div>
                     }
+                    {/* {
+                        currentOrder?.type === 'tour' &&
+                        <div className="flex flex-row gap-8">
+                            <div className="flex flex-col gap-0">
+                                <span className="text-[0.8rem] text-slate-500 md:text-[0.9rem] font-semibold" >Departure</span>
+                                <span className="text-[0.9rem] md:text-[1rem] font-semibold" >{currentOrder.extras.checkin  ? new Date(currentOrder?.extras?.from).toDateString():''}</span>
+                            </div>
+                            <div className="flex flex-col gap-0">
+                                <span className="text-[0.8rem] text-slate-500 md:text-[0.9rem] font-semibold" >Arrival</span>
+                                <span className="text-[0.9rem] md:text-[1rem] font-semibold" >{currentOrder.extras.checkout ? new Date(currentOrder?.extras?.to).toDateString():''}</span>
+                            </div>
+                        </div>
+                    } */}
                     
                     <div className="flex flex-col gap-0">
                         <span className="text-[0.8rem] text-slate-500 md:text-[0.9rem] font-semibold" >{currentOrder?.type === 'flight' ? 'Trip type': 'Days'}</span>
