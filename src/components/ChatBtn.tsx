@@ -2,15 +2,14 @@ import { MdOutlineMessage } from "react-icons/md";
 import { ShowChatProps } from "./Chat";
 import { useState } from "react";
 import { Alert } from "@mui/material";
-import { useAuth } from "@clerk/clerk-react";
 const ChatBtn = ({showChat, setShowChat}:ShowChatProps) => {
   const [showError, setShowError] = useState<boolean>(false);
   const showStyle = "cursor-pointer items-center flex flex-col fixed bottom-16 md:bottom-6 right-8";
 
-  const {isSignedIn} = useAuth();
+  const user = '123';
 
   const handleBtnPress = ()=>{
-    if(!isSignedIn){
+    if(!user){
       setShowError(true);
     }else{
       setShowChat(true);

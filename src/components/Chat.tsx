@@ -3,7 +3,6 @@ import { IoMdPaperPlane } from "react-icons/io";
 import { KeyboardEventHandler, useEffect, useRef, useState } from "react";
 import { Timestamp, addDoc, collection, deleteDoc, doc, onSnapshot, query, serverTimestamp, where } from "firebase/firestore";
 import {db} from '../../firebase';
-import { useAuth, useSession } from "@clerk/clerk-react";
 
 type ChatProps = {
     id:string,
@@ -32,8 +31,7 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
     const [chats, setChats] = useState<ChatProps[]>([]);
     const [currentId, setCurrentId] = useState<string>('');
 
-    const {userId, isLoaded, isSignedIn} = useAuth();
-    const {session} = useSession();
+    const user = '1234';
     // console.log(session?.user);
     
     const formRef = useRef<HTMLFormElement | null>(null)
@@ -47,9 +45,9 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
 
 
       useEffect(()=>{
-      if(isLoaded && isSignedIn){
+      if(user){
           const reference = collection(db, 'Chats');
-          const q = query(reference, where('userId', '==', userId))
+          const q = query(reference, where('userId', '==', user))
           const unsub = onSnapshot(
               q,  (snapshot)=>{
                   const list:ChatProps[] = [];
@@ -72,7 +70,7 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
           }
 
       }
-    },[userId, isSignedIn, isLoaded])
+    },[user])
 
 
     const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -92,14 +90,14 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
             setIsLoading(true);
             try {
                 await addDoc(collection(db, 'Chats'), {
-                    message, userId, time:serverTimestamp(), read:false, sent:true,
+                    message, userId:user, time:serverTimestamp(), read:false, sent:true,
                     lastMessage:message,
-                    user:{
-                        email:session?.user.emailAddresses[0].emailAddress,
-                        hasImage:session?.user?.hasImage,
-                        image: session?.user?.imageUrl,
-                        name: session?.user?.fullName
-                    }
+                    // user:{
+                    //     email:session?.user.emailAddresses[0].emailAddress,
+                    //     hasImage:session?.user?.hasImage,
+                    //     image: session?.user?.imageUrl,
+                    //     name: session?.user?.fullName
+                    // }
                 })
                 chatContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
                 chatContainerRef.current?.scrollHeight
@@ -132,7 +130,7 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
     const normalStyle = "flex items-center justify-center p-4 hover:bg-orange-400 bg-[#cb4900] rounded-full cursor-pointer";
     const loadStyle = "flex items-center justify-center p-4 bg-slate-400 rounded-full cursor-default";
 
-    if (!isLoaded) return "Loading..."
+    // if (!user) return "Loading..."
 
   return (
     <div className={showChat? chatStyle : 'hidden'}>

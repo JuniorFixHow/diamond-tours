@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { API } from "../data/Constats";
 import { Alert } from "@mui/material";
-import { useAuth } from "@clerk/clerk-react"
+// import { useAuth } from "@clerk/clerk-react"
 
 const Bookings = () => {
   const [bookings, setBookings] = useState<BookingsProps[]>([]);
@@ -12,23 +12,22 @@ const Bookings = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentId, setCurrentId] = useState<string | undefined>('');
 
-  const {userId, isSignedIn} = useAuth();
+  const user = '12345';
 
   useEffect(()=>{
     const fetchData = async()=>{
-      if(isSignedIn){
-        try {
-          const res = await axios.get(`${API}bookings/${userId}`);
-          if(res.data){
-            setBookings(res.data);
-          }  
-        } catch (error) {
-          console.log(error)
-        }
+      try {
+        const res = await axios.get(`${API}bookings/${user}`);
+        if(res.data){
+          setBookings(res.data);
+        }  
+      } catch (error) {
+        console.log(error)
       }
+
     }
     fetchData();
-  },[bookings, isSignedIn, userId])
+  },[bookings, user])
 
   const deleteBooking = async(id:string | undefined)=>{
     setIsLoading(true);
