@@ -3,6 +3,7 @@ import { IoMdPaperPlane } from "react-icons/io";
 import { KeyboardEventHandler, useEffect, useRef, useState } from "react";
 import { Timestamp, addDoc, collection, deleteDoc, doc, onSnapshot, query, serverTimestamp, where } from "firebase/firestore";
 import {db} from '../../firebase';
+import { useAuth } from "../hooks/useAuth";
 
 type ChatProps = {
     id:string,
@@ -31,7 +32,7 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
     const [chats, setChats] = useState<ChatProps[]>([]);
     const [currentId, setCurrentId] = useState<string>('');
 
-    const user = '1234';
+    const {user} = useAuth();
     // console.log(session?.user);
     
     const formRef = useRef<HTMLFormElement | null>(null)
@@ -47,7 +48,7 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
       useEffect(()=>{
       if(user){
           const reference = collection(db, 'Chats');
-          const q = query(reference, where('userId', '==', user))
+          const q = query(reference, where('userId', '==', user.id))
           const unsub = onSnapshot(
               q,  (snapshot)=>{
                   const list:ChatProps[] = [];
@@ -90,14 +91,14 @@ const Chat = ({showChat, setShowChat}:ShowChatProps) => {
             setIsLoading(true);
             try {
                 await addDoc(collection(db, 'Chats'), {
-                    message, userId:user, time:serverTimestamp(), read:false, sent:true,
+                    message, userId:user?.id, time:serverTimestamp(), read:false, sent:true,
                     lastMessage:message,
-                    // user:{
-                    //     email:session?.user.emailAddresses[0].emailAddress,
-                    //     hasImage:session?.user?.hasImage,
-                    //     image: session?.user?.imageUrl,
-                    //     name: session?.user?.fullName
-                    // }
+                    user:{
+                        email:user?.email,
+                        hasImage:user?.photoURL !== null,
+                        image: user?.photoURL,
+                        name: user?.displayName
+                    }
                 })
                 chatContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
                 chatContainerRef.current?.scrollHeight

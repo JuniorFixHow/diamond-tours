@@ -6,6 +6,9 @@ import { HeaderData } from "../data/LocalData";
 // import { SignedIn, SignedOut, SignInButton, UserButton, useAuth } from "@clerk/clerk-react";
 import { Alert } from "@mui/material";
 
+import { useAuth } from "../hooks/useAuth";
+import LoginBtn from "../misc/LoginBtn";
+
 type HeaderProps ={
   title:string,
   link: string
@@ -17,8 +20,9 @@ const Header = () => {
   const headerStyle = "dark:text-white hover:text-slate-300 cursor-pointer";
   const selectedHeaderStyle = "text-slate-300 cursor-pointer";
   const [showError, setShowError] = useState<boolean>(false);
-  const user = '1234';
+  const {user} = useAuth();
 
+  // console.log(user);
   const handleTitle = (t:string)=>{
     if(!user && t === 'Bookings'){
       setShowError(true);
@@ -27,6 +31,7 @@ const Header = () => {
       setShowError(false);
     }
   }
+  
 
   return (
     <header id="header" className="w-full flex items-center mx-auto py-2 justify-center font-semibold bg-[#676161] sticky top-0" >
@@ -58,12 +63,14 @@ const Header = () => {
                 <MdOutlinePhoneAndroid size={15} />
                 <span className=" text-[0.5rem] sm:text-sm " >Get App</span>
               </div>
-              {/* <SignedOut>
-              <div className="rounded-2xl bg-[#CB4900] hover:bg-orange-300 text-white text-[0.5rem] sm:text-sm px-4 py-2 cursor-pointer ">
-                  <SignInButton />
-              </div>
-                </SignedOut>
-              <SignedIn>
+              <LoginBtn logo />
+              {/* <SignedOut> */}
+              {/* <div className="rounded-2xl bg-[#CB4900] hover:bg-orange-300 text-white text-[0.5rem] sm:text-sm px-4 py-2 cursor-pointer "> */}
+                {/* <span>Register</span> */}
+                  {/* <SignInButton /> */}
+              {/* </div> */}
+                {/* </SignedOut> */}
+              {/* <SignedIn>
                 <UserButton />
               </SignedIn> */}
             </div>

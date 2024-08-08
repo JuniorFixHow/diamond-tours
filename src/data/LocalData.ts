@@ -109,10 +109,10 @@ export const HeaderData = [
         title:'Packages',
         link: '#packages'
     },
-    // {
-    //     title:'Bookings',
-    //     link: '#bookings'
-    // },
+    {
+        title:'Bookings',
+        link: '#bookings'
+    },
     {
         title:'About Us',
         link: '#about'

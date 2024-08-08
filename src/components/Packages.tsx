@@ -7,6 +7,7 @@ import 'react-phone-input-2/lib/style.css'
 import axios from "axios";
 import Alert from '@mui/material/Alert';
 import { API } from "../data/Constats";
+import { useAuth } from "../hooks/useAuth";
 // import { useAuth } from "@clerk/clerk-react"
 
 
@@ -25,7 +26,7 @@ const Packages = () => {
     const [feedback, setFeedback] = useState<FeedBackPops>({error:false, message:''});
 
     const formRef = useRef<HTMLFormElement | null>(null);
-    const user = '123';
+    const {user} = useAuth();
     const handleSubmit =async(e: React.FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
         setFeedback({error:false, message:''});
@@ -48,7 +49,7 @@ const Packages = () => {
                   service,
                   packages,
                   date,
-                  userId:user,
+                  userId:user?.id,
                   location: { country, region, city },
                   status:'Pending'
                 };

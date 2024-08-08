@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { API } from "../data/Constats";
 import { Alert } from "@mui/material";
+import { useAuth } from "../hooks/useAuth";
 // import { useAuth } from "@clerk/clerk-react"
 
 const Bookings = () => {
@@ -12,12 +13,12 @@ const Bookings = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentId, setCurrentId] = useState<string | undefined>('');
 
-  const user = '12345';
+  const {user} = useAuth();
 
   useEffect(()=>{
     const fetchData = async()=>{
       try {
-        const res = await axios.get(`${API}bookings/${user}`);
+        const res = await axios.get(`${API}bookings/${user?.id}`);
         if(res.data){
           setBookings(res.data);
         }  

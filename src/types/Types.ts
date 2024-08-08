@@ -26,3 +26,11 @@ export type FeedBackPops = {
     error:boolean,
     message:string
 }
+
+export type UserProps={
+    displayName:string;
+    email:string,
+    photoURL:string;
+    phone:string;
+    id:string;
+  }
