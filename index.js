@@ -26,7 +26,7 @@ app.use('/api/bookings', BookingRoutes);
 app.use('/api/contacts', ContactRoutes);
 app.use('/api/messages', MessageRoutes);
 app.use('/api/news', NewsRoutes);
-app.use('/api/reviews', NewsRoutes);
+app.use('/api/reviews', ReviewRoutes);
 
 app.listen(PORT, ()=>{
     console.log(`app is listening on port ${PORT}`)
