@@ -20,7 +20,7 @@ mongoose.connection.on('disconnected', ()=>{
     console.log('Mongo is disconnected')
 })
 
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || process.env.port || 8000;
 
 app.use('/api/bookings', BookingRoutes);
 app.use('/api/contacts', ContactRoutes);
