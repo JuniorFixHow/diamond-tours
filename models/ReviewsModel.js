@@ -4,7 +4,10 @@ const ReviewSchema = new Schema({
     user:{
         name:String,
         id:String,
-        photo:String,
+        photo:{
+            type:String,
+            default:'https://cdn-icons-png.flaticon.com/512/9187/9187604.png',
+        },
     },
     isReply:{
         type:Boolean,
