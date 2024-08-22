@@ -4,10 +4,7 @@ const ReviewSchema = new mongoose.Schema({
     user:{
         name:String,
         id:String,
-        photo:{
-            type:String,
-            default:'https://cdn-icons-png.flaticon.com/512/9187/9187604.png'
-        }
+        photo:String
     },
     isReply:{
         type:Boolean,
