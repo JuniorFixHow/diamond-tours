@@ -1,11 +1,9 @@
-import { FlatList, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput,  View } from 'react-native'
+import {  Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput,  View } from 'react-native'
 import React, { useState } from 'react'
 import { MyStyles } from '../../../utils/Styles'
-import { TouristSites } from '../../../utils/DummyData'
 import { useRouter } from 'expo-router'
-import { Entypo, MaterialIcons, AntDesign, Ionicons, FontAwesome } from '@expo/vector-icons';
+import {  AntDesign, Ionicons, FontAwesome } from '@expo/vector-icons';
 import { Colours } from '../../../utils/Colours'
-import { TourDataProps, TouristSiteProps } from '../../../types/Types'
 import ToursFilter from '../../../common/ToursFilter'
 import ToursList from '../../../common/ToursList'
 import { useFetchTours } from '../../../hooks/useFetchTour'

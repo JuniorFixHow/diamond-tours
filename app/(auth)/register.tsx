@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Image,
   Pressable,
   StyleSheet,
@@ -14,126 +15,116 @@ import { Colours } from "../../utils/Colours";
 import { Feather } from "@expo/vector-icons";
 import Google from "../../assets/imgs/google.png";
 import { useRouter } from "expo-router";
-import OTPTextInput from 'react-native-otp-textinput';
-import { useAuth, useClerk, useOAuth, useSignUp, useUser } from "@clerk/clerk-expo";
-import * as WebBrowser from "expo-web-browser";
-import { useWarmUpBrowser } from "../../hooks/useWarmBrowser";
-import * as Linking from "expo-linking"
 
-WebBrowser.maybeCompleteAuthSession();
+import {validData} from '../../functions/Validation';
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
+import { auth } from "../../firebase";
+import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-signin';
+import { UserProps } from "../../types/Types";
+import { useAuth } from "../../context/AuthContext";
+
+
 
 
 const register = () => {
   const [showPass, setShowShowPass] = useState<boolean>(true);
-  const [otp, setOtp] = useState<string>('');
+  // const [otp, setOtp] = useState<string>('');
   const [fname, setFname] = useState<string>('');
   const [lname, setLname] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const [isVerifying, setIsVerifying] = useState<boolean>(false);
+  const [googleLoading, setGoogleLoading] = useState<boolean>(false);
+  // const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [hasSignedUp, setHasSignedUp] = useState<boolean>(false);
-  const otpInput = useRef(null);
+  // const otpInput = useRef(null);
   const router = useRouter();
-  const { isLoaded, signUp, setActive } = useSignUp();
-  const { user } = useUser();
-  const {isSignedIn}= useAuth();
-  const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
+  const {setUserData} = useAuth();
 
 
-  useEffect(()=>{
-    if(isSignedIn && hasSignedUp){
-      user?.update({lastName:lname, firstName:fname});
-      router.replace('(public)/(tabs)');
-    }
-  },[isSignedIn, hasSignedUp])
 
+  GoogleSignin.configure({
+    webClientId:process.env.EXPO_PUBLIC_CLIENT_ID,
+  })
 
-  const onGooglePress = useCallback(async () => {
+  const onGooglePress = async () => {
     try {
-      const { createdSessionId, signIn, signUp, setActive } =
-        await startOAuthFlow({ redirectUrl: Linking.createURL("/dashboard", { scheme: "myapp" })});
-
-      if (createdSessionId) {
-        setActive!({ session: createdSessionId });
-      } else {
-        // Use signIn or signUp for next steps such as MFA
+      setGoogleLoading(true);
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+  
+      const userInfo = await GoogleSignin.signIn();
+      const user = userInfo.user;
+      const userData :UserProps={
+          id:user.id,
+          photoURL:user?.photo!,
+          displayName:user?.name!,
+          emailVerified: true,
+          email:user?.email!,
+          isSocial:true,
       }
-    } catch (err) {
-      console.error("OAuth error", err);
-    }
-  }, []);
-
-
-  const onSignUpPress = async () => {
-    if (!isLoaded) {
-      return;
-    }
-    if(fname.trim()==='' || lname.trim()==='' || email.trim()===''|| password.trim()===''){
-        ToastAndroid.showWithGravityAndOffset(
-            'Please complete the fields', 
-            ToastAndroid.LONG, 
-            ToastAndroid.TOP, 25, 50);
-            
-        }else{
-            try {
-            setLoading(true);
-          await signUp.create({
-            emailAddress:email,
-            password,
-          });
-    
-          await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-    
-          setIsVerifying(true);
-        } catch (err: any) {
-          // See https://clerk.com/docs/custom-flows/error-handling
-          // for more info on error handling
-          alert(err?.errors[0].longMessage);
-          console.error(JSON.stringify(err?.errors[0]));
-        }finally{
-            setLoading(false)
+      setUserData(userData);
+      router.push('/(public)/(tabs)')
+    } catch (error:any) {
+      if (error.code) {
+        switch (error.code) {
+          // Handle specific error codes here
+          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            alert('Play Services not available');
+            console.log('Play Services not available');
+            break;
+          case statusCodes.SIGN_IN_CANCELLED:
+            // alert('Sign-in cancelled');
+            console.log('Sign-in cancelled');
+            break;
+            case statusCodes.IN_PROGRESS:
+            // alert('Sign-in cancelled');
+            console.log('Sign-in in progress');
+            break;
+            case statusCodes.SIGN_IN_REQUIRED:
+            // alert('Sign-in required');
+            console.log('Sign-in required');
+            break;
+          default:
+            console.log('Unknown error');
+            break;
         }
-
+      } else {
+        console.log('Error:', error);
+      }
+      alert('Error occurred in the process');
+    } finally {
+      setGoogleLoading(false);
     }
-
   };
 
-  const onPressVerify = async () => {
-    if (!isLoaded) {
-      return;
-    }
-    if(otp.trim().length < 6){
-        ToastAndroid.showWithGravityAndOffset(
-            'Please enter a valid code', 
-            ToastAndroid.LONG, 
-            ToastAndroid.TOP, 25, 50);
-        }else{
-            try {
-            setLoading(true);
-            const completeSignUp = await signUp.attemptEmailAddressVerification({
-              code:otp,
-            });
+
+
+
+  const onSignUpPress = async()=>{
+    try {
+      setLoading(true);
+      const valid = validData(email, password);
+      if(valid){
+        const res = await createUserWithEmailAndPassword(auth, email, password);
+        const user = res.user;
+        await updateProfile(user, {
+          displayName:fname + ' '+lname,
+          photoURL:'https://cdn-icons-png.flaticon.com/512/9187/9187604.png'
+        })
+        await sendEmailVerification(user);
+        router.navigate('/(auth)');
+        alert('Check your email for a verification link');
+        // console.log('');
+      }
       
-            if (completeSignUp.status === 'complete') {
-              await setActive({ session: completeSignUp.createdSessionId })
-              setHasSignedUp(true);
-            } else {
-              console.error(JSON.stringify(completeSignUp, null, 2));
-            }
-          } catch (err: any) {
-            // See https://clerk.com/docs/custom-flows/error-handling
-            // for more info on error handling
-            ToastAndroid.showWithGravityAndOffset(
-                err?.errors[0].longMessage, 
-                ToastAndroid.LONG, 
-                ToastAndroid.TOP, 25, 50);
-            console.error(JSON.stringify(err, null, 2));
-          }finally{
-              setLoading(false);
-          }
+    } catch (error) {
+      console.log(error);
+      alert('Error occured. Please retry');
+    }finally{
+      setLoading(false);
     }
-  };
+  }
+
+
 
   return (
     <View style={MyStyles.main}>
@@ -152,8 +143,7 @@ const register = () => {
             Please enter your details below
           </Text>
         </View>
-        {
-            !isVerifying &&
+        
             <View
             style={{
                 width: "100%",
@@ -258,7 +248,7 @@ const register = () => {
                 <Text style={[MyStyles.welcomeMessage, { width: "auto" }]}>
                 Have an account?
                 </Text>
-                <Pressable onPress={() => router.navigate("(public)/(auth)")}>
+                <Pressable onPress={() => router.navigate("/(auth)")}>
                 <Text style={{ color: "#cb4900" }}>Login</Text>
                 </Pressable>
             </View>
@@ -297,10 +287,12 @@ const register = () => {
                 }}
                 onPress={onGooglePress}
             >
-                <Image
-                source={Google}
-                style={{ width: 30, height: 30, objectFit: "contain" }}
-                />
+              {
+                googleLoading ? 
+                <ActivityIndicator size='small' style={{borderColor:'black'}} />
+                :
+                <Image source={Google} style={{width:30, height:30, objectFit:'contain'}} />
+              }
                 <Text
                 style={{ color: Colours.black, fontWeight: "600", fontSize: 14 }}
                 >
@@ -308,8 +300,8 @@ const register = () => {
                 </Text>
             </TouchableOpacity>
             </View>
-        }
-        {
+        
+        {/* {
             isVerifying &&
             <>
             <Text style={{fontSize:20, color:'#cb4900', fontWeight:'700'}} >Enter OTP Code</Text>
@@ -340,7 +332,7 @@ const register = () => {
                 </Text>
             </TouchableOpacity>
             </>
-        }
+        } */}
 
       </View>
     </View>

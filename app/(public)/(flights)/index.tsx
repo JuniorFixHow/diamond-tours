@@ -1,19 +1,16 @@
-import { ActivityIndicator, Dimensions, FlatList, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput,  View } from 'react-native';
+import {  Dimensions, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput,  View } from 'react-native';
 import React, { useState } from 'react'
 import { MyStyles } from '../../../utils/Styles'
-import { TouristSites, Hotels, Airlines } from '../../../utils/DummyData'
 import { useRouter } from 'expo-router'
-import { Entypo, MaterialIcons, AntDesign, Ionicons, FontAwesome } from '@expo/vector-icons';
+import {  AntDesign, Ionicons, FontAwesome } from '@expo/vector-icons';
 import { Colours } from '../../../utils/Colours'
-import { TouristSiteProps, HotelProps, AirlineProps, FlightDataProps } from '../../../types/Types'
-import ToursFilter from '../../../common/ToursFilter'
+import { FlightDataProps } from '../../../types/Types'
 import FlightsFilter from '../../../common/FlightsFilter'
 import { formatDateDiff } from '../../../functions/Date';
 import { useFetchFlights } from '../../../hooks/useFetchFlights';
 import { SearchFlights } from '../../../functions/search';
 import Loader from '../../../misc/Loader';
 
-const {width, height} = Dimensions.get('screen');
 const index = () => {
   const router = useRouter();
   const {flights, flightLoading} = useFetchFlights();
@@ -46,7 +43,7 @@ const index = () => {
   //   )
   // }
   return (
-    <SafeAreaView style={[MyStyles.main, {backgroundColor:Colours.bg, width, position:'relative'}]} >
+    <SafeAreaView style={[MyStyles.main, {backgroundColor:Colours.bg, width:'100%', position:'relative'}]} >
       {
         closeFilter &&
         <FlightsFilter 

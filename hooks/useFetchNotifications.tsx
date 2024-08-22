@@ -2,22 +2,24 @@ import { useEffect, useState } from "react";
 import { collection,  onSnapshot, orderBy, query, where, } from "firebase/firestore";
 import { db } from '../firebase';
 import { NotificationProps, OrderProps } from "../types/Types";
-import { useAuth } from "@clerk/clerk-expo";
+import { useAuth } from "../context/AuthContext";
 
 export const useFetchNotifications =()=>{
     const [notis, setNotis] = useState<NotificationProps[]>([]);
     const [unreads, setUnreads] = useState<number>(0);
     const [notisLoading, setNotisLoading] = useState<boolean>(false);
 
-    const {userId} = useAuth();
+    const {user} = useAuth()
 
   
 
     useEffect(() => {
+      if(user){
+
         setNotisLoading(true);
         const reference = collection(db, 'Notifications');
         // const q = query(reference, orderBy('createdAt', 'asc'));
-        const q = query(reference, where('userId', '==', userId))
+        const q = query(reference, where('userId', '==', user?.id))
         const unsub = onSnapshot(
           q,
           { includeMetadataChanges: true },
@@ -41,6 +43,7 @@ export const useFetchNotifications =()=>{
         return () => {
           unsub();
         };
+      }
       }, []);
 
     // fetchData();

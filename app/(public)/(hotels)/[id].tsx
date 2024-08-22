@@ -9,10 +9,10 @@ import ImageViewer from '../../../common/ImageViewer';
 import HotelForm from '../../../common/HotelForm';
 import Button from '../../../misc/Button';
 import { addDoc, collection, doc, onSnapshot, serverTimestamp, Timestamp } from 'firebase/firestore';
-import { db } from '../../../firebase';
-import { useUser } from '@clerk/clerk-expo';
 import { makeFavourite, removeFavourite } from '../../../functions/firestore';
 import { calculateDateDifference } from '../../../functions/Date';
+import { db } from '../../../firebase';
+import { useAuth } from '../../../context/AuthContext';
 
 const Tour = () => {
     const param = useLocalSearchParams();
@@ -39,7 +39,7 @@ const Tour = () => {
 
     const router = useRouter();
     const [isFav, setIsFav] = useState<boolean>(false);
-    const {user} = useUser();
+    const {user} = useAuth();
 
     useEffect(()=>{
         const FetchData = ()=>{
@@ -93,7 +93,7 @@ const Tour = () => {
             }else{
                 const info = {
                     fullname, 
-                    email: email.trim().length > 5 ? email : user?.primaryEmailAddress, 
+                    email: email.trim().length > 5 ? email : user?.email, 
                     phone:formattedNumber,
                     itemId: currentHotel?.id,
                     status:'Pending',
@@ -241,8 +241,8 @@ const Tour = () => {
                                         <View style={styles.payItem} >
                                             <View style={{flexDirection:'column', gap:1}} >
                                                 <Text style={styles.subtotal}>{currentHotel?.name}</Text>
-                                                <Text style={{fontSize:10, color:Colours.grey}} >({adults} x ${currentHotel?.adultPrice}) + ({children} x ${currentHotel?.childPrice})  + ${currentHotel?.adultPrice}</Text>
-                                            </View>
+                                                    <Text style={{fontSize:10, color:Colours.grey}} >({adults} x ${currentHotel?.adultPrice} x {calculateDateDifference(eDate, sDate)}) + ({children} x ${currentHotel?.childPrice} x {calculateDateDifference(eDate, sDate)})  + (${currentHotel?.adultPrice} x {calculateDateDifference(eDate, sDate)} )</Text>
+                                                </View>
                                             <Text style={styles.subtotal} >${currentHotel?.adultPrice}</Text>
                                         </View>
                                     </View>

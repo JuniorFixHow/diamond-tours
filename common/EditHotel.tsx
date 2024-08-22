@@ -75,9 +75,10 @@ const EditHotel = ({itemId, data}:EditProps) => {
 
     useEffect(()=>{
         if(currentHotel){
-            const child = children * currentHotel.childPrice;
-            const adult = adults * currentHotel.adultPrice;
-            const st = child + adult + currentHotel.adultPrice
+            const stayDays = calculateDateDifference(eDate, sDate);
+            const child = children * currentHotel.childPrice * stayDays;
+            const adult = adults * currentHotel.adultPrice * stayDays;
+            const st = child + adult + (currentHotel.adultPrice * calculateDateDifference(eDate, sDate))
             setSubTotal(st);
             // const t = st + currentHotel?.charges - discount
             const t = st - ((currentHotel.discount/100) * st);
@@ -87,7 +88,7 @@ const EditHotel = ({itemId, data}:EditProps) => {
                 setTotal(t);
             }
         }
-      },[children, adults, currentHotel])
+      },[children, adults, sDate, eDate, currentHotel])
 
     const handleChangeStart = (event: DateTimePickerEvent, date: Date | undefined) => {
         if (date) {
@@ -313,7 +314,7 @@ const EditHotel = ({itemId, data}:EditProps) => {
                 <View style={styles.payItem} >
                     <View style={{flexDirection:'column', gap:1}} >
                         <Text style={styles.subtotal}>{currentHotel?.name?.slice(0,40)}</Text>
-                        <Text style={{fontSize:10, color:Colours.grey}} >({adults} x ${currentHotel?.adultPrice}) + ({children} x ${currentHotel?.childPrice})  + ${currentHotel?.adultPrice}</Text>
+                        <Text style={{fontSize:10, color:Colours.grey}} >({adults} x ${currentHotel?.adultPrice} x {calculateDateDifference(eDate, sDate)}) + ({children} x ${currentHotel?.childPrice} x {calculateDateDifference(eDate, sDate)})  + (${currentHotel?.adultPrice} x {calculateDateDifference(eDate, sDate)} )</Text>
                     </View>
                     <Text style={styles.subtotal} >${currentHotel?.adultPrice}</Text>
                 </View>

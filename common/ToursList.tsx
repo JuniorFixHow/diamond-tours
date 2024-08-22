@@ -5,9 +5,9 @@ import { useRouter } from 'expo-router'
 import {Entypo, MaterialIcons, AntDesign} from '@expo/vector-icons';
 import { Colours } from '../utils/Colours';
 import { useFetchTours } from '../hooks/useFetchTour';
-import { useUser } from '@clerk/clerk-expo';
 import { makeFavourite, removeFavourite } from '../functions/firestore';
 import { MyStyles } from '../utils/Styles';
+import { useAuth } from '../context/AuthContext';
 
 type TourListProps = {
     data:TourDataProps[]
@@ -16,7 +16,7 @@ type TourListProps = {
 const ToursList = ({data}:TourListProps) => {
     const router = useRouter();
     // const {tours} = useFetchTours();
-    const {user} = useUser();
+    const {user} = useAuth();
 
     const handleRemove = (id:string)=>{
         if(user){

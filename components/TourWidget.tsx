@@ -1,19 +1,18 @@
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { TouristSites } from '../utils/DummyData'
 import { TourDataProps } from '../types/Types'
 import { Entypo, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { Colours } from '../utils/Colours';
 import { useRouter } from 'expo-router';
 import { useFetchTours } from '../hooks/useFetchTour';
 import { MyStyles } from '../utils/Styles';
-import { useUser } from '@clerk/clerk-expo';
 import { makeFavourite, removeFavourite } from '../functions/firestore';
+import { useAuth } from '../context/AuthContext';
 
 const TourWidget = () => {
     const router = useRouter();
     const {tours} = useFetchTours();
-    const {user} = useUser();
+    const {user} = useAuth();
     const handleRemove = (id:string)=>{
         if(user){
             removeFavourite(id, 'Tours', user?.id); 

@@ -1,15 +1,14 @@
-import { useAuth } from '@clerk/clerk-expo'
 import { Redirect, Stack } from 'expo-router'
 import { useContext } from 'react';
 import { NewContext } from '../../context/NewContext';
+import { useAuth } from '../../context/AuthContext';
 
 const Layout = () => {
-  const { isSignedIn } = useAuth();
-  const {isNew} = useContext(NewContext);
+  const {old, user} = useAuth();
 
-  if(isNew) return <Redirect href={'/'} />
+  if(!old) return null
 
-  if (isSignedIn) {
+  if (user) {
     return <Redirect href={'/(public)/(tabs)'} />
   }
   return (

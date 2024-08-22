@@ -8,29 +8,27 @@ import { FontAwesome5, Entypo, MaterialIcons } from '@expo/vector-icons';
 import TourWidget from '../../../components/TourWidget';
 import HotelWidget from '../../../components/HotelWidget';
 import { useRouter } from 'expo-router';
-import { Hotels } from '../../../utils/DummyData';
 import { Greetings } from '../../../functions/Date';
-import { useAuth, useUser } from '@clerk/clerk-expo';
 import { useFetchHotels } from '../../../hooks/useFetchHotels';
 import { useFetchNotifications } from '../../../hooks/useFetchNotifications';
 import { useFetchTours } from '../../../hooks/useFetchTour';
 import Loader from '../../../misc/Loader';
+import { useAuth } from '../../../context/AuthContext';
 
 const index = () => {
+  const {user} = useAuth();
   const router = useRouter();
-  const {isSignedIn} = useAuth();
-  const {user} = useUser();
   const {hotels, hotelLoading} = useFetchHotels();
   const {tours, toursLoading} = useFetchTours();
   const {unreads} = useFetchNotifications();
-  if(!isSignedIn) return null;
+  if(!user) return null;
   return (
     <SafeAreaView style={[MyStyles.main, {backgroundColor:Colors.bg}]} >
       <View style={{flexGrow:1, marginTop:50, flexDirection:'column', gap:10, width:'90%', alignSelf:'center'}} >
         <View style={{width:'100%', flexDirection:'row', justifyContent:'space-between', alignItems:'flex-start'}} >
           <View style={{ flexDirection:'column'}} >
             <Text style={MyStyles.greyText} >{Greetings()}</Text>
-            <Text style={MyStyles.welcomeText} >{user?.fullName?.split(' ')[0]}</Text>
+            <Text style={MyStyles.welcomeText} >{user?.displayName?.split(' ')[0]}</Text>
           </View>
           <View style={{alignItems:'center', flexDirection:'row', gap:10}} >
 

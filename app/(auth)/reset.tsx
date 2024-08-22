@@ -1,5 +1,4 @@
 import {
-    Image,
     Pressable,
     StyleSheet,
     Text,
@@ -8,34 +7,32 @@ import {
     TouchableOpacity,
     View,
   } from "react-native";
-  import React, { useEffect, useRef, useState } from "react";
+  import React, {  useRef, useState } from "react";
   import { MyStyles } from "../../utils/Styles";
   import { Colours } from "../../utils/Colours";
-  import { Feather } from "@expo/vector-icons";
-  import Google from "../../assets/imgs/google.png";
-  import { useRouter } from "expo-router";
-  import OTPTextInput from 'react-native-otp-textinput';
-  import { useAuth, useClerk, useSignIn, useSignUp, useUser } from "@clerk/clerk-expo";
+  // import { Feather } from "@expo/vector-icons";
+  // import OTPTextInput from 'react-native-otp-textinput';
+  // import { useSignIn } from "@clerk/clerk-expo";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { auth } from "../../firebase";
+import { useRouter } from "expo-router";
   
   
   const reset = () => {
-    const [showPass, setShowShowPass] = useState<boolean>(true);
-    const [otp, setOtp] = useState<string>('');
+    // const [showPass, setShowShowPass] = useState<boolean>(true);
+    // const [otp, setOtp] = useState<string>('');
     const [email, setEmail] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    const [isVerifying, setIsVerifying] = useState<boolean>(false);
+
     const [loading, setLoading] = useState<boolean>(false);
-    const otpInput = useRef(null);
-    const { isLoaded, signIn, setActive } = useSignIn();
+    // const otpInput = useRef(null);
+    // const { isLoaded, signIn, setActive } = useSignIn();
+    const router = useRouter();
 
   
   
     
   
     const onResetRequest = async () => {
-      if (!isLoaded) {
-        return;
-      }
       if(email.trim()===''){
           ToastAndroid.showWithGravityAndOffset(
               'Please enter email', 
@@ -45,17 +42,12 @@ import {
           }else{
               try {
               setLoading(true);
-              await signIn.create({
-                strategy:'reset_password_email_code',
-                identifier:email
-              })
-            
-            setIsVerifying(true);
+              await sendPasswordResetEmail(auth, email);
+              router.navigate('/(auth)')
+              alert('Verification email sent. Check your email to proceed');
           } catch (err: any) {
-            // See https://clerk.com/docs/custom-flows/error-handling
-            // for more info on error handling
-            alert(err?.errors[0].longMessage);
-            console.error(JSON.stringify(err?.errors[0]));
+           console.log(err.message);
+           alert('Error occured. Please retry');
           }finally{
               setLoading(false)
           }
@@ -63,41 +55,8 @@ import {
       }
   
     };
-  
-    const onPressVerify = async () => {
-      if (!isLoaded) {
-        return;
-      }
-      if(otp.trim().length < 6){
-          ToastAndroid.showWithGravityAndOffset(
-              'Please enter a valid code', 
-              ToastAndroid.LONG, 
-              ToastAndroid.TOP, 25, 50);
-          }else{
-              try {
-              setLoading(true);
-              const res =  await signIn!.attemptFirstFactor({
-                strategy:'reset_password_email_code',
-                code:otp, password
-              })
-              console.log(res);
-              await setActive!({session:res.createdSessionId})
-              setIsVerifying(false);
-              alert('Password reset successfully');
-             
-            } catch (err: any) {
-              // See https://clerk.com/docs/custom-flows/error-handling
-              // for more info on error handling
-              ToastAndroid.showWithGravityAndOffset(
-                  err?.errors[0].longMessage, 
-                  ToastAndroid.LONG, 
-                  ToastAndroid.TOP, 25, 50);
-              console.error(JSON.stringify(err, null, 2));
-            }finally{
-                setLoading(false);
-            }
-      }
-    };
+
+   
   
     return (
       <View style={MyStyles.main}>
@@ -110,17 +69,15 @@ import {
             flexDirection: "column",
           }}
         >
-            {
-                !isVerifying &&
+            
                 <View style={styles.input}>
                     <Text style={MyStyles.welcomeText}>Confirm email</Text>
                     <Text style={[MyStyles.welcomeMessage, { textAlign: "left" }]}>
                     Please enter your email below
                     </Text>
                 </View>
-            }
-          {
-              !isVerifying &&
+            
+          
               <View
               style={{
                   width: "100%",
@@ -168,8 +125,8 @@ import {
   
               
               </View>
-          }
-          {
+          
+          {/* {
               isVerifying &&
               <>
               <Text style={{fontSize:20, color:'#cb4900', fontWeight:'700'}} >Create new password</Text>
@@ -236,7 +193,7 @@ import {
                 </TouchableOpacity>
               </View>
               </>
-          }
+          } */}
   
         </View>
       </View>

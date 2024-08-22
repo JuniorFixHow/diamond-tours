@@ -1,17 +1,16 @@
 import { Image, Pressable, SafeAreaView, StyleSheet, Text,  TouchableOpacity,  View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import { MyStyles } from '../../../utils/Styles'
 import { Colours } from '../../../utils/Colours'
 import { FontAwesome6, AntDesign, FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 // import {getLocales, getCalendars, useLocales,  useCalendars} from 'expo-localization';
 import { useRouter } from 'expo-router';
-import { useClerk, useUser } from '@clerk/clerk-expo';
 import * as Linking from 'expo-linking';
 import TermsAndConditions from '../../../misc/TAC';
+import { useAuth } from '../../../context/AuthContext';
 
 const Settings = () => {
-  const {signOut} = useClerk();
-  const {user} = useUser();
+  const {user, logout} = useAuth();
   const [showTerms, setShowTerms] = useState<boolean>(false);
   // const locale = useLocales();
   // const formattedAmount = new Intl.NumberFormat(locale[1].languageTag, {
@@ -29,6 +28,9 @@ const Settings = () => {
   const router = useRouter();
   // console.log(user?.fullName);
 
+  // const logout =async()=>{
+
+  // }
 
   return (
     <SafeAreaView style={[MyStyles.main, {backgroundColor:Colours.bg, position:'relative'}]} >
@@ -38,10 +40,10 @@ const Settings = () => {
       }
       <View style={{width:'100%', marginTop:50, alignItems:'center', flexDirection:'column', gap:15}} >
         <TouchableOpacity onPress={()=>router.navigate('(public)/(profile)/(user)')} style={{flexDirection:'row', paddingHorizontal:20, paddingBottom:10, borderBottomWidth:1, borderColor:'rgb(180 180 180)', width:'100%', gap:10, alignItems:'center'}} >
-          <Image style={{width:80, height:80, borderRadius:40, objectFit:'cover'}} source={{uri:user?.imageUrl || profilephoto}} />
+          <Image style={{width:80, height:80, borderRadius:40, objectFit:'cover'}} source={{uri:user?.photoURL || profilephoto}} />
           <View style={{flexDirection:'column', gap:2, }} >
-            <Text style={styles.black} >{user?.fullName}</Text>
-            <Text style={styles.greyThin} >{user?.emailAddresses[0].toString()}</Text>
+            <Text style={styles.black} >{user?.displayName}</Text>
+            <Text style={styles.greyThin} >{user?.email?.toString()}</Text>
           </View>
         </TouchableOpacity>
 
@@ -89,7 +91,7 @@ const Settings = () => {
               </View>
                 <AntDesign name='right' size={18} color='#cb4900' />
             </Pressable>
-            <Pressable onPress={()=>signOut({redirectUrl:'(public)/(auth)'})} style={styles.listItem} >
+            <Pressable onPress={logout} style={styles.listItem} >
               <View style={{gap:10, flexDirection:'row', alignItems:'center'}} >
                 <AntDesign name="logout" size={15} color="#cb4900" />
                 <Text style={styles.black} >Logout</Text>

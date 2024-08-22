@@ -1,20 +1,19 @@
-import { Pressable, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Pressable, SafeAreaView, StyleSheet, Text,  View } from 'react-native'
 import React, { useState } from 'react'
 import { MyStyles } from '../../../utils/Styles'
 import { Colours } from '../../../utils/Colours'
 import ToursList from '../../../common/ToursList'
-import { Hotels, TouristSites } from '../../../utils/DummyData'
 import HotelWidget from '../../../components/HotelWidget'
 import { useFetchHotels } from '../../../hooks/useFetchHotels'
-import { useUser } from '@clerk/clerk-expo'
 import { useFetchTours } from '../../../hooks/useFetchTour'
 import Loader from '../../../misc/Loader'
+import { useAuth } from '../../../context/AuthContext'
 
 const favourites = () => {
     const [activeTab, setActiveTab] = useState<string>('Tours');
     const {hotels, hotelLoading} = useFetchHotels();
     const {tours, toursLoading} = useFetchTours();
-    const {user} = useUser();
+    const {user} = useAuth();
   return (
     <SafeAreaView style={[MyStyles.main, {backgroundColor:Colours.bg}]} >
       <View style={{width:'90%', marginTop:50, alignItems:'center', flexDirection:'column', gap:15}} >

@@ -170,3 +170,18 @@ export type ChatDataProps = {
       hasImage:boolean
   }
 }
+
+export type UserProps={
+  displayName?:string;
+  email:string,
+  photoURL:string;
+  password?:string;
+  phone?:string;
+  emailVerified?:boolean;
+  id:string;
+  isSocial?:boolean;
+}
+
+export interface GoogleSigninError extends Error {
+  code?: string;
+}

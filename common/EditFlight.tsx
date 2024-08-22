@@ -1,18 +1,16 @@
-import { Image, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView,  StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { Colours } from '../utils/Colours';
 import PhoneInput from 'react-native-phone-number-input';
 import {Entypo, Ionicons, AntDesign} from '@expo/vector-icons';
-import DropDown from '../misc/DropDown';
-import { MyStyles } from '../utils/Styles';
+
 import Button from '../misc/Button';
-import { AirlineProps, FlightDataProps, OrderProps } from '../types/Types';
-import { formatDateDiff } from '../functions/Date';
-import { Airlines } from '../utils/DummyData';
-import { collection, deleteDoc, doc, onSnapshot, serverTimestamp, updateDoc } from 'firebase/firestore';
+import {  FlightDataProps, OrderProps } from '../types/Types';
+
+import {  deleteDoc, doc, onSnapshot, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useRouter } from 'expo-router';
-import { useUser } from '@clerk/clerk-expo';
+import { useAuth } from '../context/AuthContext';
 
 type EditFlightProps = {
     itemId:string,
@@ -40,7 +38,7 @@ const EditFlight = ({itemId, data}:EditFlightProps) => {
 
     const phone = useRef<PhoneInput>(null);
     const router = useRouter();
-    const {user} = useUser();
+    const {user} = useAuth();
 
     useEffect(()=>{
         const FetchData = ()=>{

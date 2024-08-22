@@ -6,6 +6,7 @@ import Slide2 from "../assets/imgs/Frame388.png";
 import Slide3 from "../assets/imgs/pana.png";
 import { useRouter } from "expo-router";
 import { NewContext } from "../context/NewContext";
+import { useAuth } from "../context/AuthContext";
 
 type SlideProps = {
   pageNumber: number,
@@ -16,7 +17,7 @@ type SlideProps = {
 };
 
 const SlidePage = ({pageNumber, isLast, title, text, setPageNumber}:SlideProps) => {
-  const {setIsNew} = useContext(NewContext);
+  const {onboardUser} = useAuth();
     const router = useRouter();
     const handlePress =()=>{
         if(pageNumber === 1){
@@ -26,7 +27,7 @@ const SlidePage = ({pageNumber, isLast, title, text, setPageNumber}:SlideProps) 
             setPageNumber(3)
         }
         else{
-          setIsNew(false);  
+          onboardUser();
           router.replace('/(auth)');
         }
     }

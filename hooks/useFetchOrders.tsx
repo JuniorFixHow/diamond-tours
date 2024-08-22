@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, onSnapshot, orderBy, query, where, } from "firebase/firestore";
 import { db } from '../firebase';
 import { OrderProps } from "../types/Types";
-import { useAuth } from "@clerk/clerk-expo";
+import { useAuth } from "../context/AuthContext";
 
 export const useFetchOrders =()=>{
     const [orders, setOrders] = useState<OrderProps[]>([]);
@@ -10,15 +10,17 @@ export const useFetchOrders =()=>{
     const [approvedOrders, setApprovedOrders] = useState<OrderProps[]>([]);
     const [cancelledOrders, setCancelledOrders] = useState<OrderProps[]>([]);
     const [ordersLoading, setOrdersLoading] = useState<boolean>(false);
-    const {userId} = useAuth();
+    const {user} = useAuth();
 
   
 
     useEffect(() => {
+      if(user){
+
         setOrdersLoading(true);
         const reference = collection(db, 'Orders');
         // const q = query(reference, orderBy('createdAt', 'asc'));
-        const q = query(reference, where('userId', '==', userId))
+        const q = query(reference, where('userId', '==', user?.id))
         const unsub = onSnapshot(
           q,
           { includeMetadataChanges: true },
@@ -44,6 +46,7 @@ export const useFetchOrders =()=>{
         return () => {
           unsub();
         };
+      }
       }, []);
 
     // fetchData();

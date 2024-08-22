@@ -9,6 +9,7 @@ import { addDoc, collection, doc, onSnapshot, serverTimestamp } from 'firebase/f
 import { db } from '../firebase';
 import { TourDataProps } from '../types/Types';
 import { calculateDateDifference } from '../functions/Date';
+import { useAuth } from '../context/AuthContext';
 
 type TourFormProps = {
     setShowForm:React.Dispatch<React.SetStateAction<boolean>>;
@@ -30,7 +31,7 @@ const TourForm = ({setShowForm, itemId}:TourFormProps) => {
     const [passportNum, setPassportNum] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const phone = useRef<PhoneInput>(null);
-    const {user} = useUser();
+    const {user} = useAuth();
     const [currentTour, setCurrentTour]=useState<TourDataProps>();
 
     useEffect(()=>{
@@ -85,7 +86,7 @@ const TourForm = ({setShowForm, itemId}:TourFormProps) => {
                 const data = {
                     userId: user?.id,
                     itemId, type:'tour',
-                    email:email.trim().length > 5 ? email : user?.primaryEmailAddress, 
+                    email:email.trim().length > 5 ? email : user?.email, 
                     passport, passportNum, 
                     phone:formattedNumber,
                     status:'Pending', 

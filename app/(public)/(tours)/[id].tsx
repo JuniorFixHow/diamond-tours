@@ -2,21 +2,20 @@ import { FlatList, Image, ImageBackground, Pressable, SafeAreaView, ScrollView, 
 import React, { useEffect, useState } from 'react'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { MyStyles } from '../../../utils/Styles';
-import { TourDataProps, TouristSiteProps } from '../../../types/Types';
-import { TouristSites } from '../../../utils/DummyData';
+import { TourDataProps } from '../../../types/Types';
 import {AntDesign, Ionicons, MaterialIcons} from '@expo/vector-icons';
 import { Colours } from '../../../utils/Colours';
 import ImageViewer from '../../../common/ImageViewer';
 import TourForm from '../../../common/TourForm';
 import Button from '../../../misc/Button';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../../../firebase';
-import { useUser } from '@clerk/clerk-expo';
 import { makeFavourite, removeFavourite } from '../../../functions/firestore';
+import { db } from '../../../firebase';
+import { useAuth } from '../../../context/AuthContext';
 
 const Tour = () => {
     const param = useLocalSearchParams();
-    const {user} = useUser();
+    const {user} = useAuth();
     const [currentTour, setCurrentTour]=useState<TourDataProps>();
     const [currentImage, setCurrentImage]=useState<string | null>(null);
     const [showForm, setShowForm] = useState<boolean>(false);
@@ -31,7 +30,7 @@ const Tour = () => {
               const data = doc.data() as TourDataProps;
               setIMAGES(data.photos.trim().split(','));
               setCurrentTour({...data, id:doc.id});
-              setIsFav(data.favourites.includes(user.id))
+              setIsFav(data.favourites.includes(user?.id))
             });
             return ()=>{
               unsub();

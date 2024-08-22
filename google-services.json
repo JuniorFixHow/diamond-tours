@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "860949445403",
+    "project_id": "diamond-tours-ghana-4a645",
+    "storage_bucket": "diamond-tours-ghana-4a645.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:860949445403:android:3b9897d3cc58a5a37771be",
+        "android_client_info": {
+          "package_name": "com.diamondtoursghana.diamondtours"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "860949445403-itq3te7ntqh528guh11t5ur280i794dj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.diamondtoursghana.diamondtours",
+            "certificate_hash": "7e368a66b3e302b797f01854ad3c98c95c7f1af9"
+          }
+        },
+        {
+          "client_id": "860949445403-vn08d88m8q1tf8l4l5ihqu938ctn7nkp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.diamondtoursghana.diamondtours",
+            "certificate_hash": "82d8f7cd08f2f574f0430e4f0f285bac5507795c"
+          }
+        },
+        {
+          "client_id": "860949445403-2nk3m3m06qmtsb2untl6gu9fddc7sepo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIpe31w-w4mPhUKyCV9NtdkiUbtGnv03M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "860949445403-2nk3m3m06qmtsb2untl6gu9fddc7sepo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "860949445403-qs2t0uet0v7pqoupip8mudhda63kns7v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.diamondtoursghana.diamondtours"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

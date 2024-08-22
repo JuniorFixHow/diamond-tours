@@ -67,12 +67,13 @@ const index = () => {
       }
             
          {
-           hotels.length < 1 && hotelLoading ?
+           hotels?.length < 1 && hotelLoading ?
            <Loader />
            :
           <ScrollView showsVerticalScrollIndicator={false} >
                 <View style={{width:'100%', paddingBottom:200, flexDirection:'column', gap:10}} >
                   {
+                    hotels?.length > 0 ?
                       SearchHotel(hotels, search, selectedCountry.toString(), price, rate).map((hotel:HotelDataProps)=>(
                           <Pressable onPress={()=>router.navigate(`(public)/(hotels)/${hotel.id}`)} key={hotel.id} style={styles.widget} >
                               <Image source={{uri:hotel?.photos.split(',')[0]}} style={{height:'100%', width:120, borderRadius:10, objectFit:'cover'}} />
@@ -91,6 +92,8 @@ const index = () => {
                               </View>
                           </Pressable>
                       ))
+                      :
+                    <Text style={MyStyles.welcomeText2} >No Data</Text>
                   }
                 </View>
           </ScrollView>

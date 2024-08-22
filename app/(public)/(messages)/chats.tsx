@@ -4,18 +4,16 @@ import { MyStyles } from "../../../utils/Styles";
 import {Ionicons, FontAwesome} from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import ICON from '../../../assets/icon.png';
-import { ChatsMessages } from "../../../utils/DummyData";
-import { ChatDataProps, ChatProps } from "../../../types/Types";
+import { ChatDataProps, } from "../../../types/Types";
 import { formatDateAndTime } from "../../../functions/Date";
 import { useEffect, useRef, useState } from "react";
 import { addDoc, collection, deleteDoc, doc, onSnapshot, query, serverTimestamp, where } from "firebase/firestore";
-import { db } from "../../../firebase";
-import { useAuth, useUser } from "@clerk/clerk-expo";
 import Loader from "../../../misc/Loader";
+import { db } from "../../../firebase";
+import { useAuth } from "../../../context/AuthContext";
 
 const Chats = ()=>{
   const router = useRouter();
-  const containerRef = useRef<View>(null);
   const [message, setMessage] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [chats, setChats] = useState<ChatDataProps[]>([]);
@@ -24,8 +22,7 @@ const Chats = ()=>{
 
   const scrollViewRef = useRef<ScrollView>(null);
   
-  const {userId} = useAuth();
-  const {user} = useUser();
+  const {user} = useAuth();
 
   
 
@@ -46,13 +43,13 @@ const Chats = ()=>{
       try {
           setIsLoading(true);
             await addDoc(collection(db, 'Chats'), {
-                message, userId, time:serverTimestamp(), read:false, sent:true,
+                message, userId:user?.id, time:serverTimestamp(), read:false, sent:true,
                 lastMessage:message,
                 user:{
-                    email:user?.emailAddresses[0].emailAddress,
-                    hasImage:user?.hasImage,
-                    image: user?.imageUrl,
-                    name: user?.fullName
+                    email:user?.email,
+                    hasImage:user?.photoURL !== null,
+                    image: user?.photoURL!,
+                    name: user?.displayName
                 }
             })
             scrollToEnd();
@@ -78,7 +75,7 @@ const Chats = ()=>{
   useEffect(()=>{
     setChatLoading(true);
     const reference = collection(db, 'Chats');
-    const q = query(reference, where('userId', '==', userId))
+    const q = query(reference, where('userId', '==', user?.id))
     const unsub = onSnapshot(
         q,  (snapshot)=>{
             const list:ChatDataProps[] = [];
@@ -101,7 +98,7 @@ const Chats = ()=>{
         unsub()
     }
     
-  },[userId])
+  },[user?.id])
 
 
     const deleteChat = async(id:string)=>{

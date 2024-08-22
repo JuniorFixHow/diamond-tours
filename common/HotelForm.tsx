@@ -6,6 +6,7 @@ import {Entypo, Ionicons, AntDesign} from '@expo/vector-icons';
 import RNDateTimePicker, {  DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { MyStyles } from '../utils/Styles';
 import { HotelDataProps } from '../types/Types';
+import { calculateDateDifference } from '../functions/Date';
 
 
 type HotelFormProps = {
@@ -80,9 +81,10 @@ const HotelForm = ({setShowForm, data,
     
       useEffect(()=>{
         if(data){
-            const child = children * data.childPrice;
-            const adult = adults * data.adultPrice;
-            const st = child + adult + data.adultPrice
+            const stayDays = calculateDateDifference(eDate, sDate);
+            const child = children * data.childPrice * stayDays;
+            const adult = adults * data.adultPrice * stayDays;
+            const st = child + adult + (data.adultPrice * calculateDateDifference(eDate, sDate))
             setSubTotal(st);
             // const t = st + data?.charges - discount
             const t = st - ((data.discount/100) * st);
@@ -92,7 +94,7 @@ const HotelForm = ({setShowForm, data,
                 setTotal(t);
             }
         }
-      },[children, adults, data])
+      },[children, adults,sDate, eDate, data])
 
     useEffect(()=>{
         if(formattedNumber !== '' && phone){

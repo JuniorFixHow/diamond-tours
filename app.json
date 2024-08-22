@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Diamond Tours Gh",
-    "slug": "diamond-tours",
+    "slug": "diamond-tours-ghana",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -13,9 +13,12 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.diamondtoursghana.diamondtours",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -28,14 +31,15 @@
     },
     "plugins": [
       "expo-router",
-      "expo-localization"
+      "expo-localization",
+      "@react-native-google-signin/google-signin"
     ],
     "extra": {
       "router": {
         "origin": false
       },
       "eas": {
-        "projectId": "cee2d61e-a9d0-457a-a9f9-3b163d25a563"
+        "projectId": "25e7a39f-5b2c-4500-8525-30ad7382a8ba"
       }
     }
   }

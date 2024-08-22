@@ -1,4 +1,6 @@
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   Pressable,
   StyleSheet,
@@ -8,82 +10,120 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback,  useState } from "react";
 import { MyStyles } from "../../utils/Styles";
 import { Colours } from "../../utils/Colours";
 import { Feather } from "@expo/vector-icons";
 import Google from '../../assets/imgs/google.png';
 import { useRouter } from "expo-router";
-import {  useOAuth, useSignIn } from "@clerk/clerk-expo";
-import * as WebBrowser from "expo-web-browser";
-import { useWarmUpBrowser } from "../../hooks/useWarmBrowser";
-import * as Linking from "expo-linking"
 
-WebBrowser.maybeCompleteAuthSession();
+import {  signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { auth } from "../../firebase";
+import { UserProps } from "../../types/Types";
+import { useAuth } from "../../context/AuthContext";
+import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-signin';
+
 const SignInUser = () => {
   const router = useRouter();
   const [showPass, setShowShowPass] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
+  const [googleLoading, setGoogleLoading] = useState<boolean>(false);
   const [emailAddress, setEmailAddress] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
-  const { signIn, setActive, isLoaded } = useSignIn();
-  // if(!isLoaded) return null;
-
-  useWarmUpBrowser();
-
-  // let isLoaded
+  const {setUserData, old} = useAuth();
+ 
+  if(!old) return null;
 
 
-  const onSignInPress = useCallback(async () => {
-    if (!isLoaded) {
-      return;
-    }
+  GoogleSignin.configure({
+    webClientId:process.env.EXPO_PUBLIC_CLIENT_ID,
+  })
+
+ 
+
+  const onSignInPress = async () => {
 
     try {
       setLoading(true);
-      const signInAttempt = await signIn.create({
-        identifier: emailAddress,
-        password,
-      });
-
-      if (signInAttempt.status === 'complete') {
-        await setActive({ session: signInAttempt.createdSessionId });
-        router.replace('(public)/(tabs)');
-      } else {
-        // See https://clerk.com/docs/custom-flows/error-handling
-        // for more info on error handling
-        console.error(JSON.stringify(signInAttempt, null, 2));
+      const res = await signInWithEmailAndPassword(auth, emailAddress, password);
+      const user = res.user;
+      if(!user.emailVerified){
+        await signOut(auth);
+        alert('Your email has not been verified yet');
+      }else{
+        const userData :UserProps={
+          id:user.uid,
+          photoURL:user?.photoURL!,
+          displayName:user?.displayName!,
+          phone: user?.phoneNumber!,
+          emailVerified: user?.emailVerified,
+          email:user?.email!
+        }
+        setUserData(userData);
+        router.push('/(public)/(tabs)')
       }
+      // console.log(user);
     } catch (err: any) {
-      console.error(JSON.stringify(err, null, 2));
+      console.error(err);
       ToastAndroid.showWithGravityAndOffset(
-        err?.errors[0].longMessage, 
+        'Invalid email or password. Please retry', 
         ToastAndroid.LONG, 
         ToastAndroid.TOP, 25, 50);
     }finally{
       setLoading(false);
     }
-  }, [isLoaded, emailAddress, password]);
+  };
 
 
-  const onGooglePress = useCallback(async () => {
-    if (!isLoaded) {
-      return;
-    }
+  const onGooglePress = async () => {
     try {
-      const { createdSessionId,  setActive } =
-        await startOAuthFlow({ redirectUrl: Linking.createURL("/dashboard", { scheme: "myapp" })});
-
-      if (createdSessionId) {
-        setActive!({ session: createdSessionId });
-      } else {
-        // Use signIn or signUp for next steps such as MFA
+      setGoogleLoading(true);
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+  
+      const userInfo = await GoogleSignin.signIn();
+      const user = userInfo.user;
+      const userData :UserProps={
+          id:user.id,
+          photoURL:user?.photo!,
+          displayName:user?.name!,
+          emailVerified: true,
+          email:user?.email!,
+          isSocial:true
       }
-    } catch (err) {
-      console.error("OAuth error", err);
+      setUserData(userData);
+      router.push('/(public)/(tabs)')
+    } catch (error:any) {
+      if (error.code) {
+        switch (error.code) {
+          // Handle specific error codes here
+          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
+            alert('Play Services not available');
+            console.log('Play Services not available');
+            break;
+          case statusCodes.SIGN_IN_CANCELLED:
+            // alert('Sign-in cancelled');
+            console.log('Sign-in cancelled');
+            break;
+            case statusCodes.IN_PROGRESS:
+            // alert('Sign-in cancelled');
+            console.log('Sign-in in progress');
+            break;
+            case statusCodes.SIGN_IN_REQUIRED:
+            // alert('Sign-in required');
+            console.log('Sign-in required');
+            break;
+          default:
+            console.log('Unknown error');
+            break;
+        }
+      } else {
+        console.log('Error:', error);
+      }
+      alert('Error occurred in the process');
+    } finally {
+      setGoogleLoading(false);
     }
-  }, []);
+  };
 
 
   return (
@@ -156,7 +196,7 @@ const SignInUser = () => {
             </View>
           </View>
 
-          <Pressable onPress={()=>router.navigate('(public)/(auth)/reset')} style={{ alignSelf: "flex-end", marginRight: 25 }}>
+          <Pressable onPress={()=>router.navigate('/(auth)/reset')} style={{ alignSelf: "flex-end", marginRight: 25 }}>
             <Text style={{ color: "#cb4900", fontSize: 14 }}>
               Forgot Password?
             </Text>
@@ -190,7 +230,7 @@ const SignInUser = () => {
             <Text style={[MyStyles.welcomeMessage, { width: "auto" }]}>
               Don't have an account?
             </Text>
-            <Pressable onPress={()=>router.navigate('(public)/(auth)/register')} >
+            <Pressable onPress={()=>router.navigate('/(auth)/register')} >
               <Text style={{ color: "#cb4900" }}>Sign up</Text>
             </Pressable>
           </View>
@@ -229,7 +269,12 @@ const SignInUser = () => {
               borderColor:Colours.grey
             }}
           >
-            <Image source={Google} style={{width:30, height:30, objectFit:'contain'}} />
+            {
+              googleLoading ? 
+              <ActivityIndicator size='small' style={{borderColor:'black'}} />
+              :
+              <Image source={Google} style={{width:30, height:30, objectFit:'contain'}} />
+            }
             <Text style={{ color: Colours.black, fontWeight: "600", fontSize: 14 }}>
               Sign in with Google
             </Text>

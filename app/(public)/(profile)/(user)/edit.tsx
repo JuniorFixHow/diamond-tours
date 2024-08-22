@@ -5,10 +5,15 @@ import { MyStyles } from '../../../../utils/Styles'
 import { useRouter } from 'expo-router'
 import {Ionicons} from '@expo/vector-icons';
 import Button from '../../../../misc/Button'
-import { useUser } from '@clerk/clerk-expo'
+import { useAuth } from '../../../../context/AuthContext'
+import { splitfirst, splitWords } from '../../../../functions/miscfxn'
+import { updatePassword, updateProfile } from 'firebase/auth'
+import { auth } from '../../../../firebase'
+import { validatePassword } from '../../../../functions/Validation'
+import { UserProps } from '../../../../types/Types'
 
 const index = () => {
-    const {user} = useUser();
+    const {user, setUserData} = useAuth();
     const router = useRouter();
     const profilephoto = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPQHstFutlfl8tgZAtY8nDWucSWEvFM5AETQ&s';
     const [firstName, setFirstName] = useState<string>('');
@@ -19,23 +24,47 @@ const index = () => {
     const updateUser = async()=>{
       try {
         setLoading(true);
-        await user?.update({
-          lastName: lastName || user?.lastName?.toString(),
-          firstName: firstName || user?.firstName?.toString(),
+        const last = lastName || splitWords(user?.displayName!,-1);
+        const first = firstName || splitfirst(user?.displayName!,2);
+        await updateProfile(auth?.currentUser!,{
+          displayName: first + ' ' +last,
         })
-        if(password.length > 8){
-          // await user?.createPhoneNumber({phoneNumber:'+233541097145'});
-          await user?.updatePassword({newPassword:password, currentPassword:cpassword});
-        }else{
-          ToastAndroid.showWithGravityAndOffset(
-            'Password must be at least 8 character to be updated', 
-            ToastAndroid.LONG, 
-            ToastAndroid.TOP, 25, 50);
+        ToastAndroid.showWithGravityAndOffset(
+          'Profile updated successfully',
+          ToastAndroid.LONG, 
+          ToastAndroid.TOP, 25, 50);
+        if(password.trim().length > 1){
+          const validPass = validatePassword(password);
+          if(validPass){
+            if(password === cpassword){
+              const profile = auth.currentUser
+              profile && await updatePassword(profile, password);
+              ToastAndroid.showWithGravityAndOffset(
+                'Password set successfully',
+                ToastAndroid.LONG, 
+                ToastAndroid.TOP, 25, 50);
+              }else{
+                alert('Passwords mismatch!') 
+              
+            }
+          }
         }
-        alert('Profile updated successfully');
+
+        const data = auth.currentUser;
+
+        const userData :UserProps={
+          id:data!.uid,
+          photoURL:data?.photoURL!,
+          displayName:data?.displayName!,
+          phone: data?.phoneNumber!,
+          emailVerified: data?.emailVerified,
+          email:data?.email!
+        }
+        setUserData(userData);
+
       } catch (error:any) {
         console.log(error);
-        alert(error.errors[0].longMessage);
+        alert('Error occured. Please retry. You may need to logout and login again');
       }finally{
         setLoading(false);
       }
@@ -54,16 +83,16 @@ const index = () => {
 
           <View style={{flexDirection:'column', width:'100%', gap:20, alignItems:'center'}} >
             <View style={{width:100, height:100, alignItems:'center', justifyContent:'center', position:'relative'}} >
-              <Image source={{uri:user?.imageUrl}} style={{width:'100%', height:'100%', borderRadius:50, objectFit:'cover'}} />
+              <Image source={{uri:user?.photoURL!}} style={{width:'100%', height:'100%', borderRadius:50, objectFit:'cover'}} />
               {/* <Pressable style={styles.pen} >
                 <Ionicons name="pencil" size={16} color="#cb4900" />
               </Pressable> */}
             </View>
 
-            <TextInput onChangeText={(e)=>setLastName(e)} style={styles.input} defaultValue={user?.lastName?.toString()} />
-            <TextInput onChangeText={(e)=>setFirstName(e)} style={styles.input} defaultValue={user?.firstName?.toString()} />
-            <TextInput onChangeText={(e)=>setCPassword(e)} style={styles.input}  placeholder='enter current password' />
+            <TextInput onChangeText={(e)=>setLastName(e)} style={styles.input} defaultValue={splitWords(user?.displayName!, -1)} />
+            <TextInput onChangeText={(e)=>setFirstName(e)} style={styles.input} defaultValue={splitfirst(user?.displayName!, 2)} />
             <TextInput onChangeText={(e)=>setPassword(e)} style={styles.input}  placeholder='enter new password' />
+            <TextInput onChangeText={(e)=>setCPassword(e)} style={styles.input}  placeholder='confirm new password' />
           </View>
 
            <Button text='Save' loading={loading} onClick={updateUser} />

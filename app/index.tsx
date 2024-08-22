@@ -1,18 +1,18 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useContext, useState } from "react";
 import SlidePage from "../components/SlidePage"; 
-import { NewContext } from "../context/NewContext";
 import { Redirect } from "expo-router";
+import { useAuth } from "../context/AuthContext";
 
 const welcome = () => {
   const [pageNumber, setPageNumber] = useState<number>(1);
-  const {isNew} = useContext(NewContext)
+  const {old, authLoading} = useAuth();
   // const {isLoaded} = useAuth();
   // const router = useRouter();
   // console.log(isLoaded);
   // if(!isLoaded) return;
-  // if(!isNew) return null;
-  if (!isNew) {
+  if(authLoading) return null;
+  if (old) {
     return <Redirect href={'/(auth)'} />
   }
   

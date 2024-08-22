@@ -1,4 +1,4 @@
-import { Image, KeyboardAvoidingView, Pressable, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView,  StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { Colours } from '../utils/Colours';
 import PhoneInput from 'react-native-phone-number-input';

@@ -1,22 +1,18 @@
-import { Dimensions, FlatList, Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, ToastAndroid, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image,  SafeAreaView, ScrollView, StyleSheet, Text,  ToastAndroid, TouchableOpacity, View } from 'react-native';
 import React, { useEffect, useState } from 'react'
 import { MyStyles } from '../../../utils/Styles'
-import { TouristSites, Hotels, Airlines } from '../../../utils/DummyData'
 import { useLocalSearchParams, useRouter } from 'expo-router'
-import { Entypo, MaterialIcons, AntDesign, Ionicons, FontAwesome } from '@expo/vector-icons';
+import {Ionicons } from '@expo/vector-icons';
 import { Colours } from '../../../utils/Colours'
-import { TouristSiteProps, HotelProps,  FlightDataProps } from '../../../types/Types'
-import ToursFilter from '../../../common/ToursFilter'
-import FlightsFilter from '../../../common/FlightsFilter'
+import { FlightDataProps } from '../../../types/Types'
 import { formatDateDiff } from '../../../functions/Date';
 import FlightForm from '../../../common/FlightForm';
 import Button from '../../../misc/Button';
 import { useFetchFlights } from '../../../hooks/useFetchFlights';
 import { addDoc, collection, doc, onSnapshot, serverTimestamp } from 'firebase/firestore';
-import { useUser } from '@clerk/clerk-expo';
 import { db } from '../../../firebase';
+import { useAuth } from '../../../context/AuthContext';
 
-const {width, height} = Dimensions.get('screen');
 const Flight = () => {
   
   const param = useLocalSearchParams();
@@ -34,7 +30,7 @@ const Flight = () => {
   
   const {flights} = useFetchFlights();
   const router = useRouter();
-  const {user} = useUser();
+  const {user} = useAuth();
 
   useEffect(()=>{
     const FetchData = ()=>{
@@ -77,7 +73,7 @@ const Flight = () => {
                 ToastAndroid.BOTTOM, 25, 50);
         }else{
             const info = {
-                email: email.trim().length > 5 ? email : user?.primaryEmailAddress, 
+                email: email.trim().length > 5 ? email : user?.email, 
                 phone:formattedNumber,
                 itemId: currentFlight?.id,
                 status:'Pending',
@@ -113,7 +109,7 @@ const Flight = () => {
 
 
   return (
-    <SafeAreaView style={[MyStyles.main, {backgroundColor:Colours.bg, width}]} >
+    <SafeAreaView style={[MyStyles.main, {backgroundColor:Colours.bg, width:'100%'}]} >
       <View style={{width:'90%', flexGrow:1, marginTop:50, alignSelf:'center',  flexDirection:'column', gap:15}} >
         <View style={{width:'100%', position:'relative', flexDirection:'row', justifyContent:'center', alignItems:'center', alignSelf:'center'}} >
             <TouchableOpacity style={{position:'absolute', left:0}} onPress={()=>router.back()} >

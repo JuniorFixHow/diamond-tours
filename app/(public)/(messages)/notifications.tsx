@@ -8,9 +8,9 @@ import { NotificationProps } from "../../../types/Types";
 import { formatDateAndTime } from "../../../functions/Date";
 import { useState } from "react";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { db } from "../../../firebase";
 import { useFetchNotifications } from "../../../hooks/useFetchNotifications";
 import Loader from "../../../misc/Loader";
+import { db } from "../../../firebase";
 
 const Notifications = ()=>{
   const router = useRouter();
