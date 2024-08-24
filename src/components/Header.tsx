@@ -17,6 +17,7 @@ type HeaderProps ={
 const Header = () => {
   const [showMenu, setShowMenu] = useState<string>('hidden');
   const [currentTitle, setCurrentTitle] = useState<string>('');
+  const [showLogout, setShowLogout] = useState<boolean>(false);
   const headerStyle = "dark:text-white hover:text-slate-300 cursor-pointer";
   const selectedHeaderStyle = "text-slate-300 cursor-pointer";
   const [showError, setShowError] = useState<boolean>(false);
@@ -48,7 +49,7 @@ const Header = () => {
               <span className="text-sm text-black cursor-pointer">Tour With Bliss</span>
             </a>
             </div>
-            <div className="hidden md:flex flex-row justify-center text-sm text-black gap-6">
+            <div className="hidden lg:flex flex-row justify-center text-sm text-black gap-6">
               {
                 HeaderData.map((item:HeaderProps)=>(
                   <a onClick={()=>handleTitle(item.title)} key={item.title} href={item.link}>
@@ -63,7 +64,7 @@ const Header = () => {
                 <MdOutlinePhoneAndroid size={15} />
                 <span className=" text-[0.5rem] sm:text-sm " >Get App</span>
               </div>
-              <LoginBtn logo />
+              <LoginBtn showLogout={showLogout} setShowLogout={setShowLogout} logo />
               {/* <SignedOut> */}
               {/* <div className="rounded-2xl bg-[#CB4900] hover:bg-orange-300 text-white text-[0.5rem] sm:text-sm px-4 py-2 cursor-pointer "> */}
                 {/* <span>Register</span> */}
@@ -74,7 +75,7 @@ const Header = () => {
                 <UserButton />
               </SignedIn> */}
             </div>
-            <button onClick={()=>setShowMenu('flex')} className="text-white text-3xl md:hidden block cursor-pointer">&#9776;</button>
+            <button onClick={()=>setShowMenu('flex')} className="text-white text-3xl lg:hidden block cursor-pointer">&#9776;</button>
         </div>
     </header>
   )

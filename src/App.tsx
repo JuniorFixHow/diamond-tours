@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import Chat from './components/Chat';
 import { useState } from 'react';
 import Bookings from './components/Bookings';
+import Reviews from './components/Reviews';
 // import './App.css'
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
       <Bookings />
       <About />
       <Contact />
+      <Reviews />
     </div>
     <Footer />
     </div>

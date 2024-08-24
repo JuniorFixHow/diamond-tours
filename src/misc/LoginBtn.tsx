@@ -2,14 +2,15 @@ import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useAuth } from "../hooks/useAuth";
 import { UserProps } from "../types/Types";
 import { auth } from "../../firebase";
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 type LoginProps = {
-    logo?:boolean
+    logo?:boolean,
+    showLogout:boolean,
+    setShowLogout?:Dispatch<SetStateAction <boolean>>
 }
-const LoginBtn = ({logo}:LoginProps) => {
+const LoginBtn = ({logo, showLogout, setShowLogout}:LoginProps) => {
     const {user, setUserData, logout} = useAuth();
-    const [showLogout, setShowLogout] = useState(false);
 
     const handleGoogleSignin =async()=>{
         try {
@@ -27,7 +28,7 @@ const LoginBtn = ({logo}:LoginProps) => {
             email:data.email!
           }
           setUserData(userData);
-          setShowLogout(false);
+          setShowLogout!(false);
           // console.log(credential);
         } catch (error) {
           console.log(error);
@@ -41,13 +42,13 @@ const LoginBtn = ({logo}:LoginProps) => {
             <div className="flex flex-col items-center gap-4 relative">
                 {
                     logo &&
-                    <img src={user?.photoURL} onClick={()=>setShowLogout(e=>!e)} className="w-10 h-10 cursor-pointer object-cover rounded-full" alt="user" />
+                    <img src={user?.photoURL} onClick={()=>setShowLogout!(e=>!e)} className="w-10 h-10 cursor-pointer object-cover rounded-full" alt="user" />
                 }
                 <div className={`${showLogout?'flex':'hidden'} flex-col bg-white rounded-md z-10 absolute top-10 shadow-sm items-center justify-center p-2 gap-2`}>
                     <span onClick={logout} className="text-slate-600 text-[0.9rem] sm:text-[1rem] hover:text-slate-500 font-light cursor-pointer" >Logout</span>
                     {
                     logo &&
-                    <span onClick={()=>setShowLogout(false)} className="text-slate-600 text-[0.9rem] sm:text-[1rem] font-light hover:text-slate-500 cursor-pointer" >Close</span>
+                    <span onClick={()=>setShowLogout!(false)} className="text-slate-600 text-[0.9rem] sm:text-[1rem] font-light hover:text-slate-500 cursor-pointer" >Close</span>
                     }
                 </div>
             </div>

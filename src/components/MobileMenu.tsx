@@ -40,7 +40,7 @@ return (
                 <MdOutlinePhoneAndroid size={25} />
                 <span className=" text-xl" >Get App</span>
               </div>
-              <LoginBtn />
+              <LoginBtn showLogout />
               {/* <SignedOut>
               <div className="rounded-2xl w-1/2 bg-[#CB4900] flex items-center justify-center hover:bg-orange-300 text-white text-xl px-4 py-2 cursor-pointer ">
                   <SignInButton />

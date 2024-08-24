@@ -59,6 +59,7 @@ const Footer = () => {
                 <a href="#bookings" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Bookings</a>
                 <a href="#about" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >About Us</a>
                 <a href="#contact" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Contact Us</a>
+                <a href="#reviews" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Reviews</a>
             </div>
             <div className="flex flex-col py-4 items-start min-w-32">
                 <h2 className="text-2xl text-[#CB4900] font-bold">Legals</h2>

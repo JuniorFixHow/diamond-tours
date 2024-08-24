@@ -33,4 +33,17 @@ export type UserProps={
     photoURL:string;
     phone:string;
     id:string;
-  }
+}
+
+export type ReviewProps={
+    _id:string,
+    user:{
+        name:string,
+        id?:string,
+        photo:string
+    },
+    isReply:boolean,
+    originalReview:string,
+    content:string,
+    createdAt?:string
+}
