@@ -1,4 +1,4 @@
-import { FlightDataProps, HotelDataProps, OrderProps, TourDataProps } from "../types/Types"
+import { BlogPostProps, FlightDataProps, HotelDataProps, OrderProps, TourDataProps } from "../types/Types"
 
 export const SearchTour = (data:TourDataProps[], search:string)=>{
     return(
@@ -48,4 +48,16 @@ export const SearchOrder = (data:OrderProps[], query:string, type:string)=>{
           .includes(type.toLowerCase())
       })
   )
+}
+
+
+export const SearchBlog = (data:BlogPostProps[], search:string)=>{
+  return(
+      data.filter((item)=>{
+        return search === '' ? item : Object.values(item)
+          .join(' ')
+          .toLowerCase()
+          .includes(search.toLowerCase())
+      })
+    )
 }

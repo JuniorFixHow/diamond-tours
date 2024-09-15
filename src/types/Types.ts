@@ -152,3 +152,16 @@ export type NotificationProps ={
     timestamp:Timestamp;
     read:boolean;
   }
+
+
+
+  export interface BlogPostProps {
+    _id:string;
+    title: string;      
+    createdAt: string | Date; 
+    content: string;    
+    // tags: string[];     
+    image: string;     
+    excerpt: string;
+    featured:boolean;   
+  }

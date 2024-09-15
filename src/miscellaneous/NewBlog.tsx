@@ -1,124 +1,88 @@
-import { Alert, Modal } from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
-import { TourDataProps } from '../types/Types'
-// import { CiImageOn } from "react-icons/ci";
-// import { FaPlus } from "react-icons/fa6";
-import { FeedbackProps } from '../assets/types/Types';
-import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
-import { db } from '../firebase';
-// import axios from 'axios'
-// import { API } from '../constants/Constants'
+import { Alert, Modal } from "@mui/material";
+import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
+import { BlogPostProps } from "../types/Types";
+import { FeedbackProps } from "../assets/types/Types";
+import axios from "axios";
+import { API } from "../common/contants";
 
 type NewProps = {
-    currentData:TourDataProps | null;
-    setCurrentData: React.Dispatch<React.SetStateAction<TourDataProps | null>>;
-    setIsNew: React.Dispatch<React.SetStateAction<boolean>>;
+    currentData:BlogPostProps | null;
+    setCurrentData: Dispatch<SetStateAction<BlogPostProps | null>>;
+    setIsNew: Dispatch<SetStateAction<boolean>>;
     isNew: boolean;
 }
+const NewBlog = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
 
-
-const NewTour = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
-    const [depDate, setDepDate] = useState<string>('');
-    const [retDate, setRetDate] = useState<string>('');
-    const [location, setLocation] = useState<string>('');
-    const [rating, setRating] = useState<number>(1);
-    const [price, setPrice] = useState<number>(0);
-    const [tripPlan, setTripPlan] = useState<string>('');
-    const [photos, setPhotos] = useState<string>('');
-    const [name, setName] = useState<string>('');
-    const [featured, setFeatured] = useState<boolean>(false);
+    const [featured, setFeatured] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(false);
+    const [title, setTitle] = useState<string>('');
+    const [photo, setPhoto] = useState<string>('');
+    const [excerpt, setExcerpt] = useState<string>('');
+    const [content, setContent] = useState<string>('');
     const [feedback, setFeedback] = useState<FeedbackProps>({error:false, message:''});
     const formRef = useRef<HTMLFormElement>(null);
-  
-    useEffect(()=>{
-      if(currentData){
-        setFeatured(currentData?.featured);
-        // setRating(currentData?.rating);
-      }
-    },[currentData])
+
+
     const handleClose = ()=>{
         setCurrentData(null);
         setIsNew(false);
     }
 
-    const addTour = async(e:React.FormEvent<HTMLFormElement>)=>{
+
+    const addBlog = async(e:FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
-        setFeedback({error:false, message:''});
-        if (
-          name.trim() !== "" &&
-          location.trim() !== "" &&
-          price !== 0 &&
-          photos.trim() !== "" &&
-          depDate.trim() !== "" &&
-          retDate.trim() !== ""
-        ) {
-          try {
+        try {
             setLoading(true);
-            const data = {
-              name,
-              location,
-              rating,
-              price,
-              photos,
-              tripPlan,
-              featured,
-              from: depDate,
-              to: retDate,
-              favourites: [],
-              createdAt:serverTimestamp()
-            };
-            console.log(data)
-            await addDoc(collection(db, "Tours"), data);
-            formRef.current?.reset();
-            setFeedback({ error: false, message: "Tour Added Successfully" });
-          } catch (error) {
+            if(title.trim() !=='' && photo.trim() !=='' && excerpt.trim() !=='' && content.trim() !==''){
+                const data = {
+                    title, content, excerpt, featured,
+                    image:photo
+                }
+                const res = await axios.post(`${API}blogs/create`, data);
+                console.log(res)
+                if(res.status === 200){
+                    setFeedback({error:false, message:'Blog added successfully'});
+                    formRef.current?.reset();
+                }
+            }else{
+                setFeedback({error:true, message:'Pease complete the form'});
+            }
+        } catch (error) {
             console.log(error);
-            setFeedback({
-              error: true,
-              message: "Error occured. Please retry",
-            });
-          } finally {
-            setLoading(false);
-          }
-        }else{
-            setFeedback({error:true, message:'All fields are required'});
+            setFeedback({error:true, message:'Error occured. Please retry'});
+        }finally{
             setLoading(false);
         }
     }
 
-    const updateTour = async(e:React.FormEvent<HTMLFormElement>)=>{
+    const updateBlog = async(e:FormEvent<HTMLFormElement>)=>{
         e.preventDefault();
-        setFeedback({error:false, message:''});
-        
         try {
-          setLoading(true);
-          const data = {
-            name:name||currentData?.name,
-            location: location||currentData?.location,
-            rating:rating > 1 ? rating : currentData?.rating,
-            price:price ||currentData?.price,
-            photos:photos ||currentData?.photos,
-            tripPlan:tripPlan ||currentData?.tripPlan,
-            from: depDate ||currentData?.from,
-            featured,
-            to: retDate||currentData?.to,
-            favourites: currentData?.favourites,
-            createdAt:serverTimestamp()
-          };
-          currentData && await updateDoc(doc(db, "Tours", currentData?.id), data);
-          formRef.current?.reset();
-          setFeedback({ error: false, message: "Tour updated Successfully" });
+            setLoading(true);
+            const data = {
+                title:currentData?.title || title, 
+                content:currentData?.content || content, 
+                excerpt:currentData?.excerpt || excerpt, 
+                featured,
+                image:currentData?.image || photo
+            }
+            const res = await axios.put(`${API}blogs/${currentData?._id}`, data);
+            console.log(res);
+            if(res.status === 200){
+                setFeedback({error:false, message:'Blog updated successfully'});
+                const response:BlogPostProps = res.data
+                setCurrentData(response);
+            }
+            
         } catch (error) {
-          console.log(error);
-          setFeedback({
-            error: true,
-            message: "Error occured. Please retry",
-          });
-        } finally {
-          setLoading(false);
+            console.log(error);
+            setFeedback({error:true, message:'Error occured. Please retry'});
+        }finally{
+            setLoading(false);
         }
     }
+
+
 
   return (
     <Modal
@@ -133,56 +97,69 @@ const NewTour = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
       >
         <div className="flex w-[90%] xl:w-5/6 p-4 rounded-xl h-full overflow-y-scroll overflow-x-hidden  z-10 cursor-default bg-white flex-col gap-4 items-center">
           <span className="text-2xl font-semibold self-start">
-            {currentData ? 'Update site':'Add new site'}
+            {currentData ? 'Update blog':'Add new blog'}
           </span>
           <form
             ref={formRef}
-            onSubmit={currentData ? updateTour : addTour}
+            onSubmit={currentData ? updateBlog:addBlog}
             className="flex flex-col gap-4 bg-[#F8F8F8] w-full rounded-2xl px-4 grow"
           >
             <div className="flex flex-col  w-full py-8 lg:flex-row lg:items-start lg:justify-between gap-4 items-center">
-              {/* <div className="flex flex-col gap-3 w-full lg:flex-1 items-center">
-                <div className="flex cursor-pointer items-center justify-center h-60 w-60 rounded-xl bg-[#D9D9D9]">
-                    <CiImageOn size={60} color='grey' />
-                </div>
-                <span className='text-[0.8rem]' >Add more photos</span>
-                <div className="grid grid-cols-3 items-center gap-4">
-                    <div className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-lg bg-[#D9D9D9]">
-                        <FaPlus size={18} color='grey' />
-                    </div>
-                    <div className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-lg bg-[#D9D9D9]">
-                        <FaPlus size={18} color='grey' />
-                    </div>
-                    <div className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-lg bg-[#D9D9D9]">
-                        <FaPlus size={18} color='grey' />
-                    </div>
-                    <div className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-lg bg-[#D9D9D9]">
-                        <FaPlus size={18} color='grey' />
-                    </div>
-                    <div className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-lg bg-[#D9D9D9]">
-                        <FaPlus size={18} color='grey' />
-                    </div>
-                    <div className="flex h-16 w-16 cursor-pointer items-center justify-center rounded-lg bg-[#D9D9D9]">
-                        <FaPlus size={18} color='grey' />
-                    </div>
-                </div>
-            </div> */}
+              
 
               <div className="flex w-full lg:flex-1 flex-col gap-4 lg:gap-8 mt-4 lg:mt-0 items-center md:items-start">
                 <span className="font-semibold text-xl lg:text-2xl">
-                  Photos
+                  Insert blog data
                 </span>
                 <div className="flex flex-col gap-4 w-full">
+
+                   <div className="flex w-full flex-col">
+                    <span className="text-[0.rem] text-[grey]">Blog title</span>
+                    <input
+                      onChange={(e) => setTitle(e.target.value)}
+                      defaultValue={currentData?.title}
+                      className="w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2"
+                      type="text"
+                      placeholder="type here"
+                      required
+                    />
+                  </div>
+                   <div className="flex w-full flex-col">
+                    <span className="text-[0.rem] text-[grey]">Blog image</span>
+                    <input
+                      onChange={(e) => setPhoto(e.target.value)}
+                      defaultValue={currentData?.image}
+                      className="w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2"
+                      type="text"
+                      placeholder="insert the URL of the blog image here"
+                      required
+                    />
+                  </div>
+
                   <div className="flex w-full flex-col">
                     <span className="text-[0.rem] text-[grey]">
-                      Add at least 5 photos
+                      Place Content
                     </span>
                     <textarea
-                      defaultValue={currentData?.photos}
-                      onChange={(e) => setPhotos(e.target.value)}
+                      defaultValue={currentData?.content}
+                      onChange={(e) => setContent(e.target.value)}
                       className="w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2"
                       rows={10}
-                      placeholder="insert image link, press comma then proceed with another link. It is recommended to add at least 5 images"
+                      placeholder="the full content of the blog"
+                      required
+                    />
+                  </div>
+                  <div className="flex w-full flex-col">
+                    <span className="text-[0.rem] text-[grey]">
+                      Add exceprt
+                    </span>
+                    <textarea
+                      defaultValue={currentData?.excerpt}
+                      onChange={(e) => setExcerpt(e.target.value)}
+                      className="w-full lg:w-[90%] bg-transparent px-3 rounded-md border border-[grey] outline-none py-2"
+                      rows={10}
+                      required
+                      placeholder="normally, the excerpt is the first paragraph of the content"
                     />
                   </div>
                   <div className="flex w-full flex-row gap-4 items-center">
@@ -198,7 +175,7 @@ const NewTour = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                 </div>
               </div>
 
-              <div className="flex w-full lg:flex-1 flex-col gap-4 lg:gap-8 mt-4 lg:mt-0 items-center md:items-start">
+              {/* <div className="flex w-full lg:flex-1 flex-col gap-4 lg:gap-8 mt-4 lg:mt-0 items-center md:items-start">
                 <span className="font-semibold text-xl lg:text-2xl">
                   Tour Information
                 </span>
@@ -296,7 +273,7 @@ const NewTour = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                     />
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {feedback.message && (
@@ -322,14 +299,14 @@ const NewTour = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                   loading ? "bg-slate-300" : "bg-[#cb4900]"
                 } px-4 py-2 rounded-lg text-white`}
               >
-                {currentData? 'Update site':'Add site'}
+                {currentData? 'Update blog':'Add blog'}
               </button>
             </div>
           </form>
         </div>
       </div>
     </Modal>
-  );
+  )
 }
 
-export default NewTour
+export default NewBlog

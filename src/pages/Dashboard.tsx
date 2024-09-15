@@ -8,6 +8,7 @@ import Orders from '../components/Orders'
 import Tours from '../components/Tours'
 import Hotels from '../components/Hotels'
 import Flights from '../components/Flights'
+import Blogs from '../components/Blogs'
 
 const Dashboard = () => {
   const [currentPage, setCurrentPage] = useState<string>('home')
@@ -48,6 +49,10 @@ const Dashboard = () => {
       {
         currentPage === 'flights' &&
         <Flights setCurrentPage={setCurrentPage} />
+      }
+      {
+        currentPage === 'blogs' &&
+        <Blogs setCurrentPage={setCurrentPage} />
       }
     </div>
   )
