@@ -44,7 +44,7 @@ const LoginBtn = ({logo, showLogout, setShowLogout}:LoginProps) => {
                     logo &&
                     <img src={user?.photoURL} onClick={()=>setShowLogout!(e=>!e)} className="w-10 h-10 cursor-pointer object-cover rounded-full" alt="user" />
                 }
-                <div className={`${showLogout?'flex':'hidden'} flex-col bg-white rounded-md z-10 absolute top-10 shadow-sm items-center justify-center p-2 gap-2`}>
+                <div className={`${showLogout?'flex':'hidden'} flex-col bg-white rounded-md z-100 absolute top-10 shadow-sm items-center justify-center p-2 gap-2`}>
                     <span onClick={logout} className="text-slate-600 text-[0.9rem] sm:text-[1rem] hover:text-slate-500 font-light cursor-pointer" >Logout</span>
                     {
                     logo &&

@@ -35,7 +35,7 @@ const Header = () => {
   
 
   return (
-    <header id="header" className="w-full flex items-center mx-auto py-2 justify-center font-semibold bg-[#676161] sticky top-0" >
+    <header id="header" className="w-full z-99 flex items-center mx-auto py-2 justify-center font-semibold bg-[#676161] sticky top-0" >
       {
         showError &&
         <Alert onClose={()=>setShowError(false)} className="fixed top-16 self-center w-5/6 lg:w-1/2" severity='error' variant='standard' >Please sign in to see your appointments</Alert>
@@ -43,7 +43,7 @@ const Header = () => {
         <MobileMenu showMenu={showMenu} setShowMenu={setShowMenu} />
         <div className="w-5/6 flex flex-row justify-between items-center">
             <div className="flex gap-2 flex-row items-center justify-center">
-            <a href="#hero" className="flex flex-row items-center justify-center" >
+            <a href="/" className="flex flex-row items-center justify-center" >
             <img src='/imgs/photo_6028099600981803407_y-removebg-preview.png' className="h-10 w-10 object-cover cursor-pointer" alt="" />
             <div className="hidden sm:block w-[1px] h-10 bg-[#CB4900]" ></div>
               <span className="text-sm text-black cursor-pointer">Tour With Bliss</span>

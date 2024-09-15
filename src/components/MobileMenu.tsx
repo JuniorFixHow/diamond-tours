@@ -33,6 +33,7 @@ return (
           <a onClick={()=>setShowMenu('hidden')} href="#packages" className="w-full text-center text-2xl py-2 hover:opacity-90 text-white" >Packages</a>
           <a onClick={handleBooking} href="#bookings" className="w-full text-center text-2xl py-2 hover:opacity-90 text-white" >Bookings</a>
           <a onClick={()=>setShowMenu('hidden')} href="#about" className="w-full text-center text-2xl py-2 hover:opacity-90 text-white" >About Us</a>
+          <a onClick={()=>setShowMenu('hidden')} href="#blogs" className="w-full text-center text-2xl py-2 hover:opacity-90 text-white" >Blogs</a>
           <a onClick={()=>setShowMenu('hidden')} href="#contact" className="w-full text-center text-2xl py-2 hover:opacity-90 text-white" >Contact Us</a>
           <a onClick={()=>setShowMenu('hidden')} href="#footer" className="w-full text-center text-2xl py-2 hover:opacity-90 text-white" >Legal</a>
           <div className="gap-6 flex-col flex justify-center md:hidden w-full items-center">

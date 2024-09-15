@@ -47,3 +47,14 @@ export type ReviewProps={
     content:string,
     createdAt?:string
 }
+
+export interface BlogPostProps {
+    _id:string;
+    title: string;      
+    createdAt: string; 
+    content: string;    
+    // tags: string[];     
+    image: string;     
+    excerpt: string;
+    featured:boolean;   
+  }

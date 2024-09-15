@@ -12,6 +12,7 @@ type contextProps = {
     user:UserProps | null,
     authLoading:boolean,
 }
+
 export const AuthContext = createContext<contextProps | null>(null);
 
 export const AuthContextProvider = ({children}:childrenProp)=>{
