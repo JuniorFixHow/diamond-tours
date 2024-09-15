@@ -60,11 +60,11 @@ const NewBlog = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
         try {
             setLoading(true);
             const data = {
-                title:currentData?.title || title, 
-                content:currentData?.content || content, 
-                excerpt:currentData?.excerpt || excerpt, 
+                title:title || currentData.title,
+                content:content || currentData.content,
+                excerpt:excerpt || currentData.excerpt,
                 featured,
-                image:currentData?.image || photo
+                image:photo || currentData.image
             }
             const res = await axios.put(`${API}blogs/${currentData?._id}`, data);
             console.log(res);
