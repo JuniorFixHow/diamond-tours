@@ -7,6 +7,7 @@ import ContactRoutes from './routes/ContactRoutes.js';
 import MessageRoutes from './routes/MessageRoutes.js';
 import NewsRoutes from './routes/NewsRoutes.js';
 import ReviewRoutes from './routes/ReviewRoutes.js';
+import BlogRoutes from './routes/BlogRoutes.js';
 
 const app = express();
 app.use(express.json());
@@ -27,6 +28,7 @@ app.use('/api/contacts', ContactRoutes);
 app.use('/api/messages', MessageRoutes);
 app.use('/api/news', NewsRoutes);
 app.use('/api/reviews', ReviewRoutes);
+app.use('/api/blogs', BlogRoutes);
 
 app.listen(PORT, ()=>{
     console.log(`app is listening on port ${PORT}`)
