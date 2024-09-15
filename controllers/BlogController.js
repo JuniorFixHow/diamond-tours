@@ -2,7 +2,7 @@ import Blog from "../models/BlogsModel.js";
 
 export const addBlog = async(req, res)=>{
     try {
-        const newBlog = new Blog(req.boady);
+        const newBlog = new Blog(req.body);
         const savedblog = await newBlog.save();
         res.status(200).json(savedblog);
     } catch (error) {
