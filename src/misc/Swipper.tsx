@@ -30,7 +30,7 @@ const Swipper = () => {
       }}
       onSlideChange={() => console.log('slide change')}
       onSwiper={(swiper) => console.log(swiper)}
-      className="w-full relative h-[70vh] lg:h-[100vh]"
+      className="w-full relative h-screen"
       grabCursor={true}
     >
       {
