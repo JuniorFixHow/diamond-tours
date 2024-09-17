@@ -42,7 +42,7 @@ const Swipper = () => {
                 <div className="flex flex-col gap-8 w-full items-center z-10">
                   <span className='text-[1.5rem] lg:text-[2rem] font-bold text-white w-[90%] md:w-3/4 text-center' >{blog?.title}</span>
                   <span className='hidden md:block text-white w-[75%] text-center' >{blog?.excerpt}</span>
-                  <span className='md:hidden text-white w-[90%]' >{blog?.content?.slice(0, 50)}...</span>
+                  <span className='md:hidden text-white w-[90%]' >{blog?.content?.slice(0, 100)}...</span>
                 </div>
             </div>
           </SwiperSlide>

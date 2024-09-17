@@ -16,11 +16,11 @@ const Blogs = () => {
           {
             blogs &&
             blogs.map((blog:BlogPostProps)=>(
-              <div onClick={()=>navigate(`/blogs/${blog._id}`)} className="flex w-[20rem] md:w-[18rem] lg:w-[20rem] flex-col pb-4 gap-4 items-center hover:shadow-xl bg-white cursor-pointer" key={blog._id} >
+              <div onClick={()=>navigate(`/blogs/${blog.id}`)} className="flex w-[20rem] md:w-[18rem] lg:w-[20rem] flex-col pb-4 gap-4 items-center hover:shadow-xl bg-white cursor-pointer" key={blog.id} >
                 <img className="w-full object-cover h-[12rem]" src={blog?.image} alt={blog.title} />
                 <div className="flex flex-col gap-4 w-[90%] self-center">
 
-                  <span className="text-[0.9rem] text-[#cb4900] md:text-[1rem] font-light" >{new Date(blog?.createdAt)?.toLocaleDateString()}</span>
+                  <span className="text-[0.9rem] text-[#cb4900] md:text-[1rem] font-light" >{blog?.createdAt?.toDate()?.toLocaleDateString()}</span>
                   <span className="text-black hover:text-violet-950" >{blog.excerpt.slice(0, 100)}...</span>
                 </div>
               </div>
