@@ -1,26 +1,44 @@
 import { useEffect, useState } from "react";
 import { BlogPostProps } from "../types/Types";
-import axios from "axios";
-import { API } from "../data/Constats";
+
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
+import { db } from "../../firebase";
 
 export const useFetchBlogs =()=>{
     const [blogs, setBlogs] = useState<BlogPostProps[]>([]);
     const [fBlogs, setFBlogs] = useState<BlogPostProps[]>([]);
 
-    useEffect(() => {
-        
-        const fetchData = async()=>{
-          const res = await axios.get(`${API}blogs`);
-          const data:BlogPostProps[] = res.data
-          setBlogs(data.sort((a,b)=>new Date(a.createdAt) < new Date(b.createdAt) ? 1:-1));
-          setFBlogs(data.sort((a,b)=>new Date(a.createdAt) < new Date(b.createdAt) ? 1:-1)
-          .filter((item)=>item.featured)
+   
+
+      useEffect(() => {
+        const reference = collection(db, 'Blogs');
+        const q = query(reference, orderBy('createdAt', 'asc'));
+        const unsub = onSnapshot(
+          q,
+          { includeMetadataChanges: true },
+          (snapshot) => {
+            const list: BlogPostProps[] = [];
+            snapshot.docs.forEach((doc) => {
+              const blogData = doc.data() as BlogPostProps;
+              list.push({ ...blogData, id: doc.id });
+            //   console.log(doc.data());
+            });
+            if (list.length) {
+              setBlogs(list.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1)));
+              setFBlogs(list.sort((a,b)=>a.createdAt < b.createdAt ? 1:-1)
+              .filter((item)=>item.featured))
+            //   console.log(list)
+            }
+          },
+          (error) => {
+            console.log(error);
+          }
         );
-        }
-
-        fetchData();
-      }, [blogs]);
-
+      
+        return () => {
+          unsub();
+        };
+      }, []);
     // fetchData();
     // useEffect(() => {  
     //     fetchData();

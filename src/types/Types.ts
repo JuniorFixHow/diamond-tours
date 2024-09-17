@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore"
+
 export type ServicesProps = {
     id:number,
     title:string,
@@ -49,9 +51,9 @@ export type ReviewProps={
 }
 
 export interface BlogPostProps {
-    _id:string;
+    id:string;
     title: string;      
-    createdAt: string; 
+    createdAt: Timestamp; 
     content: string;    
     // tags: string[];     
     image: string;     

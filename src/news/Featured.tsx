@@ -31,9 +31,9 @@ const FeaturedBlogs = () => {
         
         <div className="flex lg:w-[70%] xl:w-[60%] flex-col gap-4 px-8 lg:px-0">
           <span className="text-2xl font-bold">{currentBlog?.title || fBlogs[0]?.title}</span>
-          <span className="text-slate-500 font-medium" >{(currentBlog && new Date(currentBlog!.createdAt)?.toLocaleDateString()) || new Date(fBlogs[0]?.createdAt)?.toLocaleDateString()}</span>
+          <span className="text-slate-500 font-medium" >{(currentBlog && currentBlog!.createdAt?.toDate()?.toLocaleDateString()) || fBlogs[0]?.createdAt?.toDate()?.toLocaleDateString()}</span>
           <img className="w-full h-52 md:h-80 lg:h-[30rem]" src={currentBlog?.image || fBlogs[0]?.image} alt={currentBlog?.title || fBlogs[0]?.title} />
-          <span className="leading-6" >{currentBlog?.excerpt || fBlogs[0]?.excerpt} <span onClick={()=>navigate(`/blogs/${currentBlog?._id}`)} className="w-fit underline text-blue-700 hover:text-blue-900 cursor-pointer" >Continue reading</span> </span>
+          <span className="leading-6" >{currentBlog?.excerpt || fBlogs[0]?.excerpt} <span onClick={()=>navigate(`/blogs/${currentBlog?.id}`)} className="w-fit underline text-blue-700 hover:text-blue-900 cursor-pointer" >Continue reading</span> </span>
           
         </div>
         <BlogsSlideBar search={search} setSearch={setSearch} setCurrentBlog={setCurrentBlog} data={SearchBlog(fBlogs, search)} />

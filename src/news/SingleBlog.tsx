@@ -11,7 +11,7 @@ const SingleBlog = () => {
     const {blogs} = useFetchBlogs();
     useEffect(()=>{
       if(id){
-        setCurrentBlog(blogs.filter((item:BlogPostProps)=>item._id === id)[0])
+        setCurrentBlog(blogs.filter((item:BlogPostProps)=>item.id === id)[0])
       }
     },[id, blogs])
 
@@ -29,8 +29,8 @@ const SingleBlog = () => {
     <div className='w-full flex flex-col items-center py-8 gap-10' >
       <div className="flex flex-col gap-6 w-[80%] lg:items-center">
         <div className="flex flex-col w-[90%] gap-4">
-          <span className='text-2xl lg:text-4xl font-semibold' >{currentBlog?.title}</span>
-          <span className='font-light' >{new Date(currentBlog!.createdAt)?.toLocaleDateString()}</span>
+          <span className='text-2xl text-center lg:text-left lg:text-4xl font-semibold' >{currentBlog?.title}</span>
+          <span className='font-light' >{currentBlog!.createdAt?.toDate()?.toLocaleDateString()}</span>
         </div>
 
         <img src={currentBlog?.image} className='w-full object-cover h-40 md:h-[80vh]' alt={currentBlog?.title} />

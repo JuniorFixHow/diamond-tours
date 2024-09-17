@@ -18,7 +18,7 @@ const BlogsSlideBar = ({data, search, setSearch, setCurrentBlog}:SideProps) => {
 
         {
           data.map((blog:BlogPostProps)=>(
-            <span key={blog._id} onClick={()=>setCurrentBlog(blog)} className="text-black cursor-pointer hover:text-blue-950 hover:underline "  >{blog?.title}</span>
+            <span key={blog.id} onClick={()=>setCurrentBlog(blog)} className="text-black cursor-pointer hover:text-blue-950 hover:underline "  >{blog?.title}</span>
           ))
         }
       </div>
