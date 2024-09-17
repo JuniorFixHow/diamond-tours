@@ -6,8 +6,8 @@ import { IoTrashBin } from "react-icons/io5";
 import { SearchBlog } from '../functions/search';
 import { TouristSites } from '../utils/ContentData';
 import { useFetchBlogs } from '../hooks/useFetchBlogs';
-import axios from 'axios';
-import { API } from '../common/contants';
+import { deleteDoc, doc } from 'firebase/firestore';
+import { db } from '../firebase';
 // import { SearchQuery } from '../functions/Search';
 
 type TableProps = {
@@ -29,9 +29,16 @@ export const BlogsTable = ({setCurrentData, search}:TableProps) => {
     const {blogs} = useFetchBlogs();
 
 //    console.log(tours);
+    // const deleteItem = async(id:string)=>{
+    //     try {
+    //         await axios.delete(`${API}blogs/${id}`);
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
     const deleteItem = async(id:string)=>{
         try {
-            await axios.delete(`${API}blogs/${id}`);
+            await deleteDoc(doc(db, 'Blogs', id))
         } catch (error) {
             console.log(error);
         }
@@ -72,7 +79,7 @@ export const BlogsTable = ({setCurrentData, search}:TableProps) => {
             renderCell: (params:GridRenderCellParams)=>{
                 return(
                     <div className="cellWithImg">
-                        <span  className="">{new Date(params.row?.createdAt)?.toLocaleDateString()}</span>
+                        <span  className="">{params.row?.createdAt?.toDate()?.toLocaleDateString()}</span>
                     </div>
                 )
             }
@@ -88,7 +95,7 @@ export const BlogsTable = ({setCurrentData, search}:TableProps) => {
                 return(
                     <div className='flex flex-row gap-3 items-center h-full' >
                         <TiEdit onClick={()=>setCurrentData(params.row)} size={20} color='grey' style={{cursor:'pointer'}} />
-                        <IoTrashBin onClick={()=>deleteItem(params.row?._id)} size={20} className='cursor-pointer' color='crimson' />
+                        <IoTrashBin onClick={()=>deleteItem(params.row?.id)} size={20} className='cursor-pointer' color='crimson' />
                     </div>
                 )
             }
@@ -101,7 +108,7 @@ export const BlogsTable = ({setCurrentData, search}:TableProps) => {
             {
                 TouristSites.length ?
                 <DataGrid
-                    getRowId={(row:BlogPostProps)=>row._id}
+                    getRowId={(row:BlogPostProps)=>row.id}
                     rows={SearchBlog(blogs, search)}
                     columns={columns}
                     initialState={{

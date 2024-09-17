@@ -156,9 +156,9 @@ export type NotificationProps ={
 
 
   export interface BlogPostProps {
-    _id:string;
+    id:string;
     title: string;      
-    createdAt: string | Date; 
+    createdAt: Timestamp; 
     content: string;    
     // tags: string[];     
     image: string;     

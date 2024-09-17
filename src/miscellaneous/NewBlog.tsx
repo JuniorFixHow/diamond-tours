@@ -2,8 +2,9 @@ import { Alert, Modal } from "@mui/material";
 import { Dispatch, FormEvent, SetStateAction, useRef, useState } from "react";
 import { BlogPostProps } from "../types/Types";
 import { FeedbackProps } from "../assets/types/Types";
-import axios from "axios";
-import { API } from "../common/contants";
+
+import { addDoc, collection, doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 type NewProps = {
     currentData:BlogPostProps | null;
@@ -36,14 +37,11 @@ const NewBlog = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
             if(title.trim() !=='' && photo.trim() !=='' && excerpt.trim() !=='' && content.trim() !==''){
                 const data = {
                     title, content, excerpt, featured,
-                    image:photo
+                    image:photo, createdAt:serverTimestamp()
                 }
-                const res = await axios.post(`${API}blogs/create`, data);
-                console.log(res)
-                if(res.status === 200){
-                    setFeedback({error:false, message:'Blog added successfully'});
-                    formRef.current?.reset();
-                }
+                await addDoc(collection(db, 'Blogs'), data);
+                setFeedback({error:false, message:'Blog added successfully'});
+                formRef.current?.reset();
             }else{
                 setFeedback({error:true, message:'Pease complete the form'});
             }
@@ -66,13 +64,11 @@ const NewBlog = ({currentData, setCurrentData, isNew, setIsNew}:NewProps) => {
                 featured,
                 image:photo || currentData?.image
             }
-            const res = await axios.put(`${API}blogs/${currentData?._id}`, data);
-            console.log(res);
-            if(res.status === 200){
-                setFeedback({error:false, message:'Blog updated successfully'});
-                const response:BlogPostProps = res.data
-                setCurrentData(response);
+            if(currentData){
+              await updateDoc(doc(db, 'Blogs', currentData?.id), data)
+              setFeedback({error:false, message:'Blog updated successfully'});
             }
+            
             
         } catch (error) {
             console.log(error);
