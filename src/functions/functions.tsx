@@ -34,4 +34,12 @@ export const checkTimeSince = (time: Date) => {
   };
 
 
+export const formatParagraph = (input:string) => {
+    // Split the input text by newlines and map to <p> elements
+    return input.split(/\n+/).map((paragraph, index) => (
+        <p key={index}>{paragraph}</p>
+    ));
+};
+
+
 

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { BlogPostProps } from '../types/Types';
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useFetchBlogs } from '../hooks/useFetchBlogs';
+import { formatParagraph } from '../functions/functions';
 
 const SingleBlog = () => {
     const {id} = useParams();
@@ -36,7 +37,7 @@ const SingleBlog = () => {
         <img src={currentBlog?.image} className='w-full object-cover h-40 md:h-[80vh]' alt={currentBlog?.title} />
 
         <div className="flex w-full lg:w-[80%] self-center">
-          <span className='leading-10' >{currentBlog?.content}</span>
+          <span className='leading-10' >{formatParagraph(currentBlog?.content)}</span>
         </div>
       </div>
 
