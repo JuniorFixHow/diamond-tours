@@ -65,7 +65,7 @@ const Contact = () => {
             </div>
             <span className="text-xl font-semibold text-[#CB4900] mt-4">Contact Details</span>
             <div className="flex flex-col">
-              <h2 className="text-[0.9rem]"><span className="font-bold" >Location: Ejisu-Serwaakura, behind Pentecost Church </span></h2>
+              <h2 className="text-[0.9rem]"><span className="font-bold" >Location: Ejisu, Nasona Filling Station, Last floor</span></h2>
               <h2 className="text-[0.9rem]"><span className="font-bold" >Phone: +233-534-775141 </span></h2>
               <h2 className="text-[0.9rem]"><span className="font-bold" >Email: diamondtoursghana@gmail.com </span></h2>
             </div>
