@@ -60,7 +60,7 @@ export const PackagesData = [
     {
         id:1,
         title:'Canada',
-        text: 'Visit Visa, Study Visa, Work Visa. (Work and Pay policy available)'
+        text: 'Visit Visa, Study Visa, Work Visa'
     },
     {
         id:2,
@@ -70,7 +70,7 @@ export const PackagesData = [
     {
         id:3,
         title:'USA',
-        text: 'Visit Visa & Study Visa '
+        text: 'Visit Visa & Study Visa'
     },
     {
         id:4,
