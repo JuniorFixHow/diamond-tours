@@ -8,7 +8,7 @@ const About = () => {
                     <div className="flex col flex-col gap-4">
                         <h2 className="text-black text-2xl sm:text-3xl font-semibold text-center md:text-left" >Learn more about our team 
                         and what we have to offer </h2>
-                        <h2 className="text-black text-xl sm:text-2xl text-center md:text-left md:w-5/6" ><span className="text-[#CB4900]" >DIAMOND TOURS GHANA</span> has been the leading travel agency with the ability
+                        <h2 className="text-black text-xl sm:text-2xl text-center md:text-left md:w-5/6" ><span className="text-[#CB4900]" >DIAMOND TOURS GHANA</span> has been the leading travel company with the ability
                             and commitment to helping individuals travel around the world over the years.
                             Over the years, we have helped thousands of people to travel to work, study, and visit abroad with ease. 
                             We hold the records of successful traveling experiences.</h2>
