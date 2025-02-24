@@ -59,4 +59,73 @@ export interface BlogPostProps {
     image: string;     
     excerpt: string;
     featured:boolean;   
-  }
+}
+
+export interface ICard{
+    id:string;
+    name:string;
+    image?:string;
+    status?:string[];
+    price?:string;
+    requirements?:string[];
+    prices?:{
+        duration:string;
+        cost: string;
+    }[]
+}
+
+export interface ISB{
+    id:string;
+    country:string;
+    image:string;
+    desc?:string;
+}
+
+export interface IStudy{
+    id:string;
+    title:string;
+    assFee:string;
+    gradReq:[
+        {
+            title:string;
+            requirements:string[]
+        }
+    ];
+    addFee:string;
+    addReq:string[];
+    note:string;
+    note2:string;
+    image?:string;
+}
+
+export interface IJob{
+    id:string;
+    title:string;
+    images:string[];
+    fee?:string;
+    cost:string;
+    cost2?:string;
+    detail?:string[];
+    duration:string;
+    salary?:string;
+    jobs?:string[];
+    requirements?:string[];
+    desc?:string;
+}
+
+export interface IVisit{
+    id:string;
+    country:string;
+    subs?:string[];
+    requirements?:string[];
+    price:string;
+    duration:string;
+}
+
+export interface IPackage{
+    id:string;
+    title:string;
+    image:string;
+    desc:string;
+    link:string;
+}

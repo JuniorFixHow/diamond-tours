@@ -7,6 +7,7 @@ import Packages from '../components/Packages'
 import Bookings from '../components/Bookings'
 import About from '../components/About'
 import Swipper from '../misc/Swipper'
+import AvailablePackages from '../components/AvailablePackages'
 
 const Home = () => {
     // const [showChat, setShowChat] = useState<boolean>(false);
@@ -28,6 +29,7 @@ const Home = () => {
     <div className='w-full items-center justify-center flex flex-col' >
       <Services />
       <Packages />
+      <AvailablePackages/>
       <Bookings />
       <About />
       

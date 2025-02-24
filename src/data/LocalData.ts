@@ -128,107 +128,107 @@ export const HeaderData = [
 ]
 
 
-export const ChatData = [
-    {
-        id:49,
-        text:"closer see basic board mountain previous apartment battle better planned local receive prepare corner bar muscle pink thank lungs art develop silence failed jungle",
-        time:"11/5/2107",
-        sent:true
-    },
-    {
-        id:85,
-        text:"on nodded courage goose come proper coming center answer happily tightly form case run near available edge exactly picture south protection if sharp attention",
-        time:"9/14/2093",
-        sent:false
-    },
-    {
-        id:21,
-        text:"office sugar comfortable occasionally appearance regular captain share recently expression are shake beginning string orbit noun fifty weather nearby alphabet discover leather softly cool",
-        time:"2/23/2039",
-        sent:true
-    },
-    {
-        id:77,
-        text:"cover tall final widely living equally army water native below band sitting improve bank progress selection damage slowly enjoy jar noun men again interest",
-        time:"9/3/2041",
-        sent:false
-    },
-    {
-        id:100,
-        text:"until heat city stock guess anywhere occur identity teacher industry policeman potatoes balloon new usual trace bad town straight addition highway dried daughter food",
-        time:"11/10/2071",
-        sent:true
-    },
-    {
-        id:76,
-        text:"thy high swam bet blew hat rubber sign room introduced invented radio loss dust nearer fully passage twelve getting plain mixture noise muscle move",
-        time:"1/9/2120",
-        sent:true
-    },
-    {
-        id:53,
-        text:"using eight please situation bigger rubbed meet recent when education behind clean human card say rain should wild closely main identity continued stairs duck",
-        time:"2/7/2028",
-        sent:false
-    },
-    {
-        id:27,
-        text:"jungle afternoon hit queen field duty bank attack creature obtain people soil lost eat village social me class pond support oxygen replied powerful gain",
-        time:"6/8/2052",
-        sent:false
-    },
-    {
-        id:66,
-        text:"himself that parent distant conversation brush store partly pan film children smooth impossible least inside blew egg behind sweet court locate size occasionally aloud",
-        time:"2/11/2066",
-        sent:true
-    },
-    {
-        id:15,
-        text:"deal heart would appropriate subject author recent we first take southern bread nation danger clothes definition improve factory welcome actual slight national gray care",
-        time:"12/4/2032",
-        sent:false
-    },
-    {
-        id:58,
-        text:"warm arrive somebody earth machine hunt tears shorter watch plain page gain automobile camp being accident represent bare been onto damage similar level sure",
-        time:"10/19/2088",
-        sent:true
-    },
-]
+// export const ChatData = [
+//     {
+//         id:49,
+//         text:"closer see basic board mountain previous apartment battle better planned local receive prepare corner bar muscle pink thank lungs art develop silence failed jungle",
+//         time:"11/5/2107",
+//         sent:true
+//     },
+//     {
+//         id:85,
+//         text:"on nodded courage goose come proper coming center answer happily tightly form case run near available edge exactly picture south protection if sharp attention",
+//         time:"9/14/2093",
+//         sent:false
+//     },
+//     {
+//         id:21,
+//         text:"office sugar comfortable occasionally appearance regular captain share recently expression are shake beginning string orbit noun fifty weather nearby alphabet discover leather softly cool",
+//         time:"2/23/2039",
+//         sent:true
+//     },
+//     {
+//         id:77,
+//         text:"cover tall final widely living equally army water native below band sitting improve bank progress selection damage slowly enjoy jar noun men again interest",
+//         time:"9/3/2041",
+//         sent:false
+//     },
+//     {
+//         id:100,
+//         text:"until heat city stock guess anywhere occur identity teacher industry policeman potatoes balloon new usual trace bad town straight addition highway dried daughter food",
+//         time:"11/10/2071",
+//         sent:true
+//     },
+//     {
+//         id:76,
+//         text:"thy high swam bet blew hat rubber sign room introduced invented radio loss dust nearer fully passage twelve getting plain mixture noise muscle move",
+//         time:"1/9/2120",
+//         sent:true
+//     },
+//     {
+//         id:53,
+//         text:"using eight please situation bigger rubbed meet recent when education behind clean human card say rain should wild closely main identity continued stairs duck",
+//         time:"2/7/2028",
+//         sent:false
+//     },
+//     {
+//         id:27,
+//         text:"jungle afternoon hit queen field duty bank attack creature obtain people soil lost eat village social me class pond support oxygen replied powerful gain",
+//         time:"6/8/2052",
+//         sent:false
+//     },
+//     {
+//         id:66,
+//         text:"himself that parent distant conversation brush store partly pan film children smooth impossible least inside blew egg behind sweet court locate size occasionally aloud",
+//         time:"2/11/2066",
+//         sent:true
+//     },
+//     {
+//         id:15,
+//         text:"deal heart would appropriate subject author recent we first take southern bread nation danger clothes definition improve factory welcome actual slight national gray care",
+//         time:"12/4/2032",
+//         sent:false
+//     },
+//     {
+//         id:58,
+//         text:"warm arrive somebody earth machine hunt tears shorter watch plain page gain automobile camp being accident represent bare been onto damage similar level sure",
+//         time:"10/19/2088",
+//         sent:true
+//     },
+// ]
 
-export const BookingsData = [
-    {
-        id:1,
-        service:'Airport Transfer',
-        package:'USA',
-        date:'1/1/2022'
-    },
-    {
-        id:2,
-        service:'Bank Statement',
-        package:'Africa',
-        date:'3/7/2023'
-    },
-    {
-        id:3,
-        service:'Trips and Tours',
-        package:'Canada',
-        date:'23/8/2022'
-    },
-    {
-        id:4,
-        service:'Hotel Booking and Reservation',
-        package:'Asia',
-        date:'11/10/2020'
-    },
-    {
-        id:5,
-        service:'Visa Application and Advisory',
-        package:'Middle East',
-        date:'13/3/2024'
-    },
-]
+// export const BookingsData = [
+//     {
+//         id:1,
+//         service:'Airport Transfer',
+//         package:'USA',
+//         date:'1/1/2022'
+//     },
+//     {
+//         id:2,
+//         service:'Bank Statement',
+//         package:'Africa',
+//         date:'3/7/2023'
+//     },
+//     {
+//         id:3,
+//         service:'Trips and Tours',
+//         package:'Canada',
+//         date:'23/8/2022'
+//     },
+//     {
+//         id:4,
+//         service:'Hotel Booking and Reservation',
+//         package:'Asia',
+//         date:'11/10/2020'
+//     },
+//     {
+//         id:5,
+//         service:'Visa Application and Advisory',
+//         package:'Middle East',
+//         date:'13/3/2024'
+//     },
+// ]
 
 
 export const BlogPosts = [

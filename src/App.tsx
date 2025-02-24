@@ -12,6 +12,7 @@ import SingleBlog from './news/SingleBlog';
 import { useState } from 'react';
 import ChatBtn from './components/ChatBtn';
 import Chat from './components/Chat';
+import Jobs from './components/Jobs';
 // import './App.css'
 
 function App() {
@@ -29,7 +30,7 @@ function App() {
         <Route path='list' element={<Blogs />} />
         <Route path=':id' element={<SingleBlog />} />
       </Route>
-     
+      <Route path='/jobs' element={<Jobs/>} />
     </Routes>
     <div className='w-full relative -z-20 items-center justify-center flex flex-col' >
       <Contact />

@@ -72,7 +72,7 @@ const Packages = () => {
     const loadStyle = "bg-slate-400 rounded-xl px-4 py-2 text-white font-semibold cursor-default ";
     const normalStyle = "bg-[#cb4900] rounded-xl px-4 py-2 text-white font-semibold cursor-pointer hover:bg-orange-400";
   return (
-    <section id='packages' className="py-8 scroll-mt-14 bg-[#D9D9D9] w-full flex items-center justify-center" >
+    <section id='packages' className="py-8 scroll-mt-14 w-full flex items-center justify-center" >
         <div className="w-5/6 flex flex-col gap-8 sm:px-4">
             <h2 className="text-black text-2xl sm:text-3xl font-bold text-center md:text-left" >Explore Our <span className="text-[#CB4900]" >Packages</span></h2>
             <div className="flex w-full flex-col xl:flex-row items-start xl:justify-between">
@@ -80,7 +80,7 @@ const Packages = () => {
                     <div className="w-full  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {
                             PackagesData.map((item:PackagesProps)=>(
-                                <div className="flex w-full flex-col gap-2">
+                                <div key={item?.id}  className="flex w-full flex-col gap-2">
                                     <span className="text-xl font-semibold text-center md:text-left text-[#CB4900]">{item?.title}</span>
                                     <span className="text-[1rem] font-medium text-center md:text-left text-black">{item?.text}</span>
                                 </div>
