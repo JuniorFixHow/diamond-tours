@@ -54,7 +54,6 @@ const Jobs = () => {
                                                 </div>
                                             }
                                             {
-                                                job?.fee &&
                                                 <div className="flex justify-between gap-4">
                                                     <span className="text-[#CB4900] font-bold" >Registration Fee:</span>
                                                     <span className="font-bold" >GHC 2000</span>
