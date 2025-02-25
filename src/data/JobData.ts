@@ -4,7 +4,7 @@ export const JobData: IJob[] = [
     {
         id: '1',
         title: 'Middle East (Dubai, Qatar, Kuwait)',
-        fee: 'GHS 2,000.00',
+        // fee: 'GHS 2,000.00',
         cost: 'GHS 35,000.00',
         cost2: 'GHS 65,000.00',
         detail: [
@@ -66,7 +66,7 @@ export const JobData: IJob[] = [
         id: '3',
         title: 'Luxembourg & Finland',
         cost: 'GHS 120,000',
-        fee: 'GHS 35,000 + GHS 2,000',
+        fee: 'GHS 35,000',
         detail: [
             '3 years work Visa',
             'Travel Insurance',
@@ -145,7 +145,7 @@ export const JobData: IJob[] = [
         id: '6',
         title: 'Japan (Work and Pay)',
         cost: 'GHS 53,000.00',
-        fee: 'GHS 2,000.00',
+        // fee: 'GHS 2,000.00',
         detail: [
             'Visa',
             'Flight ticket',
@@ -155,7 +155,7 @@ export const JobData: IJob[] = [
             'Travel insurance'
         ],
         duration: '4 - 6 months',
-        salary: '$3,800 - $6,700 monthly plus allowance and bonuses',
+        salary: '$3,800 - $6,700 monthly plus allowances',
         jobs: [
             'Teachers (English)', 
             'Nurses', 

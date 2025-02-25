@@ -1,6 +1,6 @@
 import { ICard } from "../types/Types";
 
-export const cardData:ICard[] = [
+export const CardData:ICard[] = [
     {
         id:'1',
         name:'Passport',

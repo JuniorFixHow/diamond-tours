@@ -13,6 +13,9 @@ import { useState } from 'react';
 import ChatBtn from './components/ChatBtn';
 import Chat from './components/Chat';
 import Jobs from './components/Jobs';
+import Study from './components/Study';
+import Visit from './components/Visit';
+import Cards from './components/Cards';
 // import './App.css'
 
 function App() {
@@ -31,6 +34,9 @@ function App() {
         <Route path=':id' element={<SingleBlog />} />
       </Route>
       <Route path='/jobs' element={<Jobs/>} />
+      <Route path='/study' element={<Study/>} />
+      <Route path='/travel' element={<Visit/>} />
+      <Route path='/cards' element={<Cards/>} />
     </Routes>
     <div className='w-full relative -z-20 items-center justify-center flex flex-col' >
       <Contact />

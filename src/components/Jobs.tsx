@@ -1,15 +1,19 @@
 import { JobData } from "../data/JobData"
+import { PackageData } from "../data/PackageData";
 
 const Jobs = () => {
+    const heading = PackageData[0]?.desc;
   return (
     <div className="w-full flex flex-col" >
           <div className="flex items-center justify-center md:justify-start md:items-end py-8 w-full bg-no-repeat bg-cover h-60 md:h-96 bg-[linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.7)),url(/packages/dream-job-2904780_1920.jpg)]">
             <span className="text-2xl text-white font-bold text-center ml-0 md:ml-8" >Jobs Abroad</span>
           </div>
     
-          <div className="flex justify-center py-8 bg-white w-full">
+          <div className="flex  justify-center py-8 bg-white w-full">
+
             
             <div className="flex flex-col gap-16 items-center w-[95%]  lg:w-4/5 xl:w-2/3">
+            <span className="text-[0.8rem] text-center">{heading}</span>
                 {
                     JobData.map((job, index)=>{
                         const details = job?.detail;
@@ -45,8 +49,15 @@ const Jobs = () => {
                                             {
                                                 job?.fee &&
                                                 <div className="flex justify-between gap-4">
-                                                    <span className="text-[#CB4900] font-bold" >Registration Fee:</span>
+                                                    <span className="text-[#CB4900] font-bold" >Initial Deposit:</span>
                                                     <span className="font-bold" >{job?.fee}</span>
+                                                </div>
+                                            }
+                                            {
+                                                job?.fee &&
+                                                <div className="flex justify-between gap-4">
+                                                    <span className="text-[#CB4900] font-bold" >Registration Fee:</span>
+                                                    <span className="font-bold" >GHC 2000</span>
                                                 </div>
                                             }
                                             {
