@@ -235,5 +235,32 @@ export const JobData: IJob[] = [
             'Warehouse work'
         ],
         images:['/packages/work_main.jpg']
+    },
+    {
+        id: '9',
+        title: 'Poland',
+        cost: 'GHS 150,000',
+        fee: 'GHS 13,000',
+        detail: [
+            'Visa (3 years — Renewal)',
+            '⁠Accommodation', 
+            '⁠Job', 
+            '⁠Medical Insurance', 
+            '⁠Travel Insurance', 
+            'Flight',
+
+        ],
+        duration: '6-9 months',
+        salary: '£15/h-£20/h (variable)',
+        jobs: [
+            "Security", 
+            "Warehouse", 
+            'Factory', 
+            'Cleaning', 
+            'Hotel', 
+            'Construction', 
+            'Shop attendant' 
+        ],
+        images:['/packages/work_poland.jpg']
     }
 ];
