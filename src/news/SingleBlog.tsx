@@ -27,10 +27,12 @@ const SingleBlog = () => {
     
     if(!currentBlog) return null
   return (
-    <div className='w-full flex flex-col items-center py-8 gap-10' >
+    <div className='flex flex-col items-center w-full gap-10 py-8' >
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6578473026963707"
+     crossOrigin='anonymous' ></script>
       <div className="flex flex-col gap-6 w-[80%] lg:items-center">
         <div className="flex flex-col w-[90%] gap-4">
-          <span className='text-2xl text-center lg:text-left lg:text-4xl font-semibold' >{currentBlog?.title}</span>
+          <span className='text-2xl font-semibold text-center lg:text-left lg:text-4xl' >{currentBlog?.title}</span>
           <span className='font-light' >{currentBlog!.createdAt?.toDate()?.toLocaleDateString()}</span>
         </div>
 

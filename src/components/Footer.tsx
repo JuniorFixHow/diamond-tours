@@ -43,15 +43,16 @@ const Footer = () => {
   const disStyle = "bg-slate-400  cursor-default h-10 w-8 flex items-center justify-center"
 
   return (
-    <footer id="footer" className="w-full flex items-center justify-center bg-white pt-4 flex-col relative" >
+    <footer id="footer" className="relative flex flex-col items-center justify-center w-full pt-4 bg-white" >
+        
       {
         feedback.message &&
-        <Alert onClose={()=>setFeedback({error:false, message:''})} className="fixed top-16 self-center w-5/6 lg:w-1/2" severity={feedback.error? 'error':'success'} variant='standard' >{feedback.message}</Alert>
+        <Alert onClose={()=>setFeedback({error:false, message:''})} className="fixed self-center w-5/6 top-16 lg:w-1/2" severity={feedback.error? 'error':'success'} variant='standard' >{feedback.message}</Alert>
       }
-        <div className="w-5/6 flex flex-col justify-center items-center md:flex-row md:items-start md:justify-around">
+        <div className="flex flex-col items-center justify-center w-5/6 md:flex-row md:items-start md:justify-around">
             <div className="flex flex-row items-start gap-8">
 
-            <div className="flex flex-col py-4 items-start min-w-32">
+            <div className="flex flex-col items-start py-4 min-w-32">
                 <h2 className="text-2xl text-[#CB4900] font-bold">Links</h2>
                 <a href="#hero" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Home</a>
                 <a href="#services" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Services</a>
@@ -61,7 +62,7 @@ const Footer = () => {
                 <a href="#contact" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Contact Us</a>
                 <a href="#reviews" className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Reviews</a>
             </div>
-            <div className="flex flex-col py-4 items-start min-w-32">
+            <div className="flex flex-col items-start py-4 min-w-32">
                 <h2 className="text-2xl text-[#CB4900] font-bold">Legals</h2>
                 <a className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >License</a>
                 <a className="text-black underline hover:text-blue-500 text-[0.8rem] sm:text-[1rem] font-semibold cursor-pointer" >Terms and Conditions</a>
@@ -74,21 +75,21 @@ const Footer = () => {
                     <input onChange={(e)=>setEmail(e.target.value)} required type="text" className="bg-[#d9d9d9] outline-none px-4 py-2 w-72" placeholder="Email" />
                     <button disabled={isLoading} type='submit' className={isLoading? disStyle:normalStyle} ><FaAngleRight />{}</button>
                 </form>
-                <div className="flex flex-row gap-6 items-center justify-start">
+                <div className="flex flex-row items-center justify-start gap-6">
                     <a target='blank' href="https://wa.me/+233205035730">
-                        <FaWhatsapp className="hover:text-slate-400 cursor-pointer text-3xl" />
+                        <FaWhatsapp className="text-3xl cursor-pointer hover:text-slate-400" />
                     </a>
                     <a target='blank' href="https://www.facebook.com/DiamondTourGhana?mibextid=kFxxJD">
-                        <CiFacebook className="hover:text-slate-400 cursor-pointer text-3xl" />
+                        <CiFacebook className="text-3xl cursor-pointer hover:text-slate-400" />
                     </a>
                     <a target='blank' href="https://www.instagram.com/diamondtours_gh?igsh=ZnF2eWdkNzh0bGZl">
-                        <FaInstagram className="hover:text-slate-400 cursor-pointer text-3xl" />
+                        <FaInstagram className="text-3xl cursor-pointer hover:text-slate-400" />
                     </a>
                     <a target='blank' href="https://x.com/diamondtours_gh?s=21&t=quzTkibHjrl5y7ipuSnsYA">
-                        <FaXTwitter className="hover:text-slate-400 cursor-pointer text-3xl" />
+                        <FaXTwitter className="text-3xl cursor-pointer hover:text-slate-400" />
                     </a>
                     <a target='blank' href="https://www.tiktok.com/@diamondtours_gh?_t=8nF1a9vbCfX&_r=1">
-                        <PiTiktokLogo className="hover:text-slate-400 cursor-pointer text-3xl" />
+                        <PiTiktokLogo className="text-3xl cursor-pointer hover:text-slate-400" />
                     </a>
                 </div>
             </div>

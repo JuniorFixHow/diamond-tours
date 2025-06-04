@@ -121,11 +121,14 @@ const Reviews = () => {
 
     return (
       <section
+      
         id="reviews"
-        className="w-full scroll-mt-14 bg-white flex flex-col py-8"
+        className="flex flex-col w-full py-8 bg-white scroll-mt-14"
       >
-        <div className="w-5/6 self-center flex flex-col gap-6">
-          <h2 className="text-black text-2xl sm:text-3xl font-bold text-center md:text-left">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6578473026963707"
+     crossOrigin='anonymous' ></script>
+        <div className="flex flex-col self-center w-5/6 gap-6">
+          <h2 className="text-2xl font-bold text-center text-black sm:text-3xl md:text-left">
             Reviews
           </h2>
           <Comment
@@ -142,16 +145,16 @@ const Reviews = () => {
             reviews.sort((a, b)=>new Date(a.createdAt!) < new Date(b.createdAt!) ? 1:-1).map((review: ReviewProps) => (
               <div
                 key={review._id}
-                className="flex flex-col w-full border-b border-slate-300 pb-6"
+                className="flex flex-col w-full pb-6 border-b border-slate-300"
               >
                 <div className="flex flex-row items-center justify-between">
                   <div
                     onClick={() => setOpenReply(false)}
-                    className="flex gap-2 flex-row items-center"
+                    className="flex flex-row items-center gap-2"
                   >
                     <img
                       src={review?.user.photo}
-                      className="h-8 w-8 object-cover rounded-full"
+                      className="object-cover w-8 h-8 rounded-full"
                       alt=""
                     />
                     <span className="font-semibold">
@@ -162,7 +165,7 @@ const Reviews = () => {
                   <div className="flex flex-col items-end">
                     <FaEllipsis
                       onClick={() => handleReplyBtn(review)}
-                      className="cursor-pointer z-10"
+                      className="z-10 cursor-pointer"
                     />
                     {openReply && currentData?._id === review._id && !replyMode &&
                       <button
@@ -224,7 +227,7 @@ const Reviews = () => {
 
             {
               dataLength > 5 &&
-              <div onClick={viewTrigger} className="flex flex-row items-center gap-4 cursor-pointer underline">
+              <div onClick={viewTrigger} className="flex flex-row items-center gap-4 underline cursor-pointer">
                 <span className="font-semibold" >{viewAll ? 'Show less': 'Show more'}</span>
                 {
                   viewAll ? 

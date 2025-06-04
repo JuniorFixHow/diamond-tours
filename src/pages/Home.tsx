@@ -9,6 +9,7 @@ import About from '../components/About'
 import Swipper from '../misc/Swipper'
 import AvailablePackages from '../components/AvailablePackages'
 
+
 const Home = () => {
     // const [showChat, setShowChat] = useState<boolean>(false);
     useEffect(() => {
@@ -22,11 +23,13 @@ const Home = () => {
   }, []);
   return (
     <div className='relative -z-10' >
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6578473026963707"
+     crossOrigin='anonymous' ></script>
     {/* <ChatBtn showChat={showChat} setShowChat={setShowChat} />
     <Chat showChat={showChat} setShowChat={setShowChat} /> */}
     {/* <Hero /> */}
     <Swipper />
-    <div className='w-full items-center justify-center flex flex-col' >
+    <div className='flex flex-col items-center justify-center w-full' >
       <Services />
       <Packages />
       <AvailablePackages/>

@@ -6,12 +6,14 @@ const Blogs = () => {
   const navigate = useNavigate();
   const {blogs} = useFetchBlogs();
   return (
-    <div className="w-full flex flex-col" >
+    <div className="flex flex-col w-full" >
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6578473026963707"
+     crossOrigin='anonymous' ></script>
       <div className="flex items-center justify-center md:justify-start md:items-end py-8 w-full bg-no-repeat bg-cover h-60 md:h-96 bg-[linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.7)),url(/imgs/vdw3fdnjrjqyxxscep5n.png)]">
-        <span className="text-2xl text-white font-bold text-center ml-0 md:ml-8" >Diamond Blog</span>
+        <span className="ml-0 text-2xl font-bold text-center text-white md:ml-8" >Diamond Blog</span>
       </div>
 
-      <div className="flex justify-center py-8 bg-white w-full">
+      <div className="flex justify-center w-full py-8 bg-white">
         <div className="flex flex-col w-full xl:w-[80%] gap-8 items-center sm:grid grid-cols-2 md:grid-cols-3 place-items-center">
           {
             blogs &&

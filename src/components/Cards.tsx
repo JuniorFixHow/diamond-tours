@@ -5,15 +5,17 @@ const Cards = () => {
     const heading = PackageData[3]?.desc;
     
   return (
-    <div className="w-full flex flex-col" >
+    <div className="flex flex-col w-full" >
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6578473026963707"
+     crossOrigin='anonymous' ></script>
         <div className="flex items-center justify-center md:justify-start md:items-end py-8 w-full bg-no-repeat bg-cover h-60 md:h-96 bg-[linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.7)),url(/packages/passport-2642170_1920.jpg)]">
-            <span className="text-2xl text-white font-bold text-center ml-0 md:ml-8" >Certificates & Cards</span>
+            <span className="ml-0 text-2xl font-bold text-center text-white md:ml-8" >Certificates & Cards</span>
         </div>
         
-        <div className="flex flex-col gap-8 items-center py-8 bg-white w-full">
+        <div className="flex flex-col items-center w-full gap-8 py-8 bg-white">
             <div className="flex flex-col gap-8 w-[95%]  lg:w-4/5 xl:w-2/3">
                 <span className="text-[0.8rem] text-center" >{heading}</span>
-                <div className="flex flex-col items-start gap-10 w-full">
+                <div className="flex flex-col items-start w-full gap-10">
                 {
                     CardData &&
                     CardData.map((card)=>{
@@ -21,20 +23,20 @@ const Cards = () => {
                         const reqs = card?.requirements;
                         const stats = card?.status;
                         return(
-                            <div key={card?.id}  className="flex ml-10 md:m-0 flex-col gap-1 p-4">
-                                <span className='text-2xl md:text-left lg:text-4xl font-semibold' >{card?.name}</span>
+                            <div key={card?.id}  className="flex flex-col gap-1 p-4 ml-10 md:m-0">
+                                <span className='text-2xl font-semibold md:text-left lg:text-4xl' >{card?.name}</span>
 
                                 <div className="flex flex-col gap-8 items-center md:gap-[5rem] md:items-start md:flex-row">
                                     {
                                         card?.price &&
-                                        <div className="flex gap-2 items-center">
+                                        <div className="flex items-center gap-2">
                                             <span className="text-[#CB4900] font-bold" >Price:</span>
                                             <span className="text-[0.9rem] font-bold" >{card?.price}</span>
                                         </div>
                                     }
                                     {
                                         prices &&
-                                        <div className="flex gap-2 flex-col w-full">
+                                        <div className="flex flex-col w-full gap-2">
                                             <span className="text-[#CB4900] font-bold" >Prices</span>
                                             {
                                                 prices?.map((item)=>(
@@ -48,7 +50,7 @@ const Cards = () => {
                                     }
                                     {
                                         reqs &&
-                                        <div className="flex gap-2 flex-col">
+                                        <div className="flex flex-col gap-2">
                                             <span className="text-[#CB4900] font-bold" >Requirements</span>
                                             {
                                                 reqs?.map((item)=>(
@@ -59,7 +61,7 @@ const Cards = () => {
                                     }
                                     {
                                         stats &&
-                                        <div className="flex gap-2 flex-col">
+                                        <div className="flex flex-col gap-2">
                                             <span className="text-[#CB4900] font-bold" >Status</span>
                                             {
                                                 stats?.map((item)=>(
