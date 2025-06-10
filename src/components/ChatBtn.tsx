@@ -1,31 +1,24 @@
 import { MdOutlineMessage } from "react-icons/md";
-import { ShowChatProps } from "./Chat";
-import { useState } from "react";
-import { Alert } from "@mui/material";
-import { useAuth } from "../hooks/useAuth";
-const ChatBtn = ({showChat, setShowChat}:ShowChatProps) => {
-  const [showError, setShowError] = useState<boolean>(false);
-  const showStyle = "cursor-pointer z-20 items-center flex flex-col fixed bottom-16 md:bottom-6 right-8";
 
-  const {user} = useAuth();
+// const ChatBtn = ({showChat, setShowChat}:ShowChatProps) => {
+const ChatBtn = () => {
+  // const [showError, setShowError] = useState<boolean>(false);
+  // const showStyle = "";
+
+  // const {user} = useAuth();
 
   const handleBtnPress = ()=>{
-    if(!user){
-      setShowError(true);
-    }else{
-      setShowChat(true);
-      setShowError(false);
-    }
+    window.open('https://cdn.botpress.cloud/webchat/v2.3/shareable.html?configUrl=https://files.bpcontent.cloud/2025/04/16/07/20250416070450-RU1AODKE.json', '_blank', 'noopener,noreferrer');
   }
 
-  if(showError) return <Alert onClose={()=>setShowError(false)} className="fixed top-16 self-center left-10 lg:left-60 w-5/6 lg:w-1/2" severity='error' variant='standard' >Please sign in to access live chat</Alert>
+  // if(showError) return <Alert onClose={()=>setShowError(false)} className="fixed self-center w-5/6 top-16 left-10 lg:left-60 lg:w-1/2" severity='error' variant='standard' >Please sign in to access live chat</Alert>
   
   return (
-    <div onClick={handleBtnPress} className={showChat? 'hidden':showStyle} >
+    <div onClick={handleBtnPress} className='fixed z-20 flex flex-col items-center cursor-pointer bottom-16 md:bottom-6 right-8' >
       {
       }
         <MdOutlineMessage className="text-[#CB4900] hover:text-orange-400 text-4xl sm:text-4xl" />
-        <span className="hidden sm:block text-black text-xl font-semibold" >Chat With Us</span>
+        <span className="hidden text-xl font-semibold text-black sm:block" >Chat With Us</span>
     </div>
   )
 }

@@ -24,7 +24,8 @@ function App() {
   return (
     <div className='relative z-10' >
     <Header />
-    <ChatBtn showChat={showChat} setShowChat={setShowChat} />
+    {/* <ChatBtn showChat={showChat} setShowChat={setShowChat} /> */}
+    <ChatBtn />
     <Chat showChat={showChat} setShowChat={setShowChat} />
     <Routes>
       <Route index element={<Home />} />
@@ -38,7 +39,7 @@ function App() {
       <Route path='/travel' element={<Visit/>} />
       <Route path='/cards' element={<Cards/>} />
     </Routes>
-    <div className='w-full relative -z-20 items-center justify-center flex flex-col' >
+    <div className='relative flex flex-col items-center justify-center w-full -z-20' >
       <Contact />
       <Reviews />
     </div>
