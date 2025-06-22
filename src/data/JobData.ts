@@ -6,7 +6,7 @@ export const JobData: IJob[] = [
         title:'USA - Joint Account',
         salary:'$2900 - $4500+',
         jobName:'Teaching',
-        registerFee:'GHS 100,000',
+        registerFee:'GHS 10,000',
         cost:'GHS 200,000',
         detail:[
             '2-year Visa',
@@ -31,7 +31,7 @@ export const JobData: IJob[] = [
             'Home tie document',
             'Bank statements',
         ],
-        images:['/packages/work_main.jpg']
+        images:['/packages/work_usa.jpg']
     },
 
     {
@@ -48,8 +48,8 @@ export const JobData: IJob[] = [
         id: '3',
         title: 'Middle East (Dubai, Qatar, Kuwait)',
         // fee: 'GHS 2,000.00',
-        cost: 'GHS 35,000.00',
-        cost2: 'GHS 65,000.00',
+        cost: 'GHS 35,000',
+        cost2: 'GHS 65,000',
         detail: [
             '2 years work visa',
             'Job',
@@ -154,8 +154,8 @@ export const JobData: IJob[] = [
            'Accommodation',
            'Food Allowance'
         ],
-        images:['/packages/work_luxembourg.jpg', '/packages/work_luxembourg2.jpg'],
-        registerFee:'GHS 2000',
+        images:['/packages/work_luxembourg3.jpg', '/packages/work_luxembourg2.jpg'],
+        registerFee:'GHS 10,000',
         requirements:[
             'Passport', 'Passport-size picture',
             'European standard CV'
@@ -165,35 +165,7 @@ export const JobData: IJob[] = [
             '6000 Euros payment after travel',
         ]
     },
-    {
-        id: '9',
-        title: 'Luxembourg & Finland',
-        cost: 'GHS 120,000',
-        fee: 'GHS 35,000',
-        registerFee:'GHS 2000',
-        detail: [
-            '3 years work Visa',
-            'Travel Insurance',
-            'Medical Insurance',
-            'Accommodation',
-            'Flight ticket'
-        ],
-        duration: 'Close to instant',
-        salary: '14 Euros per hour',
-        jobs: [
-            'Caregiver', 
-            'Cleaners', 
-            'Warehouse', 
-            'Factory work'
-        ],
-        requirements: [
-            'Passport bio page',
-            'Ghana Card (if any)',
-            'American passport-size picture (white background)', 
-            'Any Certificate (if any)'
-        ],
-        images: ['/packages/work_luxembourg.jpg', '/packages/work_luxembourg2.jpg']
-    },
+
     {
         id: '10',
         registerFee:'GHS 2000',
@@ -473,7 +445,7 @@ export const JobData: IJob[] = [
     {
         id: '19',
         title: 'Japan (Work and Pay)',
-        cost: 'GHS 53,000.00',
+        cost: 'GHS 55,000.00',
         registerFee:'GHS 2000',
         // fee: 'GHS 2,000.00',
         detail: [
@@ -612,7 +584,7 @@ export const JobData: IJob[] = [
 
         ],
         duration: '6-9 months',
-        salary: '£15/h-£20/h (variable)',
+        salary: '£15 - £20 per hour',
         jobs: [
             "Security", 
             "Warehouse", 
