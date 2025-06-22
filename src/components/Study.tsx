@@ -81,7 +81,7 @@ const Study = () => {
                 </div>
                 <div className="flex items-center gap-4">
                     <span className="text-[#CB4900] font-bold" >Scholarship Applications - </span>
-                    <span className="text-[0.9rem] font-bold" >GHC 5215</span>
+                    <span className="text-[0.9rem] font-bold" >GHC 6500</span>
                 </div>
             </div>
           </div>

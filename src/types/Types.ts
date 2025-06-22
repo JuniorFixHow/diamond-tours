@@ -71,6 +71,7 @@ export interface ICard{
     prices?:{
         duration:string;
         cost: string;
+        note?: string
     }[]
 }
 
@@ -101,16 +102,29 @@ export interface IStudy{
 export interface IJob{
     id:string;
     title:string;
+    jobName?:string;
+    pow?:string[];
+    ppt?:string;
     images:string[];
     fee?:string;
     cost:string;
     cost2?:string;
+    registerFee?:string;
     detail?:string[];
     duration:string;
     salary?:string;
+    workingDays?:string;
+    notices?:string[];
     jobs?:string[];
     requirements?:string[];
     desc?:string;
+}
+
+export interface ISideJob{
+    id:string;
+    title:string;
+    price:string;
+    description?:string;
 }
 
 export interface IVisit{

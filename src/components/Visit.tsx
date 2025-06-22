@@ -41,6 +41,9 @@ const Visit = () => {
                     ))
                 }
                 </div>
+                <div className="flex self-center justify-center w-4/5 md:self-start md:justify-start">
+                    <span className="font-bold text-center" >ALL VISA PRICES ARE SUBJECT TO CHANGE DUE TO CURRENCY RATES</span>
+                </div>
 
                 <div className="flex flex-col gap-5">
                 <span className='text-2xl font-semibold text-center md:text-left lg:text-4xl' >Gallery</span>

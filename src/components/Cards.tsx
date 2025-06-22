@@ -26,7 +26,7 @@ const Cards = () => {
                             <div key={card?.id}  className="flex flex-col gap-1 p-4 ml-10 md:m-0">
                                 <span className='text-2xl font-semibold md:text-left lg:text-4xl' >{card?.name}</span>
 
-                                <div className="flex flex-col gap-8 items-center md:gap-[5rem] md:items-start md:flex-row">
+                                <div className="flex flex-col gap-8 md:gap-[5rem] items-start md:flex-row">
                                     {
                                         card?.price &&
                                         <div className="flex items-center gap-2">
@@ -40,9 +40,15 @@ const Cards = () => {
                                             <span className="text-[#CB4900] font-bold" >Prices</span>
                                             {
                                                 prices?.map((item)=>(
-                                                    <div key={item?.duration} className="flex gap-4">
+                                                    <div key={item?.duration} className="flex justify-between gap-4 md:justify-start">
                                                         <span className="text-[#CB4900] font-bold text-[0.9rem]" >&#8226;  {item?.duration}</span>
-                                                        <span  className="text-[0.9rem] font-bold" >{item?.cost}</span>
+                                                        <div className="flex flex-col items-end gap-3 md:flex-row">
+                                                            <span  className="text-[0.9rem] font-bold" >{item?.cost}</span>
+                                                            {
+                                                                item?.note &&
+                                                                <span className="text-[0.7rem] font-bold text-center" >({item?.note})</span>
+                                                            }
+                                                        </div>
                                                     </div>
                                                 ))
                                             }
