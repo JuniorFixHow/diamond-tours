@@ -22,7 +22,7 @@ export const CardData:ICard[] = [
         name:'Birth Certificate',
         requirements:[
             'Mother\'s Ghana Card',
-            'Application Details'
+            `Applicant's Details`
         ],
         prices:[
             {duration:'1 week', cost:'GHC 650'},
